@@ -1,0 +1,104 @@
+{
+  "description": "Curated free stock videos for CommonGround - community support, food banks, shelter/housing. All from Pexels (free, no attribution required).",
+  "categories": {
+    "community_volunteers": {
+      "title": "Community Volunteers Helping",
+      "videos": [
+        {
+          "id": "pexels-6565778",
+          "title": "A Group of Volunteers Posing for the Camera",
+          "source": "Pexels",
+          "pageUrl": "https://www.pexels.com/video/a-group-of-volunteers-posing-for-the-camera-6565778/",
+          "creator": "cottonbro studio",
+          "tags": ["volunteers", "community", "charity", "helping", "giving back"]
+        },
+        {
+          "id": "pexels-6646687",
+          "title": "Two Volunteers Talking to an Elder Person at the Door",
+          "source": "Pexels",
+          "pageUrl": "https://www.pexels.com/video/two-volunteers-talking-to-an-elder-person-at-the-door-6646687/",
+          "creator": "RDNE Stock project",
+          "tags": ["volunteers", "outreach", "community", "charity", "helping"]
+        },
+        {
+          "id": "coverr-volunteer",
+          "title": "Volunteer Stock Footage (multiple clips)",
+          "source": "Coverr",
+          "pageUrl": "https://coverr.co/stock-video-footage/volunteer",
+          "tags": ["volunteers", "community", "charity"]
+        },
+        {
+          "id": "coverr-community",
+          "title": "Community Stock Footage",
+          "source": "Coverr",
+          "pageUrl": "https://coverr.co/stock-video-footage/community",
+          "tags": ["community", "together", "support"]
+        }
+      ]
+    },
+    "food_bank_meal_distribution": {
+      "title": "Food Bank / Meal Distribution",
+      "videos": [
+        {
+          "id": "pexels-6995298",
+          "title": "Volunteers Giving Out Meals Wearing Face Masks (photo - check for video version)",
+          "source": "Pexels",
+          "pageUrl": "https://www.pexels.com/photo/volunteers-giving-out-meals-wearing-face-masks-6995298/",
+          "creator": "Julia M Cameron",
+          "tags": ["meal distribution", "volunteers", "charity", "food", "community"]
+        },
+        {
+          "id": "pexels-search-food",
+          "title": "Food Bank & Meal Distribution Search",
+          "source": "Pexels",
+          "pageUrl": "https://www.pexels.com/search/videos/food%20bank/",
+          "tags": ["food bank", "meal", "distribution", "volunteers"]
+        },
+        {
+          "id": "pexels-search-meal",
+          "title": "Meal Distribution Search",
+          "source": "Pexels",
+          "pageUrl": "https://www.pexels.com/search/videos/meal%20distribution/",
+          "tags": ["meal", "distribution", "charity", "helping"]
+        }
+      ]
+    },
+    "shelter_housing_support": {
+      "title": "Shelter / Housing Support",
+      "videos": [
+        {
+          "id": "pexels-6646687-shelter",
+          "title": "Volunteers at Door (housing outreach)",
+          "source": "Pexels",
+          "pageUrl": "https://www.pexels.com/video/two-volunteers-talking-to-an-elder-person-at-the-door-6646687/",
+          "creator": "RDNE Stock project",
+          "tags": ["outreach", "housing", "volunteers", "door", "support"]
+        },
+        {
+          "id": "coverr-community-service",
+          "title": "Community Service Stock Footage",
+          "source": "Coverr",
+          "pageUrl": "https://coverr.co/stock-video-footage/community-service",
+          "tags": ["community service", "helping", "support"]
+        },
+        {
+          "id": "coverr-help",
+          "title": "Help Stock Footage",
+          "source": "Coverr",
+          "pageUrl": "https://coverr.co/stock-video-footage/help",
+          "tags": ["help", "support", "assistance"]
+        }
+      ]
+    }
+  },
+  "folderStructure": {
+    "volunteers": "Place community volunteer videos here",
+    "food-bank": "Place food bank / meal distribution videos here",
+    "shelter-housing": "Place shelter / housing support videos here"
+  },
+  "usage": {
+    "pexels": "Visit pageUrl, click Download, choose quality. Save to the appropriate subfolder.",
+    "coverr": "Visit pageUrl, download MP4. Free for commercial use, no attribution required.",
+    "directUrlFormat": "Try: https://videos.pexels.com/video-files/{id}/{id}-hd_1920_1080_30fps.mp4 (see direct-urls.txt)"
+  }
+}

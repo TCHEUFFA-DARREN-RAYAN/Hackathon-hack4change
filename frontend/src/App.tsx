@@ -2,7 +2,6 @@
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import LoginPage from './components/ui/gaming-login';
-import { LanguageSwitcher } from './components/ui/language-switcher';
 import { Navbar1 } from './components/blocks/navbar1';
 
 const API_BASE = '/api';
@@ -65,15 +64,13 @@ function App() {
           alt: t('common.commonGround'),
           title: t('common.commonGround'),
         }}
+        donateUrl="/donate"
         auth={{
-          login: { text: t('common.signIn'), url: '/login' },
+          login: { text: t('common.staffLogin'), url: '/login' },
         }}
       />
-      <div className="absolute top-4 right-4 z-30">
-        <LanguageSwitcher />
-      </div>
       <div className="flex min-h-[calc(100vh-80px)] w-full items-center justify-center px-4 py-12">
-        <LoginPage.VideoBackground videoUrl="https://videos.pexels.com/video-files/8128311/8128311-uhd_2560_1440_25fps.mp4" />
+        <LoginPage.VideoBackground videoUrl="/assets/videos/community/food-bank/volunteer-bread-hungry.mp4" />
 
         <div className="relative z-20 w-full max-w-md animate-fadeIn">
         {error && (
