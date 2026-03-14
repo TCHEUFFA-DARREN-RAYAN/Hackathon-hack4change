@@ -24,12 +24,12 @@ app.use(helmet({
     contentSecurityPolicy: {
         directives: {
             defaultSrc: ["'self'"],
-            scriptSrc: ["'self'", "'unsafe-inline'", "https://unpkg.com"],
+            scriptSrc: ["'self'", "'unsafe-inline'", "https://unpkg.com", "https://cdn.socket.io"],
             scriptSrcAttr: ["'unsafe-inline'"],
             styleSrc: ["'self'", "'unsafe-inline'", 'https://fonts.googleapis.com'],
             imgSrc: ["'self'", 'data:', 'https:'],
             mediaSrc: ["'self'", 'https://videos.pexels.com'],
-            connectSrc: ["'self'"],
+            connectSrc: ["'self'", "ws:", "wss:"],
             fontSrc: ["'self'", 'https://fonts.gstatic.com']
         }
     },
@@ -102,7 +102,7 @@ const pages = {
     '/donate': 'donate.html',
     '/staff': 'staff.html',
     '/coordinator': 'coordinator.html',
-    '/login': 'login-build/index.html'
+    '/login': 'auth.html'
 };
 
 for (const [route, file] of Object.entries(pages)) {
@@ -118,7 +118,8 @@ app.use((req, res) => {
 
 app.use((err, req, res, next) => {
     logger.error(err.message || 'Server error', { stack: err.stack });
-    res.status(500).json({ success: false, message: err.message || 'Server error' });
+    const message = process.env.NODE_ENV === 'production' ? 'Internal server error' : (err.message || 'Server error');
+    res.status(500).json({ success: false, message });
 });
 
 const start = async () => {
@@ -127,7 +128,26 @@ const start = async () => {
         logger.error('Database connection failed. Run: npm run migrate');
         process.exit(1);
     }
-    const server = app.listen(PORT, process.env.HOST || '0.0.0.0', () => {
+
+    const http = require('http');
+    const { Server: SocketIO } = require('socket.io');
+    const httpServer = http.createServer(app);
+    const io = new SocketIO(httpServer, {
+        cors: {
+            origin: process.env.NODE_ENV === 'production' ? allowedOrigins : '*',
+            credentials: true
+        }
+    });
+    app.set('io', io);
+
+    io.on('connection', (socket) => {
+        logger.info('Socket.IO client connected', { id: socket.id });
+        socket.on('disconnect', () => {
+            logger.info('Socket.IO client disconnected', { id: socket.id });
+        });
+    });
+
+    const server = httpServer.listen(PORT, process.env.HOST || '0.0.0.0', () => {
         console.log(`CommonGround running at http://localhost:${PORT}`);
     });
 
