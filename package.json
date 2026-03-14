@@ -8,6 +8,9 @@
     "dev:backend": "nodemon --delay 500ms backend/server.js",
     "start": "node backend/server.js",
     "migrate": "node scripts/migrate.js",
+    "backup": "node scripts/backup.js",
+    "test": "jest --forceExit --detectOpenHandles",
+    "test:verbose": "jest --forceExit --detectOpenHandles --verbose",
     "build:login": "cd frontend && npm run build",
     "dev:login": "cd frontend && npm run dev"
   },
@@ -37,6 +40,8 @@
   },
   "devDependencies": {
     "concurrently": "^9.2.1",
-    "nodemon": "^3.1.11"
+    "jest": "^30.3.0",
+    "nodemon": "^3.1.11",
+    "supertest": "^7.2.2"
   }
 }

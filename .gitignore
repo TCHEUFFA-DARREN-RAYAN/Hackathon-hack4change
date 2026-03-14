@@ -279,3 +279,6 @@ __pycache__/
 # Environment (contains secrets)
 .env
 .env.local
+
+# Database backups (contain sensitive data)
+backups/
