@@ -12,6 +12,7 @@
 <body>
 
 <div id="topbar">
+    <button class="mobile-menu-btn" onclick="toggleMobileMenu()" aria-label="Open menu">&#9776;</button>
     <div class="topbar-brand">
         <img src="/assets/images/logo.png" alt="Common Ground">
         <span>GMHSC Network</span>
@@ -21,6 +22,7 @@
         <button class="btn btn-outline btn-sm" onclick="handleLogout()">Sign out</button>
     </div>
 </div>
+<div class="sidebar-overlay" id="sidebar-overlay" onclick="toggleMobileMenu()"></div>
 
 <div id="app">
     <aside id="sidebar" aria-label="Organization navigation">
@@ -29,12 +31,10 @@
             <span>Resource Hub</span>
         </div>
         <ul class="nav-links">
-            <li><span class="sidebar-label">Overview</span></li>
             <li><a href="#" data-section="dashboard" class="active" onclick="showSection('dashboard', this)">
                 <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
                 Dashboard
             </a></li>
-            <li><span class="sidebar-label">Resources</span></li>
             <li><a href="#" data-section="inventory" onclick="showSection('inventory', this)">
                 <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 7V4a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v3"/><rect x="2" y="9" width="20" height="12" rx="2"/><path d="M12 14v4"/></svg>
                 Inventory
@@ -47,17 +47,14 @@
                 <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
                 Other Needs
             </a></li>
-            <li><span class="sidebar-label">Incoming</span></li>
             <li><a href="#" data-section="donations" onclick="showSection('donations', this)">
                 <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 12v10H4V12"/><rect x="2" y="9" width="20" height="12" rx="2"/><path d="M12 9V2"/><path d="M8 5l4-4 4 4"/></svg>
                 Donations
             </a></li>
-            <li><span class="sidebar-label">Insights</span></li>
             <li><a href="#" data-section="analytics" onclick="showSection('analytics', this)">
                 <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg>
                 Analytics
             </a></li>
-            <li><span class="sidebar-label">Communication</span></li>
             <li><a href="#" data-section="chats" onclick="showSection('chats', this)">
                 <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
                 Chats
@@ -80,71 +77,115 @@
 
         <!-- Dashboard -->
         <div id="section-dashboard">
-            <div class="dashboard-hero">
-                <h2>Welcome back</h2>
-                <p id="dashboard-hero-org">Your organization overview</p>
+            <div style="margin-bottom:16px">
+                <h2 style="font-size:1rem;font-weight:600;color:var(--color-text)" id="dashboard-welcome">Overview</h2>
+                <p style="font-size:.8125rem;color:var(--color-text-muted);margin-top:2px" id="dashboard-hero-org">Organization summary</p>
             </div>
             <div class="metrics-row" id="dashboard-metrics">
-                <div class="metric-card"><div class="metric-label">Inventory Items</div><div class="metric-value skeleton" style="height:2rem;width:50px;display:inline-block"></div></div>
-                <div class="metric-card accent-critical"><div class="metric-label">Critical</div><div class="metric-value skeleton" style="height:2rem;width:50px;display:inline-block"></div></div>
-                <div class="metric-card accent-accent"><div class="metric-label">Surplus</div><div class="metric-value skeleton" style="height:2rem;width:50px;display:inline-block"></div></div>
-                <div class="metric-card accent-primary"><div class="metric-label">Open Needs</div><div class="metric-value skeleton" style="height:2rem;width:50px;display:inline-block"></div></div>
-                <div class="metric-card accent-high"><div class="metric-label">Pending Donations</div><div class="metric-value skeleton" style="height:2rem;width:50px;display:inline-block"></div></div>
+                <div class="metric-card">
+                    <div class="metric-label">Total Donors</div>
+                    <div class="metric-value skeleton" style="height:2rem;width:50px;display:inline-block"></div>
+                    <div class="metric-sub">Unique contributors</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">Open Needs</div>
+                    <div class="metric-value skeleton" style="height:2rem;width:50px;display:inline-block"></div>
+                    <div class="metric-sub">Needs to fulfill</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">Inventory</div>
+                    <div class="metric-value skeleton" style="height:2rem;width:50px;display:inline-block"></div>
+                    <div class="metric-sub">Items in stock</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">Pending Donations</div>
+                    <div class="metric-value skeleton" style="height:2rem;width:50px;display:inline-block"></div>
+                    <div class="metric-sub">Awaiting confirmation</div>
+                </div>
             </div>
             <div class="section">
-                <div class="section-header"><h2>Quick actions</h2></div>
+                <div class="section-header">
+                    <h2>Quick actions</h2>
+                </div>
                 <div style="display:flex;gap:.75rem;flex-wrap:wrap">
                     <button class="btn btn-primary btn-sm" onclick="showSection('inventory', document.querySelector('[data-section=inventory]')); openAddInventory();">Add inventory item</button>
                     <button class="btn btn-outline btn-sm" onclick="showSection('needs', document.querySelector('[data-section=needs]')); openAddNeed();">Post a need</button>
                     <a href="/" class="btn btn-ghost btn-sm">View public board</a>
                 </div>
             </div>
-            <div id="dashboard-expiring" class="section" style="display:none">
-                <div class="section-header"><h2>Expiring soon</h2></div>
-                <div id="dashboard-expiring-list"></div>
-            </div>
-            <div id="dashboard-actions" class="section">
+            <div class="section">
                 <div class="section-header">
-                    <h2>Action items</h2>
-                    <button class="btn btn-ghost btn-sm" onclick="loadActionItems()">Refresh</button>
+                    <h2>Donations overview</h2>
+                    <select id="dashboard-timeframe" class="form-control" style="max-width:160px" onchange="renderDashboard()">
+                        <option value="7">Last 7 days</option>
+                        <option value="30">Last 30 days</option>
+                    </select>
                 </div>
-                <div id="action-items-container" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:12px">
-                    <div class="skeleton skeleton-block" style="height:80px"></div>
-                    <div class="skeleton skeleton-block" style="height:80px"></div>
+                <div class="card" id="dashboard-trends-card">
+                    <div id="dashboard-trends-chart" class="trends-chart">
+                        <div class="chart-empty">No donation activity yet.</div>
+                    </div>
                 </div>
             </div>
-            <div id="dashboard-activity" class="section">
-                <div class="section-header">
-                    <h2>Recent activity</h2>
-                    <button class="btn btn-ghost btn-sm" onclick="loadRecentActivity()">Refresh</button>
+            <div class="dashboard-row">
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Recent bookings</h3>
+                        <button class="btn btn-ghost btn-sm" onclick="showSection('donations', document.querySelector('[data-section=donations]'))">View all</button>
+                    </div>
+                    <div class="card-body" id="recent-bookings">
+                        <div class="empty-state"><p>No recent bookings.</p></div>
+                    </div>
                 </div>
-                <div class="activity-list" id="activity-container">
-                    <div class="skeleton skeleton-block" style="height:50px;margin-bottom:.3rem"></div>
-                    <div class="skeleton skeleton-block" style="height:50px;margin-bottom:.3rem"></div>
-                    <div class="skeleton skeleton-block" style="height:50px"></div>
+                <div class="card" id="dashboard-activity">
+                    <div class="card-header">
+                        <h3>Recent activity</h3>
+                        <button class="btn btn-ghost btn-sm" onclick="loadRecentActivity()">Refresh</button>
+                    </div>
+                    <div class="card-body activity-list" id="activity-container">
+                        <div class="skeleton skeleton-block" style="height:50px;margin-bottom:.3rem"></div>
+                        <div class="skeleton skeleton-block" style="height:50px;margin-bottom:.3rem"></div>
+                        <div class="skeleton skeleton-block" style="height:50px"></div>
+                    </div>
+                </div>
+                <div class="card" id="dashboard-actions">
+                    <div class="card-header">
+                        <h3>Action items</h3>
+                        <button class="btn btn-ghost btn-sm" onclick="loadActionItems()">Refresh</button>
+                    </div>
+                    <div class="card-body" id="action-items-container" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px">
+                        <div class="skeleton skeleton-block" style="height:80px"></div>
+                        <div class="skeleton skeleton-block" style="height:80px"></div>
+                    </div>
                 </div>
             </div>
         </div>
 
         <!-- Inventory -->
         <div id="section-inventory" style="display:none">
+            <div id="inv-low-alert" class="alert alert-low" style="display:none;margin-bottom:1rem">
+                <span class="alert-icon" style="font-size:1rem;font-weight:700;color:var(--color-high)">!</span>
+                <div>
+                    <strong id="inv-low-count">0</strong> items running low:
+                    <span id="inv-low-list" class="text-sm"></span>
+                </div>
+            </div>
             <div id="expiring-alert" class="alert alert-warn" style="display:none;margin-bottom:1rem">
                 <strong>Expiring soon</strong>
                 <div id="expiring-alert-list" class="text-sm" style="margin-top:.4rem"></div>
             </div>
             <div class="section">
-                <div class="section-header" style="margin-bottom:8px">
-                    <div>
-                        <h2 style="font-size:20px;margin-bottom:4px">Inventory</h2>
-                        <p class="text-sm text-muted">Add, edit, and manage your organization's items.</p>
+                <div class="section-header inv-section-header">
+                    <h2 class="inv-org-title" id="inv-org-title"></h2>
+                    <div class="inv-toolbar-right">
+                        <div class="inv-search">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+                            <input type="search" id="inv-search" placeholder="Search items..." autocomplete="off" aria-label="Search inventory">
+                        </div>
+                        <button class="btn btn-primary btn-sm" onclick="openAddInventory()">+ Add item</button>
                     </div>
-                    <button class="btn btn-primary btn-sm" onclick="openAddInventory()">+ Add item</button>
                 </div>
-                <div class="inv-toolbar">
-                    <div class="inv-search">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-                        <input type="search" id="inv-search" placeholder="Search by item or category..." autocomplete="off" aria-label="Search inventory">
-                    </div>
+                <div class="inv-filters-row">
                     <div class="inv-dropdown-wrap">
                         <label class="inv-dropdown-label">Category</label>
                         <select id="inv-cat-select" class="form-control inv-dropdown" onchange="setInvCategory(this.value)">
@@ -160,24 +201,23 @@
                         <label class="inv-dropdown-label">Status</label>
                         <select id="inv-status-select" class="form-control inv-dropdown" onchange="setInvStatus(this.value)">
                             <option value="">All statuses</option>
-                            <option value="critical">Critical</option>
                             <option value="low">Low</option>
-                            <option value="available">Available</option>
-                            <option value="surplus">Surplus</option>
+                            <option value="available">In stock</option>
                         </select>
                     </div>
                     <span class="inv-results" id="inv-results-count">0 results</span>
                 </div>
                 <div class="table-wrap">
-                    <table class="data-table">
+                    <table class="data-table inv-table">
                         <thead>
                             <tr>
-                                <th>Status</th>
                                 <th>Item</th>
-                                <th>Category</th>
-                                <th>Progress</th>
+                                <th>Qty</th>
                                 <th>Unit</th>
-                                <th>Expiring</th>
+                                <th>Status</th>
+                                <th>Threshold</th>
+                                <th>Expiry</th>
+                                <th>Updated</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
@@ -191,7 +231,9 @@
         <div id="section-needs" style="display:none">
             <div class="section">
                 <div class="section-header">
-                    <h2>Your needs</h2>
+                    <div>
+                        <p class="text-sm text-muted" style="margin:0">Add or update your organization's needs.</p>
+                    </div>
                     <button class="btn btn-primary btn-sm" onclick="openAddNeed()">Post a need</button>
                 </div>
                 <div class="table-wrap">
@@ -217,10 +259,11 @@
         <div id="section-other-needs" style="display:none">
             <div class="section">
                 <div class="section-header">
-                    <h2>Needs from other organizations</h2>
+                    <div>
+                        <p class="text-sm text-muted" style="margin:0">See what other organizations in the network need. Reach out via Chats if you can help supply.</p>
+                    </div>
                     <button class="btn btn-ghost btn-sm" onclick="loadOtherNeeds()">Refresh</button>
                 </div>
-                <p class="text-sm text-muted" style="margin-bottom:1rem">See what other organizations in the network need. Reach out via Chats if you can help supply.</p>
                 <div class="other-needs-list" id="other-needs-list">
                     <div class="skeleton skeleton-block" style="height:80px;margin-bottom:.5rem"></div>
                     <div class="skeleton skeleton-block" style="height:80px;margin-bottom:.5rem"></div>
@@ -232,9 +275,10 @@
         <div id="section-donations" style="display:none">
             <div class="section">
                 <div class="section-header">
-                    <h2>Incoming donations</h2>
+                    <div>
+                        <p class="text-sm text-muted" style="margin:0">Donations matched to your organization. Confirm receipt when you receive them.</p>
+                    </div>
                 </div>
-                <p class="text-sm text-muted" style="margin-bottom:1rem">Donations matched to your organization. Confirm receipt when you receive them.</p>
                 <div class="table-wrap">
                     <table class="data-table">
                         <thead>
@@ -257,7 +301,11 @@
         <!-- Analytics -->
         <div id="section-analytics" style="display:none">
             <div class="section">
-                <div class="section-header"><h2>Inventory analytics</h2></div>
+                <div class="section-header">
+                    <div>
+                        <p class="text-sm text-muted" style="margin:0">Quick stats about your inventory distribution.</p>
+                    </div>
+                </div>
                 <div class="analytics-grid" id="analytics-grid">
                     <div class="analytics-card">
                         <h4>Status distribution</h4>
@@ -274,7 +322,11 @@
         <!-- Chats -->
         <div id="section-chats" style="display:none">
             <div class="section">
-                <div class="section-header"><h2>Messages</h2></div>
+                <div class="section-header">
+                    <div>
+                        <p class="text-sm text-muted" style="margin:0">Team chat and coordination.</p>
+                    </div>
+                </div>
                 <div class="chat-layout">
                     <div class="chat-threads">
                         <div class="chat-threads-header">Conversations</div>
@@ -318,9 +370,15 @@
                     <option value="other">Other</option>
                 </select>
             </div>
-            <div class="form-group">
-                <label class="form-label" for="inv-quantity">Quantity <span class="req">*</span></label>
-                <input type="number" id="inv-quantity" class="form-control" min="0" value="0">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:.85rem">
+                <div class="form-group">
+                    <label class="form-label" for="inv-quantity">Quantity <span class="req">*</span></label>
+                    <input type="number" id="inv-quantity" class="form-control" min="0" value="0">
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="inv-threshold">Threshold</label>
+                    <input type="number" id="inv-threshold" class="form-control" min="0" placeholder="Min before low">
+                </div>
             </div>
             <div class="form-group">
                 <label class="form-label" for="inv-unit">Unit</label>
@@ -410,6 +468,7 @@
     </div>
 </div>
 
+<script src="/socket.io/socket.io.js"></script>
 <script src="/js/api.js"></script>
 <script src="/js/utils.js"></script>
 <script>
@@ -428,7 +487,7 @@
 
         document.getElementById('nav-org-name').textContent = currentUser.orgName || '';
         document.getElementById('org-subtitle').textContent = currentUser.orgName || '';
-        document.getElementById('dashboard-hero-org').textContent = currentUser.orgName || 'Your organization overview';
+        document.getElementById('dashboard-hero-org').textContent = currentUser.orgName || 'Organization summary';
 
         const invSearch = document.getElementById('inv-search');
         if (invSearch) invSearch.addEventListener('input', () => { invSearchQuery = invSearch.value.trim().toLowerCase(); applyInventoryFilters(); });
@@ -462,50 +521,103 @@
     }
 
     function renderDashboard() {
-        const critical = inventoryData.filter(i => i.status === 'critical').length;
-        const surplus = inventoryData.filter(i => i.status === 'surplus').length;
+        const totalDonors = new Set(donationsData.map(d => (d.donor_email || d.donor_name || '').toString().trim().toLowerCase()).filter(Boolean)).size;
         const openNeeds = needsData.filter(n => !n.fulfilled).length;
+        const itemsInStock = inventoryData.reduce((sum, i) => sum + (Number(i.quantity) || 0), 0);
         const pendingDonations = donationsData.filter(d => d.status === 'matched' || d.status === 'pending').length;
 
         document.getElementById('dashboard-metrics').innerHTML = `
             <div class="metric-card">
-                <div class="metric-label">Inventory Items</div>
-                <div class="metric-value">${inventoryData.length}</div>
-                <div class="metric-sub">total</div>
+                <div class="metric-label">Total Donors</div>
+                <div class="metric-value">${totalDonors}</div>
+                <div class="metric-sub">Unique contributors</div>
             </div>
-            <div class="metric-card accent-critical">
-                <div class="metric-label">Critical</div>
-                <div class="metric-value">${critical}</div>
-                <div class="metric-sub">need attention</div>
-            </div>
-            <div class="metric-card accent-accent">
-                <div class="metric-label">Surplus</div>
-                <div class="metric-value">${surplus}</div>
-                <div class="metric-sub">can share</div>
-            </div>
-            <div class="metric-card accent-primary">
+            <div class="metric-card">
                 <div class="metric-label">Open Needs</div>
                 <div class="metric-value">${openNeeds}</div>
-                <div class="metric-sub">unfulfilled</div>
+                <div class="metric-sub">Needs to fulfill</div>
             </div>
-            <div class="metric-card accent-high">
-                <div class="metric-label">Pending</div>
+            <div class="metric-card">
+                <div class="metric-label">Inventory</div>
+                <div class="metric-value">${itemsInStock}</div>
+                <div class="metric-sub">Items in stock</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-label">Pending Donations</div>
                 <div class="metric-value">${pendingDonations}</div>
-                <div class="metric-sub">donations</div>
-            </div>
-            <div class="metric-card" style="border-left: 3px solid #e67e22;">
-                <div class="metric-label">Expiring Soon</div>
-                <div class="metric-value" style="color: #e67e22;">${expiringData.length}</div>
-                <div class="metric-sub">next 30 days</div>
+                <div class="metric-sub">Awaiting receipt</div>
             </div>`;
 
-        loadExpiring().then(() => {
-            const expiringEl = document.getElementById('dashboard-expiring');
-            const listEl = document.getElementById('dashboard-expiring-list');
-            expiringEl.style.display = listEl && listEl.innerHTML ? 'block' : 'none';
-        });
+        renderTrendChart();
+        renderRecentBookings();
         loadActionItems();
         loadRecentActivity();
+    }
+
+    function renderTrendChart() {
+        const chartEl = document.getElementById('dashboard-trends-chart');
+        const timeframeEl = document.getElementById('dashboard-timeframe');
+        if (!chartEl) return;
+
+        const days = parseInt(timeframeEl?.value || '7', 10) || 7;
+        const now = new Date();
+        const buckets = [];
+        for (let i = days - 1; i >= 0; i--) {
+            const d = new Date(now);
+            d.setHours(0, 0, 0, 0);
+            d.setDate(now.getDate() - i);
+            buckets.push({
+                key: d.toISOString().slice(0, 10),
+                label: d.toLocaleDateString(undefined, { month: 'short', day: 'numeric' }),
+                count: 0,
+                date: d
+            });
+        }
+        const counts = donationsData.reduce((acc, d) => {
+            const dt = new Date(d.created_at);
+            if (Number.isNaN(dt.getTime())) return acc;
+            const dateKey = dt.toISOString().slice(0, 10);
+            acc[dateKey] = (acc[dateKey] || 0) + 1;
+            return acc;
+        }, {});
+        buckets.forEach(b => b.count = counts[b.key] || 0);
+        const max = Math.max(...buckets.map(b => b.count), 1);
+
+        if (!donationsData.length) {
+            chartEl.innerHTML = '<div class="chart-empty">No donation activity yet.</div>';
+            return;
+        }
+
+        chartEl.innerHTML = buckets.map(b => `
+            <div class="trend-bar" title="${b.label}: ${b.count}">
+                <div class="trend-bar-fill" style="height:${(b.count / max) * 100}%"></div>
+                <span class="trend-bar-label">${b.label}</span>
+            </div>
+        `).join('');
+    }
+
+    function renderRecentBookings() {
+        const container = document.getElementById('recent-bookings');
+        if (!container) return;
+
+        if (!donationsData.length) {
+            container.innerHTML = '<div class="empty-state"><p>No recent bookings.</p></div>';
+            return;
+        }
+
+        const items = donationsData.slice(0, 5).map(d => `
+            <div class="booking-item">
+                <div class="booking-item-main">
+                    <div class="booking-item-title">${escHtml(d.item_name)} (${escHtml(String(d.quantity))} ${escHtml(d.unit)})</div>
+                    <div class="booking-item-meta">${escHtml(d.donor_name || d.donor_email || 'Unknown donor')}</div>
+                </div>
+                <div class="booking-item-right">
+                    <span class="badge badge-${escHtml(d.status)}">${escHtml(d.status)}</span>
+                    <div class="text-xs text-muted">${timeAgo(d.created_at)}</div>
+                </div>
+            </div>
+        `);
+        container.innerHTML = items.join('');
     }
 
     async function loadExpiring() {
@@ -524,7 +636,7 @@
             listEl.innerHTML = expiringData.length > 5 ? text + ` (and ${expiringData.length - 5} more)` : text;
             alertEl.style.display = 'block';
             if (dashList) dashList.innerHTML = expiringData.slice(0, 5).map(i => `
-                <div style="display:flex;align-items:center;gap:.75rem;padding:.5rem .85rem;background:#fef3c7;border:1px solid #fcd34d;border-radius:8px;margin-bottom:.4rem">
+                <div style="display:flex;align-items:center;gap:.75rem;padding:.5rem .85rem;background:var(--color-bg-secondary);border:1px solid var(--color-border);border-radius:6px;margin-bottom:.4rem">
                     <span class="text-sm"><strong>${escHtml(i.quantity)} ${escHtml(i.unit)}</strong> of ${escHtml(i.item_name)}</span>
                     <span class="text-xs text-muted">expires ${formatDate(i.expiry_date)}</span>
                 </div>`).join('');
@@ -538,11 +650,28 @@
         try {
             const res = await staff.inventory();
             inventoryData = res.data || [];
+            const orgTitle = document.getElementById('inv-org-title');
+            if (orgTitle) orgTitle.textContent = 'Inventory';
             renderInventory();
-            renderInventoryMetrics();
+            renderLowAlert();
         } catch (err) {
-            document.getElementById('inventory-tbody').innerHTML = `<tr><td colspan="6"><div class="inline-notice error">${escHtml(err.message)}</div></td></tr>`;
+            document.getElementById('inventory-tbody').innerHTML = `<tr><td colspan="8"><div class="inline-notice error">${escHtml(err.message)}</div></td></tr>`;
         }
+    }
+
+    function renderLowAlert() {
+        const lowItems = inventoryData.filter(i => i.status === 'low');
+        const alertEl = document.getElementById('inv-low-alert');
+        const countEl = document.getElementById('inv-low-count');
+        const listEl = document.getElementById('inv-low-list');
+        if (!lowItems.length) {
+            alertEl.style.display = 'none';
+            return;
+        }
+        countEl.textContent = lowItems.length;
+        const UNIT_DISPLAY = { items: 'items', boxes: 'boxes', kg: 'kg', packs: 'packs' };
+        listEl.textContent = lowItems.map(i => `${i.item_name} (${UNIT_DISPLAY[i.unit] || i.unit})`).join(', ');
+        alertEl.style.display = 'flex';
     }
 
     let invCategoryFilter = '';
@@ -575,7 +704,10 @@
                 const allowed = CAT_FILTER_MAP[invCategoryFilter] || [invCategoryFilter];
                 if (!allowed.includes(item.category)) return false;
             }
-            if (invStatusFilter && item.status !== invStatusFilter) return false;
+            if (invStatusFilter) {
+                if (invStatusFilter === 'low' && item.status !== 'low') return false;
+                if (invStatusFilter === 'available' && item.status !== 'available' && item.status !== 'surplus') return false;
+            }
             if (invSearchQuery) {
                 const match = (item.item_name || '').toLowerCase().includes(invSearchQuery) ||
                     (item.category || '').toLowerCase().includes(invSearchQuery);
@@ -585,17 +717,6 @@
         });
     }
 
-    function renderInventoryMetrics() {
-        const critical = inventoryData.filter(i => i.status === 'critical').length;
-        const surplus = inventoryData.filter(i => i.status === 'surplus').length;
-        const el = document.getElementById('inventory-metrics');
-        if (!el) return;
-        el.innerHTML = `
-            <div class="metric-card"><div class="metric-label">Total Items</div><div class="metric-value">${inventoryData.length}</div></div>
-            <div class="metric-card accent-critical"><div class="metric-label">Critical</div><div class="metric-value">${critical}</div></div>
-            <div class="metric-card accent-accent"><div class="metric-label">Surplus</div><div class="metric-value">${surplus}</div></div>`;
-    }
-
     function renderInventory() {
         const filtered = getFilteredInventory();
         const tbody = document.getElementById('inventory-tbody');
@@ -603,29 +724,25 @@
         if (countEl) countEl.textContent = filtered.length + ' result' + (filtered.length !== 1 ? 's' : '');
 
         if (!filtered.length) {
-            tbody.innerHTML = `<tr><td colspan="8"><div class="empty-state"><span class="empty-icon">&#9723;</span><h3>No inventory items</h3><p>${inventoryData.length ? 'No items match your filters.' : 'Add your first item to get started.'}</p></div></td></tr>`;
+            tbody.innerHTML = `<tr><td colspan="8"><div class="empty-state"><h3>No inventory items</h3><p>${inventoryData.length ? 'No items match your filters.' : 'Add your first item to get started.'}</p></div></td></tr>`;
             return;
         }
-        const CAT_LABELS = { housing: 'Housing', clothing: 'Clothing', bedding: 'Bedding', shelter: 'Shelter', food: 'Food', hygiene: 'Hygiene', goods: 'Goods', baby_supplies: 'Baby supplies', other: 'Other' };
         const UNIT_DISPLAY = { items: 'items', boxes: 'boxes', kg: 'kg', packs: 'packs' };
-        const catBadge = (c) => ['housing','clothing','bedding','shelter'].includes(c) ? 'housing' : c === 'food' ? 'food' : c === 'hygiene' ? 'hygiene' : ['goods','baby_supplies'].includes(c) ? 'goods' : 'goods';
-        tbody.innerHTML = filtered.map(item => {
+        const statusLabel = s => s === 'low' ? 'Low' : 'In stock';
+        const statusBadgeClass = s => s === 'low' ? 'badge-status-low' : 'badge-status-available';
+        tbody.innerHTML = filtered.map((item, idx) => {
             const unit = UNIT_DISPLAY[item.unit] || item.unit || 'items';
-            const target = item.target_quantity != null ? Number(item.target_quantity) : 0;
+            const threshold = item.target_quantity != null ? Number(item.target_quantity) : 0;
             const current = Number(item.quantity) || 0;
-            const pct = target > 0 ? Math.min(100, Math.round((current / target) * 100)) : 100;
-            const progressClass = current >= target && target > 0 ? 'progress-surplus' : pct < 25 ? 'progress-critical' : pct < 50 ? 'progress-low' : 'progress-ok';
-            const progressLabel = target > 0 ? `${current} / ${target}` : `${current}`;
-            const progressHtml = target > 0
-                ? `<div class="inv-progress-cell"><span class="inv-progress-label">${progressLabel}</span><div class="inv-progress-bar"><div class="inv-progress-fill ${progressClass}" style="width:${pct}%"></div></div><span class="inv-progress-pct">${pct}%</span></div>`
-                : `<span class="inv-progress-simple">${current}</span>`;
-            return `<tr>
-                <td><span class="inv-status-dot ${escHtml(item.status)}"></span><span class="badge badge-${escHtml(item.status)}">${escHtml(item.status)}</span></td>
+            const rowClass = idx % 2 === 1 ? 'inv-row-alt' : '';
+            return `<tr class="${rowClass}">
                 <td><strong>${escHtml(item.item_name)}</strong></td>
-                <td><span class="badge badge-${catBadge(item.category)}">${escHtml(CAT_LABELS[item.category] || item.category)}</span></td>
-                <td>${progressHtml}</td>
+                <td><strong>${escHtml(String(current))}</strong></td>
                 <td>${escHtml(unit)}</td>
+                <td><span class="badge ${statusBadgeClass(item.status)}">${escHtml(statusLabel(item.status))}</span></td>
+                <td>${threshold}</td>
                 <td>${item.expiry_date ? formatDate(item.expiry_date) : '<span class="text-muted">—</span>'}</td>
+                <td>${item.updated_at ? formatDate(item.updated_at) : '<span class="text-muted">—</span>'}</td>
                 <td>
                     <div class="gap-row inv-actions-row">
                         <div class="inv-qty-controls">
@@ -650,7 +767,7 @@
                 item_name: item.item_name,
                 category: item.category,
                 quantity: n,
-                target_quantity: null,
+                target_quantity: item.target_quantity ?? 0,
                 unit: item.unit,
                 expiry_date: item.expiry_date || null,
                 notes: null
@@ -669,6 +786,7 @@
         document.getElementById('inv-item-name').value = '';
         document.getElementById('inv-category').value = '';
         document.getElementById('inv-quantity').value = 0;
+        document.getElementById('inv-threshold').value = '';
         document.getElementById('inv-unit').value = 'items';
         document.getElementById('inv-expiry').value = '';
         document.getElementById('inv-edit-id').value = '';
@@ -683,6 +801,7 @@
         document.getElementById('inv-item-name').value = item.item_name;
         document.getElementById('inv-category').value = item.category;
         document.getElementById('inv-quantity').value = item.quantity;
+        document.getElementById('inv-threshold').value = item.target_quantity != null ? item.target_quantity : '';
         document.getElementById('inv-unit').value = INV_UNITS.includes(item.unit) ? item.unit : 'items';
         document.getElementById('inv-expiry').value = item.expiry_date ? item.expiry_date.substring(0, 10) : '';
         document.getElementById('inv-edit-id').value = item.id;
@@ -696,11 +815,12 @@
         const category = document.getElementById('inv-category').value;
         if (!itemName || !category) { toast('Item name and category are required.', 'error'); return; }
 
+        const thresholdVal = document.getElementById('inv-threshold').value.trim();
         const data = {
             item_name: itemName,
             category: category,
             quantity: parseInt(document.getElementById('inv-quantity').value) || 0,
-            target_quantity: null,
+            target_quantity: thresholdVal ? parseInt(thresholdVal, 10) : 0,
             unit: document.getElementById('inv-unit').value,
             expiry_date: document.getElementById('inv-expiry').value || null,
             notes: null
@@ -748,7 +868,7 @@
     function renderNeeds() {
         const tbody = document.getElementById('needs-tbody');
         if (!needsData.length) {
-            tbody.innerHTML = `<tr><td colspan="7"><div class="empty-state"><span class="empty-icon">&#9723;</span><h3>No active needs posted</h3><p>Post a need to let donors and the network know what your organization requires.</p></div></td></tr>`;
+            tbody.innerHTML = `<tr><td colspan="7"><div class="empty-state"><h3>No active needs posted</h3><p>Post a need to let donors and the network know what your organization requires.</p></div></td></tr>`;
             return;
         }
         tbody.innerHTML = needsData.map(n => `
@@ -899,7 +1019,7 @@
     function renderDonations(donations) {
         const tbody = document.getElementById('donations-tbody');
         if (!donations.length) {
-            tbody.innerHTML = `<tr><td colspan="7"><div class="empty-state"><span class="empty-icon">&#9723;</span><h3>No incoming donations</h3><p>Donations matched to your organization will appear here.</p></div></td></tr>`;
+            tbody.innerHTML = `<tr><td colspan="7"><div class="empty-state"><h3>No incoming donations</h3><p>Donations matched to your organization will appear here.</p></div></td></tr>`;
             return;
         }
         tbody.innerHTML = donations.map(d => `
@@ -1118,7 +1238,7 @@
         }
 
         if (cards.length === 0) {
-            container.innerHTML = '<div class="activity-empty" style="grid-column:1/-1;padding:1.5rem">No action items at the moment. Great work!</div>';
+            container.innerHTML = '<div class="activity-empty" style="grid-column:1/-1;padding:1.5rem">No action items at the moment.</div>';
         } else {
             container.innerHTML = cards.join('');
         }
@@ -1213,12 +1333,32 @@
         modal.addEventListener('click', e => { if (e.target === modal) closeModal(modal.id); });
     });
 
+    function toggleMobileMenu() {
+        document.getElementById('sidebar').classList.toggle('open');
+        document.getElementById('sidebar-overlay').classList.toggle('open');
+    }
+
     async function handleLogout() {
         try { await auth.logout(); } catch {}
         window.location.href = '/login';
     }
 
     init();
+
+    if (typeof io !== 'undefined') {
+        const socket = io();
+        socket.on('donation:new', function (data) {
+            toast('New donation: ' + (data.item_name || 'Unknown item'), 'info');
+            loadDonations();
+        });
+        socket.on('need:new', function (data) {
+            if (data.org_name) toast(data.org_name + ' posted a new need: ' + (data.item_name || ''), 'info');
+        });
+        socket.on('need:fulfilled', function () {
+            loadNeeds();
+            renderDashboard();
+        });
+    }
 </script>
 
 </body>
