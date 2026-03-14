@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Coordinator Dashboard — CommonGround</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
@@ -58,10 +61,10 @@
 
             <div class="metrics-row" id="overview-metrics">
                 <div class="metric-card"><div class="metric-label">Organizations</div><div class="skeleton" style="height:2rem;width:50px;margin:.2rem 0"></div></div>
-                <div class="metric-card accent-high"><div class="metric-label">Active Needs</div><div class="skeleton" style="height:2rem;width:50px;margin:.2rem 0"></div></div>
-                <div class="metric-card accent-critical"><div class="metric-label">Critical</div><div class="skeleton" style="height:2rem;width:50px;margin:.2rem 0"></div></div>
-                <div class="metric-card accent-primary"><div class="metric-label">Pending Donations</div><div class="skeleton" style="height:2rem;width:50px;margin:.2rem 0"></div></div>
-                <div class="metric-card" style="border-left:3px solid #e67e22"><div class="metric-label">Expiring Soon</div><div class="skeleton" style="height:2rem;width:50px;margin:.2rem 0"></div></div>
+                <div class="metric-card"><div class="metric-label">Active Needs</div><div class="skeleton" style="height:2rem;width:50px;margin:.2rem 0"></div></div>
+                <div class="metric-card"><div class="metric-label">Critical</div><div class="skeleton" style="height:2rem;width:50px;margin:.2rem 0"></div></div>
+                <div class="metric-card"><div class="metric-label">Pending Donations</div><div class="skeleton" style="height:2rem;width:50px;margin:.2rem 0"></div></div>
+                <div class="metric-card"><div class="metric-label">Expiring Soon</div><div class="skeleton" style="height:2rem;width:50px;margin:.2rem 0"></div></div>
             </div>
 
             <div class="section">
@@ -92,6 +95,22 @@
                 </div>
                 <div id="expiring-list">
                     <div class="skeleton skeleton-block" style="height:50px;margin-bottom:.4rem"></div>
+                </div>
+            </div>
+
+            <div class="section">
+                <div class="section-header">
+                    <h2>AI Network Intelligence</h2>
+                    <a href="#" onclick="showSection('insights', document.querySelector('[data-section=insights]'))" class="btn btn-ghost btn-sm">Full analysis</a>
+                </div>
+                <div id="overview-insights-card" class="insights-panel">
+                    <div class="insights-header">
+                        <h3>Redistribution Suggestions</h3>
+                        <span class="text-xs text-muted">Auto-analyzed</span>
+                    </div>
+                    <div class="insights-body" id="overview-insights-body">
+                        <div class="skeleton skeleton-block" style="height:60px;margin-bottom:.5rem"></div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -346,6 +365,7 @@
     </div>
 </div>
 
+<script src="/socket.io/socket.io.js"></script>
 <script src="/js/api.js"></script>
 <script src="/js/utils.js"></script>
 <script>
@@ -366,6 +386,31 @@
         const user = await requireAuth('coordinator');
         if (!user) return;
         await loadOverview();
+        loadOverviewInsights();
+    }
+
+    async function loadOverviewInsights() {
+        const body = document.getElementById('overview-insights-body');
+        try {
+            const res = await aiApi.networkInsights();
+            const d = res.data;
+            let html = '';
+            if (d.alerts && d.alerts.length) {
+                html += d.alerts.map(a => '<div class="alert-item">' + escHtml(a) + '</div>').join('');
+            }
+            if (d.redistribution_opportunities && d.redistribution_opportunities.length) {
+                html += '<div style="margin-top:.75rem"><h4 style="font-size:.75rem;font-weight:600;text-transform:uppercase;letter-spacing:.04em;color:var(--color-text-muted);margin-bottom:.5rem">Suggested Transfers</h4>';
+                html += d.redistribution_opportunities.map(r =>
+                    '<div class="insight-item"><strong>' + escHtml(r.from_org) + '</strong> has surplus &rarr; <strong>' + escHtml(r.to_org) + '</strong> needs <strong>' + escHtml(r.item) + '</strong>' +
+                    (r.note ? '<div class="text-xs text-muted">' + escHtml(r.note) + '</div>' : '') + '</div>'
+                ).join('');
+                html += '</div>';
+            }
+            if (!html) html = '<p class="text-muted" style="font-size:.9rem">Network status is stable. No immediate actions needed.</p>';
+            body.innerHTML = html;
+        } catch {
+            body.innerHTML = '<p class="text-muted" style="font-size:.9rem">Could not load insights. Try the full analysis page.</p>';
+        }
     }
 
     function showSection(name, linkEl) {
@@ -404,25 +449,25 @@
                 <div class="metric-value">${data.total_orgs}</div>
                 <div class="metric-sub">GMHSC Network</div>
             </div>
-            <div class="metric-card accent-high">
+            <div class="metric-card">
                 <div class="metric-label">Active Needs</div>
                 <div class="metric-value">${data.active_needs}</div>
-                <div class="metric-sub">unfulfilled</div>
+                <div class="metric-sub">Unfulfilled</div>
             </div>
-            <div class="metric-card accent-critical">
+            <div class="metric-card">
                 <div class="metric-label">Critical</div>
                 <div class="metric-value">${data.critical_needs}</div>
-                <div class="metric-sub">require action</div>
+                <div class="metric-sub">Require action</div>
             </div>
-            <div class="metric-card accent-primary">
+            <div class="metric-card">
                 <div class="metric-label">Pending</div>
                 <div class="metric-value">${d.pending}</div>
-                <div class="metric-sub">donations unmatched</div>
+                <div class="metric-sub">Donations unmatched</div>
             </div>
-            <div class="metric-card" style="border-left:3px solid #e67e22">
+            <div class="metric-card">
                 <div class="metric-label">Expiring Soon</div>
                 <div class="metric-value">${data.expiring_soon || 0}</div>
-                <div class="metric-sub">within 30 days</div>
+                <div class="metric-sub">Within 30 days</div>
             </div>`;
 
         document.getElementById('pipeline-stages').innerHTML = `
@@ -442,12 +487,12 @@
                 return;
             }
             container.innerHTML = needs.slice(0, 8).map(n => `
-                <div style="display:flex;align-items:center;gap:.75rem;padding:.6rem .85rem;background:var(--color-critical-bg);border:1px solid #f5c0bd;border-radius:var(--radius-sm);margin-bottom:.4rem">
+                <div style="display:flex;align-items:center;gap:.75rem;padding:.5rem .75rem;background:var(--color-surface);border:1px solid var(--color-border-lt);border-left:3px solid var(--color-critical);border-radius:var(--radius-sm);margin-bottom:.35rem">
                     <span class="badge badge-critical">Critical</span>
                     <div style="flex:1">
-                        <strong style="font-size:.9rem">${escHtml(n.org_name)}</strong>
+                        <strong style="font-size:.8125rem">${escHtml(n.org_name)}</strong>
                         <span class="text-sm text-muted"> needs ${escHtml(String(n.quantity_needed))} ${escHtml(n.unit)} of </span>
-                        <strong style="font-size:.9rem">${escHtml(n.item_name)}</strong>
+                        <strong style="font-size:.8125rem">${escHtml(n.item_name)}</strong>
                     </div>
                     <span class="text-xs text-muted">${timeAgo(n.created_at)}</span>
                 </div>`).join('');
@@ -464,7 +509,7 @@
                 return;
             }
             container.innerHTML = items.slice(0, 10).map(i => `
-                <div style="display:flex;align-items:center;gap:.75rem;padding:.5rem .85rem;background:#fff8e6;border:1px solid #f0d78c;border-radius:var(--radius-sm);margin-bottom:.4rem">
+                <div style="display:flex;align-items:center;gap:.75rem;padding:.5rem .75rem;background:var(--color-surface);border:1px solid var(--color-border-lt);border-radius:var(--radius-sm);margin-bottom:.35rem">
                     <span class="text-sm"><strong>${escHtml(i.org_name)}</strong>: ${escHtml(i.quantity)} ${escHtml(i.unit)} of ${escHtml(i.item_name)}</span>
                     <span class="text-xs text-muted">expires ${formatDate(i.expiry_date)}</span>
                 </div>`).join('');
@@ -831,6 +876,21 @@
     }
 
     init();
+
+    if (typeof io !== 'undefined') {
+        const socket = io();
+        socket.on('donation:new', function (data) {
+            toast('New donation received: ' + (data.item_name || 'Unknown'), 'info');
+            loadOverview();
+        });
+        socket.on('need:new', function (data) {
+            toast((data.org_name || 'An organization') + ' posted a new need', 'info');
+            loadOverview();
+        });
+        socket.on('need:fulfilled', function () {
+            loadOverview();
+        });
+    }
 </script>
 
 </body>

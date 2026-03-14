@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Give — CommonGround</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/css/style.css">
     <script src="/js/i18n.js"></script>
     <style>
@@ -193,7 +196,7 @@
 
                 <!-- Donate money -->
                 <a href="#" class="give-card" id="money-card" onclick="handleMoney(event)">
-                    <div class="give-card-icon">💳</div>
+                    <div class="give-card-icon" style="font-size:1.5rem;color:var(--color-text-muted)">$</div>
                     <div class="give-card-title">Give Money</div>
                     <div class="give-card-desc">Make a financial contribution. Funds go directly to organizations to purchase what they need most.</div>
                     <span class="give-card-cta">Donate funds &rarr;</span>
@@ -201,7 +204,9 @@
 
                 <!-- Donate resources -->
                 <a href="/donate" class="give-card primary" id="resources-card">
-                    <div class="give-card-icon">📦</div>
+                    <div class="give-card-icon" style="font-size:1.25rem;color:var(--color-text-muted)">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 7V4a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v3"/><rect x="2" y="9" width="20" height="12" rx="2"/><path d="M12 14v4"/></svg>
+                    </div>
                     <div class="give-card-title">Give Resources</div>
                     <div class="give-card-desc">Donate clothing, food, hygiene products, bedding, or other essential items directly to a shelter.</div>
                     <span class="give-card-cta">Donate items &rarr;</span>
@@ -216,15 +221,15 @@
 <div id="money-modal" style="display:none;position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.55);backdrop-filter:blur(4px);align-items:center;justify-content:center;padding:1rem">
     <div style="background:#fff;border-radius:16px;max-width:440px;width:100%;padding:2rem;box-shadow:0 8px 40px rgba(0,0,0,.2);position:relative">
         <button onclick="closeMoney()" style="position:absolute;top:.75rem;right:.85rem;background:none;border:none;font-size:1.4rem;cursor:pointer;color:var(--color-text-muted)">&times;</button>
-        <div style="font-size:2rem;margin-bottom:.75rem">💳</div>
+        <div style="font-size:1.5rem;margin-bottom:.75rem;color:var(--color-text-muted);font-weight:700">$</div>
         <h2 style="font-size:1.3rem;font-weight:700;margin-bottom:.5rem">Financial Donations</h2>
         <p style="font-size:.92rem;color:var(--color-text-muted);line-height:1.6;margin-bottom:1.25rem">
             To make a monetary donation to Greater Moncton's homeless-serving organizations, please contact the organization directly using the information below.
         </p>
         <div style="background:var(--color-bg);border-radius:10px;padding:1rem 1.1rem;margin-bottom:1.25rem">
             <div style="font-weight:600;margin-bottom:.3rem">GMHSC Network Coordinator</div>
-            <div style="font-size:.88rem;color:var(--color-text-muted)">📧 info@gmhsc.ca</div>
-            <div style="font-size:.88rem;color:var(--color-text-muted)">📞 506-877-3000</div>
+            <div style="font-size:.88rem;color:var(--color-text-muted)">Email: info@gmhsc.ca</div>
+            <div style="font-size:.88rem;color:var(--color-text-muted)">Phone: 506-877-3000</div>
             <div style="font-size:.88rem;color:var(--color-text-muted);margin-top:.4rem">95 Foundry St, Moncton, NB E1C 5H7</div>
         </div>
         <p style="font-size:.82rem;color:var(--color-text-muted);line-height:1.55">
