@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CommonGround Admin — Communications</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <div class="admin-wrap">
+    <aside class="admin-sidebar">
+      <div class="logo"><span class="logo-icon"></span><span>CommonGround</span></div>
+      <nav>
+        <a href="/admin/dashboard">📊 Overview</a>
+        <a href="/admin/resources">📦 Resource Management</a>
+        <a href="/admin/communications" class="active">💬 Communications</a>
+        <a href="/admin/users">👥 User Management</a>
+        <a href="/admin/requests">📋 Case Management</a>
+        <a href="/admin/reports">📈 Reports</a>
+        <a href="/admin/settings">⚙️ Settings</a>
+      </nav>
+    </aside>
+
+    <main class="admin-main">
+      <header class="admin-header">
+        <h1 class="page-title">Communications</h1>
+      </header>
+
+      <div class="admin-content">
+        <div class="table-card">
+          <h3>Messages</h3>
+          <table class="admin-table">
+            <thead>
+              <tr><th>User</th><th>Content</th><th>From</th><th>Date</th></tr>
+            </thead>
+            <tbody id="msg-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </main>
+  </div>
+  <script src="../js/api.js"></script>
+  <script>
+    async function load() {
+      try {
+        const { data } = await admin.messages();
+        const tbody = document.getElementById('msg-tbody');
+        tbody.innerHTML = (data || []).map(m => `
+          <tr>
+            <td>${m.first_name || ''} ${m.last_name || ''}</td>
+            <td>${(m.content || '').slice(0, 60)}</td>
+            <td>${m.sender_type || ''}</td>
+            <td>${m.created_at ? new Date(m.created_at).toLocaleString() : ''}</td>
+          </tr>
+        `).join('') || '<tr><td colspan="4">No messages</td></tr>';
+      } catch (e) {
+        location.href = '/auth';
+      }
+    }
+    load();
+  </script>
+</body>
+</html>

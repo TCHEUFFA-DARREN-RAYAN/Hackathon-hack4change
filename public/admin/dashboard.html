@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CommonGround Admin — Dashboard</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <div class="admin-wrap">
+    <aside class="admin-sidebar">
+      <div class="logo"><span class="logo-icon"></span><span>CommonGround</span></div>
+      <nav>
+        <a href="/admin/dashboard" class="active">📊 Overview</a>
+        <a href="/admin/resources">📦 Resource Management</a>
+        <a href="/admin/communications">💬 Communications</a>
+        <a href="/admin/users">👥 User Management</a>
+        <a href="/admin/requests">📋 Case Management</a>
+        <a href="/admin/reports">📈 Reports</a>
+        <a href="/admin/settings">⚙️ Settings</a>
+      </nav>
+    </aside>
+
+    <main class="admin-main">
+      <header class="admin-header">
+        <h1 class="page-title">Admin Dashboard <a href="/" style="font-size:0.6em;font-weight:400;color:var(--text-muted);text-decoration:none;margin-left:8px;">· Preview</a></h1>
+        <div class="header-actions">
+          <span id="admin-name" style="font-weight:500;">Admin</span>
+          <a href="/auth" style="font-size:0.75rem;color:var(--primary);">Sign out</a>
+        </div>
+      </header>
+
+      <div class="admin-content">
+        <div class="metric-cards">
+          <div class="metric-card primary">
+            <div class="metric-value" id="stat-resources">0</div>
+            <div class="metric-label">Active Resources</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-value" id="stat-resource-cap">0</div>
+            <div class="metric-label">Available Beds</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-value" id="stat-users">0</div>
+            <div class="metric-label">Users</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-value" id="stat-pending">0</div>
+            <div class="metric-label">Pending Aid Requests</div>
+          </div>
+        </div>
+
+        <div class="admin-grid-2" style="grid-template-columns:1fr;">
+          <div class="table-card">
+            <h3>Recent aid requests</h3>
+            <table class="admin-table">
+              <thead>
+                <tr><th>ID</th><th>Applicant</th><th>Type</th><th>Status</th><th>Date</th></tr>
+              </thead>
+              <tbody id="requests-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+  <script src="../js/api.js"></script>
+  <script>
+    async function load() {
+      try {
+        const { data } = await auth.me();
+        document.getElementById('admin-name').textContent = data.name || 'Admin';
+      } catch {
+        location.href = '/auth';
+        return;
+      }
+      try {
+        const { data } = await admin.dashboard();
+        const s = data.stats || {};
+        document.getElementById('stat-resources').textContent = s.resources || 0;
+        document.getElementById('stat-resource-cap').textContent = s.resources || 0;
+        document.getElementById('stat-users').textContent = s.users || 0;
+        document.getElementById('stat-pending').textContent = s.pending || 0;
+        const tbody = document.getElementById('requests-tbody');
+        const rows = (data.recentRequests || []).map(r => `
+          <tr>
+            <td>${(r.id || '').slice(0,8)}</td>
+            <td>${r.first_name || ''} ${r.last_name || ''}</td>
+            <td>${r.type || ''}</td>
+            <td><span class="status-pill ${r.status === 'fulfilled' ? 'resolved' : r.status === 'reviewing' ? 'reviewing' : 'pending'}">${r.status || ''}</span></td>
+            <td>${r.created_at ? new Date(r.created_at).toLocaleDateString() : ''}</td>
+          </tr>
+        `).join('');
+        tbody.innerHTML = rows || '<tr><td colspan="5">No requests</td></tr>';
+      } catch (e) {
+        console.error(e);
+        location.href = '/auth';
+      }
+    }
+    load();
+  </script>
+</body>
+</html>

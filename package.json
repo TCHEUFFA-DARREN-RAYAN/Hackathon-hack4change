@@ -1,0 +1,37 @@
+{
+  "name": "commonground-homeless-hackaton",
+  "version": "1.0.0",
+  "description": "CommonGround - Community app for homelessness support",
+  "main": "backend/server.js",
+  "scripts": {
+    "dev": "nodemon --delay 500ms backend/server.js",
+    "start": "node backend/server.js",
+    "migrate": "node scripts/migrate.js"
+  },
+  "keywords": [
+    "homelessness",
+    "community",
+    "hackathon",
+    "commonground"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.27.3",
+    "bcryptjs": "^2.4.3",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "express": "^4.21.2",
+    "express-rate-limit": "^7.1.5",
+    "express-session": "^1.18.2",
+    "express-validator": "^7.0.1",
+    "helmet": "^7.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "mysql2": "^3.15.3",
+    "uuid": "^13.0.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.11"
+  }
+}

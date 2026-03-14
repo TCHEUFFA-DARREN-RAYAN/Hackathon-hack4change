@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(tree -L 4 /c/Users/DARREN/source/repos/Hackaton/homeless-hackaton --ignore node_modules)",
+      "Bash(find /c/Users/DARREN/source/repos/Hackaton/homeless-hackaton -not -path */node_modules/* -type f)"
+    ]
+  }
+}

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CommonGround — Profile</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <div class="user-app">
+    <div class="back-bar">
+      <a href="/user/home">← Back</a>
+      <span style="flex:1;text-align:center;font-weight:600;">Profile</span>
+    </div>
+
+    <div class="page-content">
+      <div style="text-align:center;margin:24px 0;">
+        <div class="avatar" id="avatar" style="width:80px;height:80px;font-size:2rem;margin:0 auto;">?</div>
+        <p style="margin:8px 0 0;font-weight:600;" id="name">—</p>
+        <p style="margin:0;font-size:0.9rem;color:var(--text-muted);" id="email">—</p>
+      </div>
+
+      <div class="profile-section">
+        <h3>Account</h3>
+        <div class="profile-row">
+          <span>Display name</span>
+          <span id="display-name" style="color:var(--text-muted);">Optional</span>
+        </div>
+        <div class="profile-row">
+          <span>User type</span>
+          <span id="user-type" style="color:var(--text-muted);">—</span>
+        </div>
+      </div>
+
+      <a href="/auth" class="btn-secondary" style="display:block;width:100%;margin-top:24px;padding:14px;text-align:center;text-decoration:none;">Admin login</a>
+    </div>
+
+    <nav class="bottom-nav">
+      <a href="/user/home"><span class="nav-icon">🏠</span> Home</a>
+      <a href="/user/map"><span class="nav-icon">🗺️</span> Map</a>
+      <a href="/user/messages"><span class="nav-icon">💬</span> Messages</a>
+      <a href="/user/profile" class="active"><span class="nav-icon">👤</span> Profile</a>
+    </nav>
+  </div>
+  <script src="../js/api.js"></script>
+  <script>
+    async function load() {
+      try {
+        const { data } = await user.profile();
+        document.getElementById('name').textContent = data.name || 'Community member';
+        document.getElementById('email').textContent = data.email || '—';
+        document.getElementById('avatar').textContent = (data.name || 'C')[0].toUpperCase();
+        document.getElementById('display-name').textContent = data.displayName || '—';
+        document.getElementById('user-type').textContent = data.userType || 'community';
+      } catch {
+        document.getElementById('name').textContent = 'Community member';
+        document.getElementById('email').textContent = '—';
+      }
+    }
+
+    load();
+  </script>
+</body>
+</html>

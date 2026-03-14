@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CommonGround — Messages</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <div class="user-app">
+    <div class="back-bar">
+      <a href="/user/home">← Back</a>
+      <span style="flex:1;text-align:center;font-weight:600;">Messages</span>
+    </div>
+
+    <div class="page-content">
+      <div style="font-size:0.9rem;color:var(--text-muted);margin-bottom:12px;">Your messages with CommonGround</div>
+      <div id="msg-list"></div>
+      <div class="chat-input-row" style="margin-top:20px;">
+        <input type="text" id="msg-input" placeholder="Type a message...">
+        <button type="button" class="btn-send" id="btn-send">Send</button>
+      </div>
+    </div>
+
+    <nav class="bottom-nav">
+      <a href="/user/home"><span class="nav-icon">🏠</span> Home</a>
+      <a href="/user/map"><span class="nav-icon">🗺️</span> Map</a>
+      <a href="/user/messages" class="active"><span class="nav-icon">💬</span> Messages</a>
+      <a href="/user/profile"><span class="nav-icon">👤</span> Profile</a>
+    </nav>
+  </div>
+  <script src="../js/api.js"></script>
+  <script>
+    async function load() {
+      try {
+        const { data } = await user.messages();
+        const list = document.getElementById('msg-list');
+        list.innerHTML = (data || []).map(m => `
+          <div class="chat-bubble ${m.sender_type === 'user' ? 'me' : 'them'}">${m.content}</div>
+        `).join('') || '<p style="color:var(--text-muted);">No messages yet. Send one below.</p>';
+      } catch (e) {
+        document.getElementById('msg-list').innerHTML = '<p style="color:var(--text-muted);">Sign in to view messages</p>';
+      }
+    }
+
+    document.getElementById('btn-send').onclick = async () => {
+      const input = document.getElementById('msg-input');
+      const content = input.value.trim();
+      if (!content) return;
+      try {
+        await user.sendMessage(content);
+        input.value = '';
+        load();
+      } catch (e) {
+        alert(e.message || 'Failed to send');
+      }
+    };
+
+    load();
+  </script>
+</body>
+</html>

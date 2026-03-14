@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CommonGround — Map</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDy0JT4KLgO4b2Qv4LRH4-cmS8NYsuXbac&libraries=places" async defer></script>
+</head>
+<body>
+  <div class="user-app map-page">
+    <div class="back-bar">
+      <a href="/user/home">← Back</a>
+      <span style="flex:1;text-align:center;font-weight:600;">Map</span>
+    </div>
+
+    <div class="page-content" style="padding:0;">
+      <div class="map-wrapper">
+        <div id="map-container"></div>
+      </div>
+      <div class="map-nearby">
+        <h2 class="section-title" style="grid-column:1/-1;padding:0 0 0.5rem;margin:0;">Nearby</h2>
+        <div id="resource-list" class="resource-list-grid"></div>
+      </div>
+    </div>
+
+    <nav class="bottom-nav">
+      <a href="/user/home"><span class="nav-icon">🏠</span> Home</a>
+      <a href="/user/map" class="active"><span class="nav-icon">🗺️</span> Map</a>
+      <a href="/user/messages"><span class="nav-icon">💬</span> Messages</a>
+      <a href="/user/profile"><span class="nav-icon">👤</span> Profile</a>
+    </nav>
+  </div>
+  <script src="../js/api.js"></script>
+  <script>
+    const params = new URLSearchParams(location.search);
+    const center = { lat: 46.0899, lng: -64.7784 };
+    let map, markers = [];
+
+    function initMap() {
+      map = new google.maps.Map(document.getElementById('map-container'), {
+        center,
+        zoom: 14,
+        mapTypeControl: true,
+        streetViewControl: false
+      });
+
+      resources.list().then(({ data }) => {
+        (data || []).forEach(r => {
+          if (r.lat && r.lng) {
+            const m = new google.maps.Marker({
+              position: { lat: parseFloat(r.lat), lng: parseFloat(r.lng) },
+              map,
+              title: r.name
+            });
+            m.addListener('click', () => {
+              new google.maps.InfoWindow({ content: `<strong>${r.name}</strong><br>${r.address || ''}<br>${r.hours || ''}` }).open(map, m);
+            });
+            markers.push(m);
+          }
+        });
+      }).catch(() => {});
+
+      document.getElementById('resource-list').innerHTML = '';
+      resources.list().then(({ data }) => {
+        const list = document.getElementById('resource-list');
+        list.innerHTML = (data || []).map(r => `
+          <a href="/user/messages" class="nearby-card">
+            <div class="map-thumb">📍</div>
+            <div class="info">
+              <div class="title">${r.name}</div>
+              <div class="meta">${r.address || ''} · ${r.current_count || 0}/${r.capacity || 0} ${r.hours ? '· ' + r.hours : ''}</div>
+            </div>
+          </a>
+        `).join('') || '<p style="color:var(--text-muted);">No resources</p>';
+      }).catch(() => {
+        document.getElementById('resource-list').innerHTML = '<p style="color:var(--text-muted);">Unable to load resources</p>';
+      });
+    }
+
+    if (typeof google !== 'undefined' && google.maps) {
+      initMap();
+    } else {
+      window.addEventListener('load', () => setTimeout(initMap, 500));
+    }
+  </script>
+</body>
+</html>

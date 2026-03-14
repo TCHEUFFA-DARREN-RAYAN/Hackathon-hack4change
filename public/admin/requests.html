@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CommonGround Admin — Case Management</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <div class="admin-wrap">
+    <aside class="admin-sidebar">
+      <div class="logo"><span class="logo-icon"></span><span>CommonGround</span></div>
+      <nav>
+        <a href="/admin/dashboard">📊 Overview</a>
+        <a href="/admin/resources">📦 Resource Management</a>
+        <a href="/admin/communications">💬 Communications</a>
+        <a href="/admin/users">👥 User Management</a>
+        <a href="/admin/requests" class="active">📋 Case Management</a>
+        <a href="/admin/reports">📈 Reports</a>
+        <a href="/admin/settings">⚙️ Settings</a>
+      </nav>
+    </aside>
+
+    <main class="admin-main">
+      <header class="admin-header">
+        <h1 class="page-title">Case Management</h1>
+      </header>
+
+      <div class="admin-content">
+        <div class="table-card">
+          <h3>Community requests</h3>
+          <table class="admin-table">
+            <thead>
+              <tr><th>ID</th><th>Applicant</th><th>Type</th><th>Status</th><th>Date</th><th>Actions</th></tr>
+            </thead>
+            <tbody id="request-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </main>
+  </div>
+  <script src="../js/api.js"></script>
+  <script>
+    async function load() {
+      try {
+        const { data } = await admin.requests();
+        const tbody = document.getElementById('request-tbody');
+        tbody.innerHTML = (data || []).map(r => `
+          <tr>
+            <td>${(r.id || '').slice(0,8)}</td>
+            <td>${r.first_name || ''} ${r.last_name || ''}</td>
+            <td>${r.type || ''}</td>
+            <td><span class="status-pill ${r.status === 'fulfilled' ? 'resolved' : r.status === 'reviewing' ? 'reviewing' : 'pending'}">${r.status || ''}</span></td>
+            <td>${r.created_at ? new Date(r.created_at).toLocaleDateString() : ''}</td>
+            <td>
+              <button type="button" class="btn-secondary" style="padding:4px 8px;font-size:0.8rem;" onclick="setStatus('${r.id}','fulfilled')">Fulfill</button>
+            </td>
+          </tr>
+        `).join('') || '<tr><td colspan="6">No requests</td></tr>';
+      } catch (e) {
+        location.href = '/auth';
+      }
+    }
+    window.setStatus = async (id, status) => {
+      try {
+        await fetch('/api/admin/requests/' + id + '/status', {
+          method: 'PATCH',
+          credentials: 'include',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ status })
+        });
+        load();
+      } catch (e) {
+        alert('Failed');
+      }
+    };
+    load();
+  </script>
+</body>
+</html>

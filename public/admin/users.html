@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CommonGround Admin — Users</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <div class="admin-wrap">
+    <aside class="admin-sidebar">
+      <div class="logo"><span class="logo-icon"></span><span>CommonGround</span></div>
+      <nav>
+        <a href="/admin/dashboard">📊 Overview</a>
+        <a href="/admin/resources">📦 Resource Management</a>
+        <a href="/admin/communications">💬 Communications</a>
+        <a href="/admin/users" class="active">👥 User Management</a>
+        <a href="/admin/requests">📋 Case Management</a>
+        <a href="/admin/reports">📈 Reports</a>
+        <a href="/admin/settings">⚙️ Settings</a>
+      </nav>
+    </aside>
+
+    <main class="admin-main">
+      <header class="admin-header">
+        <h1 class="page-title">User Management</h1>
+      </header>
+
+      <div class="admin-content">
+        <div class="table-card">
+          <h3>Users</h3>
+          <table class="admin-table">
+            <thead>
+              <tr><th>Name</th><th>Email</th><th>Type</th><th>Status</th><th>Created</th></tr>
+            </thead>
+            <tbody id="user-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </main>
+  </div>
+  <script src="../js/api.js"></script>
+  <script>
+    async function load() {
+      try {
+        const { data } = await admin.users();
+        const tbody = document.getElementById('user-tbody');
+        tbody.innerHTML = (data || []).map(u => `
+          <tr>
+            <td>${u.first_name || ''} ${u.last_name || ''}</td>
+            <td>${u.email || ''}</td>
+            <td>${u.user_type || ''}</td>
+            <td><span class="status-pill resolved">${u.status || ''}</span></td>
+            <td>${u.created_at ? new Date(u.created_at).toLocaleDateString() : ''}</td>
+          </tr>
+        `).join('') || '<tr><td colspan="5">No users</td></tr>';
+      } catch (e) {
+        location.href = '/auth';
+      }
+    }
+    load();
+  </script>
+</body>
+</html>

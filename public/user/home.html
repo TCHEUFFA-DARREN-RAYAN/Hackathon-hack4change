@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CommonGround — Home</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <div class="user-app">
+    <header class="top-bar">
+      <div style="display:flex;align-items:center;gap:12px;">
+        <div class="avatar" id="avatar">?</div>
+        <div class="greeting">Hello <small id="user-name">Guest</small></div>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;">
+        <a href="/auth" style="font-size:0.75rem;color:var(--primary);">Admin</a>
+      </div>
+    </header>
+
+    <div class="mode-toggle">
+      <button type="button" class="pill active" data-mode="need">I need help</button>
+      <button type="button" class="pill" data-mode="at-risk">At risk</button>
+      <button type="button" class="pill" data-mode="community">Community</button>
+    </div>
+
+    <div id="panel-need" class="mode-panel">
+      <div class="mode-panel-desc">Shelter, food, health, and immediate support.</div>
+      <div class="service-grid">
+        <a href="/user/resources?cat=shelter" class="service-card"><span class="icon-wrap">🏠</span><span class="label">Find Shelter</span></a>
+        <a href="/user/resources?cat=food" class="service-card"><span class="icon-wrap">🍲</span><span class="label">Hot Meals</span></a>
+        <a href="/user/resources?cat=medical" class="service-card"><span class="icon-wrap">🩺</span><span class="label">Medical Care</span></a>
+        <a href="/user/resources?cat=jobs" class="service-card"><span class="icon-wrap">💼</span><span class="label">Job Training</span></a>
+        <a href="/user/resources?cat=crisis" class="service-card"><span class="icon-wrap">🆘</span><span class="label">Crisis Support</span></a>
+        <a href="/user/resources?cat=legal" class="service-card"><span class="icon-wrap">⚖️</span><span class="label">Legal Aid</span></a>
+        <a href="/user/resources?cat=hygiene" class="service-card"><span class="icon-wrap">🚿</span><span class="label">Shower / Hygiene</span></a>
+      </div>
+      <h2 class="section-title">Nearby resources</h2>
+      <div class="nearby-list" id="nearby-list"></div>
+    </div>
+
+    <div id="panel-at-risk" class="mode-panel" hidden>
+      <div class="mode-panel-desc">Support to stay housed: advice, benefits, and financial help.</div>
+      <div class="service-grid">
+        <a href="/user/resources?cat=housing-advice" class="service-card"><span class="icon-wrap">🔑</span><span class="label">Housing Advice</span></a>
+        <a href="/user/resources?cat=benefits" class="service-card"><span class="icon-wrap">📋</span><span class="label">Benefits & Grants</span></a>
+        <a href="/user/resources?cat=financial" class="service-card"><span class="icon-wrap">💰</span><span class="label">Financial Support</span></a>
+      </div>
+      <h2 class="section-title">Prevention services nearby</h2>
+      <div class="nearby-list" id="nearby-at-risk"></div>
+    </div>
+
+    <div id="panel-community" class="mode-panel" hidden>
+      <div class="mode-panel-desc">Donate, volunteer, or spread the word.</div>
+      <div class="service-grid">
+        <a href="/user/resources?donate" class="service-card"><span class="icon-wrap">❤️</span><span class="label">Donate</span></a>
+        <a href="/user/resources?volunteer" class="service-card"><span class="icon-wrap">🤝</span><span class="label">Volunteer</span></a>
+      </div>
+    </div>
+
+    <nav class="bottom-nav">
+      <a href="/user/home" class="active"><span class="nav-icon">🏠</span> Home</a>
+      <a href="/user/map"><span class="nav-icon">🗺️</span> Map</a>
+      <a href="/user/messages"><span class="nav-icon">💬</span> Messages</a>
+      <a href="/user/profile"><span class="nav-icon">👤</span> Profile</a>
+    </nav>
+  </div>
+  <script src="../js/api.js"></script>
+  <script>
+    (function() {
+      const pills = document.querySelectorAll('.mode-toggle .pill');
+      const panels = { need: document.getElementById('panel-need'), 'at-risk': document.getElementById('panel-at-risk'), community: document.getElementById('panel-community') };
+      pills.forEach(pill => {
+        pill.addEventListener('click', function() {
+          const mode = this.getAttribute('data-mode');
+          pills.forEach(p => p.classList.toggle('active', p === pill));
+          Object.keys(panels).forEach(key => { const el = panels[key]; if (el) el.hidden = (key !== mode); });
+        });
+      });
+    })();
+
+    async function load() {
+      try {
+        const { data } = await user.profile();
+        document.getElementById('user-name').textContent = data.name || 'Community member';
+        document.getElementById('avatar').textContent = (data.name || 'C')[0].toUpperCase();
+      } catch {
+        document.getElementById('user-name').textContent = 'Community member';
+      }
+      try {
+        const { data } = await resources.list();
+        const list = document.getElementById('nearby-list');
+        list.innerHTML = (data || []).slice(0, 4).map(r => `
+          <a href="/user/map?id=${r.id}" class="nearby-card">
+            <div class="map-thumb">📍</div>
+            <div class="info"><div class="title">${r.name}</div><div class="meta">${r.address || ''} · ${r.current_count || 0}/${r.capacity || 0}</div></div>
+          </a>
+        `).join('') || '<p style="color:var(--text-muted);">No resources nearby</p>';
+      } catch (e) {
+        document.getElementById('nearby-list').innerHTML = '<p style="color:var(--text-muted);">Loading resources...</p>';
+      }
+    }
+    load();
+  </script>
+</body>
+</html>

@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CommonGround Admin — Resources</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <div class="admin-wrap">
+    <aside class="admin-sidebar">
+      <div class="logo"><span class="logo-icon"></span><span>CommonGround</span></div>
+      <nav>
+        <a href="/admin/dashboard">📊 Overview</a>
+        <a href="/admin/resources" class="active">📦 Resource Management</a>
+        <a href="/admin/communications">💬 Communications</a>
+        <a href="/admin/users">👥 User Management</a>
+        <a href="/admin/requests">📋 Case Management</a>
+        <a href="/admin/reports">📈 Reports</a>
+        <a href="/admin/settings">⚙️ Settings</a>
+      </nav>
+    </aside>
+
+    <main class="admin-main">
+      <header class="admin-header">
+        <h1 class="page-title">Resource Management</h1>
+        <div class="header-actions">
+          <button type="button" class="btn-primary" id="btn-add">+ Add resource</button>
+        </div>
+      </header>
+
+      <div class="admin-content">
+        <div class="table-card">
+          <h3>Resources</h3>
+          <table class="admin-table">
+            <thead>
+              <tr><th>Name</th><th>Type</th><th>Current</th><th>Capacity</th><th>Address</th><th>Actions</th></tr>
+            </thead>
+            <tbody id="resource-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </main>
+  </div>
+  <script src="../js/api.js"></script>
+  <script>
+    async function load() {
+      try {
+        const { data } = await admin.resources();
+        const tbody = document.getElementById('resource-tbody');
+        tbody.innerHTML = (data || []).map(r => `
+          <tr>
+            <td>${r.name}</td>
+            <td>${r.type}</td>
+            <td>${r.current_count || 0}</td>
+            <td>${r.capacity || 0}</td>
+            <td>${(r.address || '').slice(0, 30)}</td>
+            <td>
+              <button type="button" class="btn-secondary" style="padding:4px 8px;font-size:0.8rem;" onclick="updateStock('${r.id}', ${r.current_count || 0})">Update</button>
+            </td>
+          </tr>
+        `).join('') || '<tr><td colspan="6">No resources</td></tr>';
+      } catch (e) {
+        location.href = '/auth';
+      }
+    }
+    window.updateStock = async (id, current) => {
+      const val = prompt('New current count:', current);
+      if (val === null) return;
+      const n = parseInt(val, 10);
+      if (isNaN(n)) return alert('Invalid number');
+      try {
+        await fetch('/api/admin/resources/' + id, {
+          method: 'PATCH',
+          credentials: 'include',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ current_count: n })
+        });
+        load();
+      } catch (e) {
+        alert('Failed');
+      }
+    };
+    document.getElementById('btn-add').onclick = () => alert('Add resource form - extend for hackathon');
+    load();
+  </script>
+</body>
+</html>

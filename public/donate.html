@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Donate — CommonGround</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+<nav class="site-nav">
+    <div class="nav-inner">
+        <a href="/" class="nav-brand">CommonGround <span>GMHSC Network</span></a>
+        <div class="nav-links">
+            <a href="/">Needs Board</a>
+            <a href="/donate" class="active">Donate</a>
+        </div>
+        <div class="nav-actions">
+            <a href="/login" class="btn btn-ghost btn-sm">Staff login</a>
+        </div>
+    </div>
+</nav>
+
+<div class="step-form-wrap">
+    <h1 style="margin-bottom:.35rem">Make a donation</h1>
+    <p class="text-muted text-sm" style="margin-bottom:1.75rem">Your donation will be matched to the organization with the greatest need.</p>
+
+    <!-- Step progress -->
+    <div class="step-progress" role="list">
+        <div class="step-item active" id="step-indicator-1" role="listitem">
+            <div class="step-num">1</div>
+            <div class="step-label">What are<br>you donating?</div>
+        </div>
+        <div class="step-item" id="step-indicator-2" role="listitem">
+            <div class="step-num">2</div>
+            <div class="step-label">Your<br>contact info</div>
+        </div>
+        <div class="step-item" id="step-indicator-3" role="listitem">
+            <div class="step-num">3</div>
+            <div class="step-label">Match<br>preview</div>
+        </div>
+        <div class="step-item" id="step-indicator-4" role="listitem">
+            <div class="step-num">4</div>
+            <div class="step-label">Confirmation</div>
+        </div>
+    </div>
+
+    <!-- Step 1: Item details -->
+    <div class="step-panel active card" id="step-1">
+        <h2>What are you donating?</h2>
+        <div class="form-group">
+            <label class="form-label" for="item-name">Item description <span class="req">*</span></label>
+            <input type="text" id="item-name" class="form-control" placeholder="e.g. Men's winter jackets, canned soup, sleeping bags" autocomplete="off">
+            <div class="form-error" id="err-item-name">Please describe the item.</div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:.85rem">
+            <div class="form-group">
+                <label class="form-label" for="category">Category <span class="req">*</span></label>
+                <select id="category" class="form-control">
+                    <option value="">Select a category</option>
+                    <option value="clothing">Clothing</option>
+                    <option value="bedding">Bedding &amp; Linens</option>
+                    <option value="food">Food &amp; Beverages</option>
+                    <option value="hygiene">Hygiene Products</option>
+                    <option value="baby_supplies">Baby Supplies</option>
+                    <option value="goods">Household Goods</option>
+                    <option value="furniture">Furniture</option>
+                    <option value="other">Other</option>
+                </select>
+                <div class="form-error" id="err-category">Please select a category.</div>
+            </div>
+            <div class="form-group">
+                <label class="form-label" for="condition">Condition <span class="req">*</span></label>
+                <select id="condition" class="form-control">
+                    <option value="new">New</option>
+                    <option value="good" selected>Good</option>
+                    <option value="fair">Fair</option>
+                </select>
+            </div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:.85rem">
+            <div class="form-group">
+                <label class="form-label" for="quantity">Quantity <span class="req">*</span></label>
+                <input type="number" id="quantity" class="form-control" placeholder="1" min="1" value="1">
+                <div class="form-error" id="err-quantity">Please enter a quantity.</div>
+            </div>
+            <div class="form-group">
+                <label class="form-label" for="unit">Unit</label>
+                <select id="unit" class="form-control">
+                    <option value="items">Items</option>
+                    <option value="pairs">Pairs</option>
+                    <option value="bags">Bags</option>
+                    <option value="boxes">Boxes</option>
+                    <option value="cans">Cans</option>
+                    <option value="bottles">Bottles</option>
+                    <option value="packs">Packs</option>
+                    <option value="kg">Kilograms</option>
+                    <option value="sets">Sets</option>
+                </select>
+            </div>
+        </div>
+        <div class="step-nav">
+            <span></span>
+            <button class="btn btn-primary" onclick="goToStep(2)">Next</button>
+        </div>
+    </div>
+
+    <!-- Step 2: Contact info -->
+    <div class="step-panel card" id="step-2">
+        <h2>Your contact information</h2>
+        <div class="inline-notice info" style="margin-bottom:1.25rem">
+            Your contact details are only shared with the matched organization to arrange pickup or drop-off.
+        </div>
+        <div class="form-group">
+            <label class="form-label" for="donor-name">Full name <span class="req">*</span></label>
+            <input type="text" id="donor-name" class="form-control" placeholder="Your name" autocomplete="name">
+            <div class="form-error" id="err-donor-name">Please enter your name.</div>
+        </div>
+        <div class="form-group">
+            <label class="form-label" for="donor-email">Email address <span class="req">*</span></label>
+            <input type="email" id="donor-email" class="form-control" placeholder="you@email.com" autocomplete="email">
+            <div class="form-error" id="err-donor-email">Please enter a valid email address.</div>
+        </div>
+        <div class="form-group">
+            <label class="form-label" for="donor-phone">Phone number <span class="text-muted">(optional)</span></label>
+            <input type="tel" id="donor-phone" class="form-control" placeholder="506-000-0000" autocomplete="tel">
+        </div>
+        <div class="form-group">
+            <label class="form-label" for="preferred-org">Preferred organization <span class="text-muted">(optional)</span></label>
+            <select id="preferred-org" class="form-control">
+                <option value="">Let the AI find the best match</option>
+            </select>
+            <div class="form-hint">Leave blank to have the system match your donation to the organization with the greatest need.</div>
+        </div>
+        <div class="step-nav">
+            <button class="btn btn-ghost" onclick="goToStep(1)">Back</button>
+            <button class="btn btn-primary" onclick="goToStep(3)">Next — see match</button>
+        </div>
+    </div>
+
+    <!-- Step 3: AI match preview -->
+    <div class="step-panel card" id="step-3">
+        <h2>Where your donation goes</h2>
+        <div id="match-loading" style="display:none">
+            <div class="skeleton skeleton-block" style="height:80px;margin-bottom:.75rem"></div>
+            <div class="skeleton skeleton-block" style="height:80px;margin-bottom:.75rem"></div>
+            <div class="skeleton skeleton-block" style="height:80px"></div>
+            <p class="text-muted text-sm" style="margin-top:.75rem;text-align:center">Finding the best match...</p>
+        </div>
+        <div id="match-results" style="display:none">
+            <p class="text-sm text-muted" style="margin-bottom:.75rem">Based on current needs across the network, here are the top matches for your donation. Select one to proceed.</p>
+            <div class="match-cards" id="match-cards"></div>
+            <div id="custom-org-row" style="margin-top:.75rem;display:none">
+                <label class="form-label" for="custom-org-select">Or choose a different organization</label>
+                <select id="custom-org-select" class="form-control">
+                    <option value="">Select an organization</option>
+                </select>
+            </div>
+            <div style="margin-top:.6rem">
+                <button class="btn btn-ghost btn-sm" id="show-all-orgs-btn" onclick="toggleCustomOrg()">Choose a different organization instead</button>
+            </div>
+        </div>
+        <div id="match-error" style="display:none">
+            <div class="inline-notice warning">
+                AI matching is unavailable right now. Please select an organization manually below.
+            </div>
+            <div class="form-group" style="margin-top:1rem">
+                <label class="form-label" for="fallback-org">Select an organization <span class="req">*</span></label>
+                <select id="fallback-org" class="form-control">
+                    <option value="">Select an organization</option>
+                </select>
+            </div>
+        </div>
+        <div class="step-nav">
+            <button class="btn btn-ghost" onclick="goToStep(2)">Back</button>
+            <button class="btn btn-primary" id="confirm-match-btn" onclick="confirmMatch()" disabled>Confirm this match</button>
+        </div>
+    </div>
+
+    <!-- Step 4: Confirmation -->
+    <div class="step-panel card" id="step-4">
+        <h2>Your donation has been submitted</h2>
+        <div class="inline-notice success" style="margin-bottom:1.25rem">
+            Thank you. The organization has been notified and will be in touch to arrange collection.
+        </div>
+        <div class="confirm-box" id="confirm-box"></div>
+        <div class="mt-3">
+            <h3 style="font-size:.95rem;margin-bottom:.5rem">Next steps</h3>
+            <p class="text-sm text-muted">The organization's staff will review your donation and contact you at the email or phone number you provided to arrange pickup or drop-off.</p>
+            <p class="text-sm text-muted mt-1">Questions? Contact the organization directly using the details above.</p>
+        </div>
+        <div class="step-nav" style="margin-top:1.75rem">
+            <a href="/" class="btn btn-outline">Back to needs board</a>
+            <a href="/donate" class="btn btn-primary" onclick="resetForm()">Donate another item</a>
+        </div>
+    </div>
+</div>
+
+<script src="/js/api.js"></script>
+<script src="/js/utils.js"></script>
+<script>
+    let currentStep = 1;
+    let donationId = null;
+    let selectedOrgId = null;
+    let selectedOrgName = null;
+    let selectedReasoning = null;
+    let allOrgs = [];
+
+    // Pre-fill preferred org from URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const prefilledOrgId = urlParams.get('org');
+
+    async function loadOrganizations() {
+        try {
+            const res = await pub.organizations();
+            allOrgs = res.data || [];
+            const prefSelect = document.getElementById('preferred-org');
+            const customSelect = document.getElementById('custom-org-select');
+            const fallbackSelect = document.getElementById('fallback-org');
+
+            allOrgs.forEach(org => {
+                const opt = (val, label) => { const o = new Option(label, val); return o; };
+                prefSelect.appendChild(opt(org.id, org.name));
+                customSelect.appendChild(opt(org.id, org.name));
+                fallbackSelect.appendChild(opt(org.id, org.name));
+            });
+
+            if (prefilledOrgId) {
+                prefSelect.value = prefilledOrgId;
+            }
+        } catch {
+            // Non-critical, continue
+        }
+    }
+
+    function updateStepIndicators(step) {
+        for (let i = 1; i <= 4; i++) {
+            const el = document.getElementById(`step-indicator-${i}`);
+            el.classList.toggle('active', i === step);
+            el.classList.toggle('done', i < step);
+        }
+    }
+
+    function goToStep(step) {
+        if (step === 2 && !validateStep1()) return;
+        if (step === 3 && !validateStep2()) return;
+
+        document.querySelectorAll('.step-panel').forEach(p => p.classList.remove('active'));
+        document.getElementById(`step-${step}`).classList.add('active');
+        updateStepIndicators(step);
+        currentStep = step;
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+
+        if (step === 3) loadMatchPreview();
+    }
+
+    function validateStep1() {
+        const item = document.getElementById('item-name');
+        const cat  = document.getElementById('category');
+        const qty  = document.getElementById('quantity');
+        let ok = true;
+
+        if (!item.value.trim()) {
+            item.classList.add('error');
+            document.getElementById('err-item-name').classList.add('visible');
+            ok = false;
+        } else {
+            item.classList.remove('error');
+            document.getElementById('err-item-name').classList.remove('visible');
+        }
+        if (!cat.value) {
+            cat.classList.add('error');
+            document.getElementById('err-category').classList.add('visible');
+            ok = false;
+        } else {
+            cat.classList.remove('error');
+            document.getElementById('err-category').classList.remove('visible');
+        }
+        if (!qty.value || parseInt(qty.value) < 1) {
+            qty.classList.add('error');
+            document.getElementById('err-quantity').classList.add('visible');
+            ok = false;
+        } else {
+            qty.classList.remove('error');
+            document.getElementById('err-quantity').classList.remove('visible');
+        }
+        return ok;
+    }
+
+    function validateStep2() {
+        const name  = document.getElementById('donor-name');
+        const email = document.getElementById('donor-email');
+        let ok = true;
+
+        if (!name.value.trim()) {
+            name.classList.add('error');
+            document.getElementById('err-donor-name').classList.add('visible');
+            ok = false;
+        } else {
+            name.classList.remove('error');
+            document.getElementById('err-donor-name').classList.remove('visible');
+        }
+
+        const emailVal = email.value.trim();
+        const emailOk  = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailVal);
+        if (!emailOk) {
+            email.classList.add('error');
+            document.getElementById('err-donor-email').classList.add('visible');
+            ok = false;
+        } else {
+            email.classList.remove('error');
+            document.getElementById('err-donor-email').classList.remove('visible');
+        }
+        return ok;
+    }
+
+    async function loadMatchPreview() {
+        const loading  = document.getElementById('match-loading');
+        const results  = document.getElementById('match-results');
+        const errBlock = document.getElementById('match-error');
+
+        loading.style.display = 'block';
+        results.style.display = 'none';
+        errBlock.style.display = 'none';
+        document.getElementById('confirm-match-btn').disabled = true;
+
+        const preferred = document.getElementById('preferred-org').value;
+        if (preferred) {
+            // Donor picked an org — skip AI
+            const org = allOrgs.find(o => o.id === preferred);
+            selectedOrgId   = org ? org.id : null;
+            selectedOrgName = org ? org.name : '';
+            selectedReasoning = 'Organization selected directly by donor.';
+            loading.style.display = 'none';
+            renderManualMatch(org);
+            return;
+        }
+
+        try {
+            const data = {
+                item_name: document.getElementById('item-name').value.trim(),
+                category:  document.getElementById('category').value,
+                quantity:  parseInt(document.getElementById('quantity').value),
+                condition: document.getElementById('condition').value
+            };
+            const res = await aiApi.matchDonation(data);
+            const matches = res.data.matches || [];
+
+            loading.style.display = 'none';
+
+            if (!matches.length) {
+                errBlock.style.display = 'block';
+                populateFallbackOrgs();
+                return;
+            }
+
+            results.style.display = 'block';
+            renderMatchCards(matches);
+
+            // Populate custom org select
+            const customSelect = document.getElementById('custom-org-select');
+        } catch {
+            loading.style.display = 'none';
+            errBlock.style.display = 'block';
+            populateFallbackOrgs();
+        }
+    }
+
+    function renderMatchCards(matches) {
+        const container = document.getElementById('match-cards');
+        container.innerHTML = matches.map((m, i) => `
+            <div class="match-card${i === 0 ? ' selected' : ''}" id="match-${i}" onclick="selectMatch(${i}, '${escHtml(m.org_id)}', '${escHtml(m.org_name).replace(/'/g, "\\'")}', '${escHtml(m.reasoning).replace(/'/g, "\\'")}')">
+                <div class="gap-row" style="margin-bottom:.3rem">
+                    <div class="match-org">${escHtml(m.org_name)}</div>
+                    <span class="badge badge-${escHtml(m.urgency)}">${escHtml(m.urgency)}</span>
+                </div>
+                <div class="match-reasoning">${escHtml(m.reasoning)}</div>
+            </div>`).join('');
+
+        // Auto-select first
+        if (matches.length) {
+            selectedOrgId   = matches[0].org_id;
+            selectedOrgName = matches[0].org_name;
+            selectedReasoning = matches[0].reasoning;
+            document.getElementById('confirm-match-btn').disabled = false;
+        }
+    }
+
+    function renderManualMatch(org) {
+        if (!org) return;
+        document.getElementById('match-results').style.display = 'block';
+        document.getElementById('match-cards').innerHTML = `
+            <div class="match-card selected">
+                <div class="match-org">${escHtml(org.name)}</div>
+                <div class="match-reasoning">Selected by you.</div>
+            </div>`;
+        document.getElementById('confirm-match-btn').disabled = false;
+    }
+
+    function selectMatch(idx, orgId, orgName, reasoning) {
+        document.querySelectorAll('.match-card').forEach((el, i) => {
+            el.classList.toggle('selected', i === idx);
+        });
+        selectedOrgId   = orgId;
+        selectedOrgName = orgName;
+        selectedReasoning = reasoning;
+        document.getElementById('confirm-match-btn').disabled = false;
+    }
+
+    function toggleCustomOrg() {
+        const row = document.getElementById('custom-org-row');
+        const btn = document.getElementById('show-all-orgs-btn');
+        const showing = row.style.display !== 'none';
+        row.style.display = showing ? 'none' : 'block';
+        btn.textContent = showing ? 'Choose a different organization instead' : 'Use AI recommendation instead';
+        if (!showing) {
+            // Reset to first match selection
+        }
+    }
+
+    function populateFallbackOrgs() {
+        const sel = document.getElementById('fallback-org');
+        sel.addEventListener('change', function () {
+            const org = allOrgs.find(o => o.id === this.value);
+            if (org) {
+                selectedOrgId   = org.id;
+                selectedOrgName = org.name;
+                selectedReasoning = 'Manually selected by donor.';
+                document.getElementById('confirm-match-btn').disabled = false;
+            }
+        });
+    }
+
+    async function confirmMatch() {
+        if (!selectedOrgId) { toast('Please select an organization.', 'error'); return; }
+
+        const btn = document.getElementById('confirm-match-btn');
+        btn.disabled = true;
+        btn.textContent = 'Submitting...';
+
+        try {
+            // Submit donation
+            const donationData = {
+                donor_name:       document.getElementById('donor-name').value.trim(),
+                donor_email:      document.getElementById('donor-email').value.trim(),
+                donor_phone:      document.getElementById('donor-phone').value.trim() || null,
+                item_name:        document.getElementById('item-name').value.trim(),
+                category:         document.getElementById('category').value,
+                quantity:         parseInt(document.getElementById('quantity').value),
+                unit:             document.getElementById('unit').value,
+                condition:        document.getElementById('condition').value,
+                preferred_org_id: document.getElementById('preferred-org').value || null
+            };
+            const res = await pub.submitDonation(donationData);
+            donationId = res.data.id;
+
+            // Apply match
+            await pub.applyMatch(donationId, selectedOrgId, selectedReasoning);
+
+            showConfirmation();
+        } catch (err) {
+            toast(err.message || 'Submission failed. Please try again.', 'error');
+            btn.disabled = false;
+            btn.textContent = 'Confirm this match';
+        }
+    }
+
+    function showConfirmation() {
+        const org = allOrgs.find(o => o.id === selectedOrgId);
+        document.getElementById('confirm-box').innerHTML = `
+            <h3>Matched to: ${escHtml(selectedOrgName)}</h3>
+            <div class="detail"><strong>Item:</strong> ${escHtml(document.getElementById('item-name').value.trim())} &mdash; ${escHtml(document.getElementById('quantity').value)} ${escHtml(document.getElementById('unit').value)} (${escHtml(document.getElementById('condition').value)})</div>
+            <div class="detail"><strong>Your name:</strong> ${escHtml(document.getElementById('donor-name').value.trim())}</div>
+            <div class="detail"><strong>Your email:</strong> ${escHtml(document.getElementById('donor-email').value.trim())}</div>
+            ${org && org.contact_email ? `<div class="detail" style="margin-top:.75rem"><strong>Organization contact:</strong> ${escHtml(org.contact_email)}</div>` : ''}
+            ${org && org.address ? `<div class="detail"><strong>Address:</strong> ${escHtml(org.address)}</div>` : ''}
+        `;
+        goToStep(4);
+    }
+
+    function resetForm() {
+        document.querySelectorAll('input, select, textarea').forEach(el => {
+            if (el.tagName === 'SELECT') el.selectedIndex = 0;
+            else el.value = '';
+            el.classList.remove('error');
+        });
+        document.querySelectorAll('.form-error').forEach(el => el.classList.remove('visible'));
+        donationId = selectedOrgId = selectedOrgName = selectedReasoning = null;
+    }
+
+    // Custom org select change
+    document.getElementById('custom-org-select').addEventListener('change', function () {
+        const org = allOrgs.find(o => o.id === this.value);
+        if (org) {
+            selectedOrgId   = org.id;
+            selectedOrgName = org.name;
+            selectedReasoning = 'Manually selected by donor.';
+            document.querySelectorAll('.match-card').forEach(el => el.classList.remove('selected'));
+            document.getElementById('confirm-match-btn').disabled = false;
+        }
+    });
+
+    loadOrganizations();
+    setActiveNav();
+</script>
+
+</body>
+</html>

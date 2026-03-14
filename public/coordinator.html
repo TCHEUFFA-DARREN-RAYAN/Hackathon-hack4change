@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coordinator Dashboard — CommonGround</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+<nav class="site-nav">
+    <div class="nav-inner">
+        <a href="/" class="nav-brand">CommonGround <span>GMHSC Network</span></a>
+        <div class="nav-actions">
+            <span class="text-muted text-sm">Network Coordinator</span>
+            <button class="btn btn-ghost btn-sm" onclick="handleLogout()">Sign out</button>
+        </div>
+    </div>
+</nav>
+
+<div class="portal-layout">
+
+    <nav class="portal-sidebar" aria-label="Coordinator navigation">
+        <div class="sidebar-section">
+            <span class="sidebar-label">Dashboard</span>
+            <a href="#" data-section="overview" class="active" onclick="showSection('overview', this)">Overview</a>
+            <a href="#" data-section="organizations" onclick="showSection('organizations', this)">Organizations</a>
+        </div>
+        <div class="sidebar-section">
+            <span class="sidebar-label">Coordination</span>
+            <a href="#" data-section="needs" onclick="showSection('needs', this)">All Needs</a>
+            <a href="#" data-section="donations" onclick="showSection('donations', this)">Donations Pipeline</a>
+        </div>
+        <div class="sidebar-section">
+            <span class="sidebar-label">Intelligence</span>
+            <a href="#" data-section="insights" onclick="showSection('insights', this)">AI Insights</a>
+        </div>
+        <div class="sidebar-section" style="margin-top:auto;border-top:1px solid var(--color-border-lt);padding-top:1rem">
+            <span class="sidebar-label">Exports</span>
+            <a href="#" onclick="coordinator.exportNeeds(); return false;">Download Needs CSV</a>
+            <a href="#" onclick="coordinator.exportInventory(); return false;">Download Inventory CSV</a>
+        </div>
+    </nav>
+
+    <main class="portal-main">
+
+        <!-- Overview section -->
+        <div id="section-overview">
+            <div class="portal-header">
+                <div>
+                    <h1>Network Overview</h1>
+                    <div class="text-muted text-sm" id="overview-updated">Loading...</div>
+                </div>
+                <button class="btn btn-outline btn-sm" onclick="loadOverview()">Refresh</button>
+            </div>
+
+            <div class="metrics-row" id="overview-metrics">
+                <div class="metric-card"><div class="metric-label">Organizations</div><div class="skeleton" style="height:2rem;width:50px;margin:.2rem 0"></div></div>
+                <div class="metric-card accent-high"><div class="metric-label">Active Needs</div><div class="skeleton" style="height:2rem;width:50px;margin:.2rem 0"></div></div>
+                <div class="metric-card accent-critical"><div class="metric-label">Critical</div><div class="skeleton" style="height:2rem;width:50px;margin:.2rem 0"></div></div>
+                <div class="metric-card accent-primary"><div class="metric-label">Pending Donations</div><div class="skeleton" style="height:2rem;width:50px;margin:.2rem 0"></div></div>
+            </div>
+
+            <div class="section">
+                <div class="section-header"><h2>Donations pipeline</h2></div>
+                <div class="pipeline" id="pipeline-stages">
+                    <div class="pipeline-stage"><div class="stage-count skeleton" style="height:1.7rem;width:40px;margin:0 auto"></div><div class="stage-label">Pending</div></div>
+                    <div class="pipeline-stage"><div class="stage-count skeleton" style="height:1.7rem;width:40px;margin:0 auto"></div><div class="stage-label">Matched</div></div>
+                    <div class="pipeline-stage"><div class="stage-count skeleton" style="height:1.7rem;width:40px;margin:0 auto"></div><div class="stage-label">Confirmed</div></div>
+                    <div class="pipeline-stage"><div class="stage-count skeleton" style="height:1.7rem;width:40px;margin:0 auto"></div><div class="stage-label">Delivered</div></div>
+                </div>
+            </div>
+
+            <div class="section">
+                <div class="section-header">
+                    <h2>Critical shortages — act now</h2>
+                    <a href="#" onclick="showSection('needs', document.querySelector('[data-section=needs]'))" class="btn btn-ghost btn-sm">View all needs</a>
+                </div>
+                <div id="critical-needs-list">
+                    <div class="skeleton skeleton-block" style="height:60px;margin-bottom:.5rem"></div>
+                    <div class="skeleton skeleton-block" style="height:60px;margin-bottom:.5rem"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Organizations section -->
+        <div id="section-organizations" style="display:none">
+            <div class="portal-header">
+                <h1>Organizations</h1>
+            </div>
+            <div class="table-wrap">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Organization</th>
+                            <th>Type</th>
+                            <th>Critical Needs</th>
+                            <th>Total Needs</th>
+                            <th>Surplus Items</th>
+                            <th>Last Updated</th>
+                        </tr>
+                    </thead>
+                    <tbody id="orgs-tbody">
+                        <tr><td colspan="6"><div class="skeleton skeleton-text wide"></div></td></tr>
+                        <tr><td colspan="6"><div class="skeleton skeleton-text" style="width:70%"></div></td></tr>
+                        <tr><td colspan="6"><div class="skeleton skeleton-text" style="width:55%"></div></td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- All Needs section -->
+        <div id="section-needs" style="display:none">
+            <div class="portal-header">
+                <h1>All Network Needs</h1>
+                <button class="btn btn-outline btn-sm" onclick="coordinator.exportNeeds()">Export CSV</button>
+            </div>
+            <div style="display:flex;gap:.6rem;flex-wrap:wrap;margin-bottom:1rem">
+                <input type="search" id="needs-search" class="form-control" placeholder="Search..." style="max-width:240px">
+                <select id="needs-urgency-filter" class="form-control" style="max-width:180px">
+                    <option value="">All urgency levels</option>
+                    <option value="critical">Critical</option>
+                    <option value="high">High</option>
+                    <option value="medium">Medium</option>
+                    <option value="low">Low</option>
+                </select>
+            </div>
+            <div class="table-wrap">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Organization</th>
+                            <th>Item needed</th>
+                            <th>Category</th>
+                            <th>Qty</th>
+                            <th>Urgency</th>
+                            <th>Notes</th>
+                            <th>Posted</th>
+                        </tr>
+                    </thead>
+                    <tbody id="all-needs-tbody">
+                        <tr><td colspan="7"><div class="skeleton skeleton-text wide"></div></td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Donations Pipeline section -->
+        <div id="section-donations" style="display:none">
+            <div class="portal-header">
+                <h1>Donations Pipeline</h1>
+            </div>
+            <div style="display:flex;gap:.6rem;flex-wrap:wrap;margin-bottom:1rem">
+                <select id="donation-status-filter" class="form-control" style="max-width:200px">
+                    <option value="">All statuses</option>
+                    <option value="pending">Pending</option>
+                    <option value="matched">Matched</option>
+                    <option value="confirmed">Confirmed</option>
+                    <option value="delivered">Delivered</option>
+                </select>
+            </div>
+            <div class="table-wrap">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Item</th>
+                            <th>Qty</th>
+                            <th>Donor</th>
+                            <th>Matched to</th>
+                            <th>Status</th>
+                            <th>Date</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="donations-tbody">
+                        <tr><td colspan="7"><div class="skeleton skeleton-text wide"></div></td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- AI Insights section -->
+        <div id="section-insights" style="display:none">
+            <div class="portal-header">
+                <h1>AI Network Insights</h1>
+                <button class="btn btn-primary btn-sm" id="insights-btn" onclick="loadInsights()">Generate Insights</button>
+            </div>
+
+            <div id="insights-placeholder" class="card" style="text-align:center;padding:2.5rem">
+                <p class="text-muted">Click "Generate Insights" to run an AI analysis of the current network state.</p>
+                <p class="text-sm text-muted mt-1">This reads all current needs, inventory, and surplus data and returns a summary with redistribution opportunities and action alerts.</p>
+            </div>
+
+            <div id="insights-loading" style="display:none">
+                <div class="skeleton skeleton-block" style="height:80px;margin-bottom:.75rem"></div>
+                <div class="skeleton skeleton-block" style="height:120px;margin-bottom:.75rem"></div>
+                <div class="skeleton skeleton-block" style="height:100px"></div>
+            </div>
+
+            <div id="insights-panel" style="display:none">
+                <div class="insights-panel">
+                    <div class="insights-header">
+                        <h3>Network Health Summary</h3>
+                        <span class="text-xs" id="insights-timestamp" style="opacity:.75"></span>
+                    </div>
+                    <div class="insights-body">
+                        <div class="insight-summary" id="insights-summary"></div>
+
+                        <div class="insight-section" id="alerts-section">
+                            <h4>Immediate Alerts</h4>
+                            <div id="insights-alerts"></div>
+                        </div>
+
+                        <div class="insight-section" id="redistribution-section">
+                            <h4>Redistribution Opportunities</h4>
+                            <div id="insights-redistribution"></div>
+                        </div>
+
+                        <div class="insight-section" id="followup-section">
+                            <h4>Organizations needing follow-up</h4>
+                            <div id="insights-followup"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+</div>
+
+<script src="/js/api.js"></script>
+<script src="/js/utils.js"></script>
+<script>
+    const CAT_LABELS = {
+        shelter_housing: 'Shelter & Housing',
+        food_nutrition: 'Food & Nutrition',
+        goods_essentials: 'Goods & Essentials',
+        mental_health: 'Mental Health',
+        outreach: 'Outreach'
+    };
+
+    let overviewData = null;
+    let allNeedsData = [];
+    let allDonationsData = [];
+    let allOrgsData = [];
+
+    async function init() {
+        const user = await requireAuth('coordinator');
+        if (!user) return;
+        await loadOverview();
+    }
+
+    function showSection(name, linkEl) {
+        ['overview', 'organizations', 'needs', 'donations', 'insights'].forEach(s => {
+            const el = document.getElementById(`section-${s}`);
+            if (el) el.style.display = s === name ? 'block' : 'none';
+        });
+        document.querySelectorAll('.portal-sidebar a[data-section]').forEach(a => a.classList.remove('active'));
+        if (linkEl) linkEl.classList.add('active');
+
+        if (name === 'organizations' && !allOrgsData.length) loadOrgs();
+        if (name === 'needs' && !allNeedsData.length) loadAllNeeds();
+        if (name === 'donations' && !allDonationsData.length) loadDonations();
+        return false;
+    }
+
+    async function loadOverview() {
+        try {
+            const res = await coordinator.overview();
+            overviewData = res.data;
+            renderOverviewMetrics(overviewData);
+            document.getElementById('overview-updated').textContent = 'Last refreshed: ' + new Date().toLocaleTimeString('en-CA', { hour: '2-digit', minute: '2-digit' });
+            await loadCriticalNeeds();
+        } catch (err) {
+            document.getElementById('overview-metrics').innerHTML = `<div class="inline-notice error">${escHtml(err.message)}</div>`;
+        }
+    }
+
+    function renderOverviewMetrics(data) {
+        const d = data.donations;
+        document.getElementById('overview-metrics').innerHTML = `
+            <div class="metric-card">
+                <div class="metric-label">Organizations</div>
+                <div class="metric-value">${data.total_orgs}</div>
+                <div class="metric-sub">GMHSC Network</div>
+            </div>
+            <div class="metric-card accent-high">
+                <div class="metric-label">Active Needs</div>
+                <div class="metric-value">${data.active_needs}</div>
+                <div class="metric-sub">unfulfilled</div>
+            </div>
+            <div class="metric-card accent-critical">
+                <div class="metric-label">Critical</div>
+                <div class="metric-value">${data.critical_needs}</div>
+                <div class="metric-sub">require action</div>
+            </div>
+            <div class="metric-card accent-primary">
+                <div class="metric-label">Pending</div>
+                <div class="metric-value">${d.pending}</div>
+                <div class="metric-sub">donations unmatched</div>
+            </div>`;
+
+        document.getElementById('pipeline-stages').innerHTML = `
+            <div class="pipeline-stage"><div class="stage-count">${d.pending}</div><div class="stage-label">Pending</div></div>
+            <div class="pipeline-stage"><div class="stage-count">${d.matched}</div><div class="stage-label">Matched</div></div>
+            <div class="pipeline-stage"><div class="stage-count">${d.confirmed}</div><div class="stage-label">Confirmed</div></div>
+            <div class="pipeline-stage"><div class="stage-count">${d.delivered}</div><div class="stage-label">Delivered</div></div>`;
+    }
+
+    async function loadCriticalNeeds() {
+        try {
+            const res = await coordinator.needs({ urgency: 'critical' });
+            const needs = res.data || [];
+            const container = document.getElementById('critical-needs-list');
+            if (!needs.length) {
+                container.innerHTML = '<div class="inline-notice success">No critical shortages right now.</div>';
+                return;
+            }
+            container.innerHTML = needs.slice(0, 8).map(n => `
+                <div style="display:flex;align-items:center;gap:.75rem;padding:.6rem .85rem;background:var(--color-critical-bg);border:1px solid #f5c0bd;border-radius:var(--radius-sm);margin-bottom:.4rem">
+                    <span class="badge badge-critical">Critical</span>
+                    <div style="flex:1">
+                        <strong style="font-size:.9rem">${escHtml(n.org_name)}</strong>
+                        <span class="text-sm text-muted"> needs ${escHtml(String(n.quantity_needed))} ${escHtml(n.unit)} of </span>
+                        <strong style="font-size:.9rem">${escHtml(n.item_name)}</strong>
+                    </div>
+                    <span class="text-xs text-muted">${timeAgo(n.created_at)}</span>
+                </div>`).join('');
+        } catch {}
+    }
+
+    async function loadOrgs() {
+        try {
+            const res = await coordinator.orgs();
+            allOrgsData = res.data || [];
+            renderOrgs();
+        } catch (err) {
+            document.getElementById('orgs-tbody').innerHTML = `<tr><td colspan="6"><div class="inline-notice error">${escHtml(err.message)}</div></td></tr>`;
+        }
+    }
+
+    function renderOrgs() {
+        const tbody = document.getElementById('orgs-tbody');
+        if (!allOrgsData.length) {
+            tbody.innerHTML = '<tr><td colspan="6"><div class="empty-state"><p>No organizations found.</p></div></td></tr>';
+            return;
+        }
+        tbody.innerHTML = allOrgsData.map(o => `
+            <tr>
+                <td><strong>${escHtml(o.name)}</strong><div class="text-xs text-muted">${escHtml(o.address || '')}</div></td>
+                <td><span class="badge badge-${escHtml(o.category)}">${escHtml(CAT_LABELS[o.category] || o.category)}</span></td>
+                <td>${o.critical_needs > 0
+                    ? `<span style="color:var(--color-critical);font-weight:600">${o.critical_needs}</span>`
+                    : `<span class="text-muted">0</span>`}</td>
+                <td>${escHtml(String(o.total_needs))}</td>
+                <td>${escHtml(String(o.surplus_items || 0))}</td>
+                <td class="text-sm text-muted">${o.last_inventory_update ? timeAgo(o.last_inventory_update) : '<span style="color:var(--color-critical)">Never</span>'}</td>
+            </tr>`).join('');
+    }
+
+    async function loadAllNeeds() {
+        const params = {
+            urgency: document.getElementById('needs-urgency-filter').value,
+            search:  document.getElementById('needs-search').value
+        };
+        try {
+            const res = await coordinator.needs(params);
+            allNeedsData = res.data || [];
+            renderAllNeeds();
+        } catch (err) {
+            document.getElementById('all-needs-tbody').innerHTML = `<tr><td colspan="7"><div class="inline-notice error">${escHtml(err.message)}</div></td></tr>`;
+        }
+    }
+
+    function renderAllNeeds() {
+        const tbody = document.getElementById('all-needs-tbody');
+        if (!allNeedsData.length) {
+            tbody.innerHTML = '<tr><td colspan="7"><div class="empty-state"><p>No needs match your filters.</p></div></td></tr>';
+            return;
+        }
+        tbody.innerHTML = allNeedsData.map(n => `
+            <tr>
+                <td><strong>${escHtml(n.org_name)}</strong></td>
+                <td>${escHtml(n.item_name)}</td>
+                <td>${escHtml(n.category)}</td>
+                <td>${escHtml(String(n.quantity_needed))} ${escHtml(n.unit)}</td>
+                <td><span class="badge badge-${escHtml(n.urgency)}">${escHtml(n.urgency)}</span></td>
+                <td class="text-xs text-muted">${escHtml(n.notes || '—')}</td>
+                <td class="text-xs text-muted">${timeAgo(n.created_at)}</td>
+            </tr>`).join('');
+    }
+
+    async function loadDonations() {
+        const status = document.getElementById('donation-status-filter').value;
+        try {
+            const res = await coordinator.donations(status ? { status } : {});
+            allDonationsData = res.data || [];
+            renderDonations();
+        } catch (err) {
+            document.getElementById('donations-tbody').innerHTML = `<tr><td colspan="7"><div class="inline-notice error">${escHtml(err.message)}</div></td></tr>`;
+        }
+    }
+
+    function renderDonations() {
+        const tbody = document.getElementById('donations-tbody');
+        if (!allDonationsData.length) {
+            tbody.innerHTML = '<tr><td colspan="7"><div class="empty-state"><p>No donations match the current filter.</p></div></td></tr>';
+            return;
+        }
+        tbody.innerHTML = allDonationsData.map(d => `
+            <tr>
+                <td><strong>${escHtml(d.item_name)}</strong></td>
+                <td>${escHtml(String(d.quantity))} ${escHtml(d.unit)}</td>
+                <td>${escHtml(d.donor_name)}<div class="text-xs text-muted">${escHtml(d.donor_email)}</div></td>
+                <td>${d.matched_org_name ? escHtml(d.matched_org_name) : '<span class="text-muted">Unmatched</span>'}</td>
+                <td><span class="badge badge-${escHtml(d.status)}">${escHtml(d.status)}</span></td>
+                <td class="text-xs text-muted">${formatDate(d.created_at)}</td>
+                <td>
+                    <select class="form-control" style="font-size:.75rem;padding:.25rem .5rem;min-width:120px" onchange="updateDonationStatus('${escHtml(d.id)}', this.value)" ${d.status === 'delivered' ? 'disabled' : ''}>
+                        <option value="">Change status</option>
+                        <option value="pending" ${d.status === 'pending' ? 'selected' : ''}>Pending</option>
+                        <option value="matched" ${d.status === 'matched' ? 'selected' : ''}>Matched</option>
+                        <option value="confirmed" ${d.status === 'confirmed' ? 'selected' : ''}>Confirmed</option>
+                        <option value="delivered" ${d.status === 'delivered' ? 'selected' : ''}>Delivered</option>
+                    </select>
+                </td>
+            </tr>`).join('');
+    }
+
+    async function updateDonationStatus(id, status) {
+        if (!status) return;
+        try {
+            await coordinator.updateDonationStatus(id, status);
+            toast('Donation status updated.', 'success');
+            await loadDonations();
+        } catch (err) {
+            toast(err.message || 'Failed to update status.', 'error');
+        }
+    }
+
+    // AI Insights
+    async function loadInsights() {
+        const btn = document.getElementById('insights-btn');
+        btn.disabled = true;
+        btn.textContent = 'Analyzing...';
+        document.getElementById('insights-placeholder').style.display = 'none';
+        document.getElementById('insights-panel').style.display = 'none';
+        document.getElementById('insights-loading').style.display = 'block';
+
+        try {
+            const res = await aiApi.networkInsights();
+            const data = res.data;
+
+            document.getElementById('insights-summary').textContent = data.summary || '';
+            document.getElementById('insights-timestamp').textContent = new Date().toLocaleString('en-CA');
+
+            // Alerts
+            const alertsEl = document.getElementById('insights-alerts');
+            if (data.alerts && data.alerts.length) {
+                alertsEl.innerHTML = data.alerts.map(a => `<div class="alert-item">${escHtml(a)}</div>`).join('');
+                document.getElementById('alerts-section').style.display = 'block';
+            } else {
+                document.getElementById('alerts-section').style.display = 'none';
+            }
+
+            // Redistribution
+            const redEl = document.getElementById('insights-redistribution');
+            if (data.redistribution_opportunities && data.redistribution_opportunities.length) {
+                redEl.innerHTML = data.redistribution_opportunities.map(r => `
+                    <div class="insight-item">
+                        <strong>${escHtml(r.from_org)}</strong> has surplus &rarr; <strong>${escHtml(r.to_org)}</strong> needs <strong>${escHtml(r.item)}</strong>
+                        ${r.note ? `<div class="text-xs text-muted">${escHtml(r.note)}</div>` : ''}
+                    </div>`).join('');
+                document.getElementById('redistribution-section').style.display = 'block';
+            } else {
+                document.getElementById('redistribution-section').style.display = 'none';
+            }
+
+            // Follow-up
+            const fuEl = document.getElementById('insights-followup');
+            if (data.follow_up_orgs && data.follow_up_orgs.length) {
+                fuEl.innerHTML = data.follow_up_orgs.map(f => `
+                    <div class="insight-item">
+                        <strong>${escHtml(f.org)}</strong> &mdash; ${escHtml(f.reason)}
+                    </div>`).join('');
+                document.getElementById('followup-section').style.display = 'block';
+            } else {
+                document.getElementById('followup-section').style.display = 'none';
+            }
+
+            document.getElementById('insights-loading').style.display = 'none';
+            document.getElementById('insights-panel').style.display = 'block';
+        } catch (err) {
+            document.getElementById('insights-loading').style.display = 'none';
+            document.getElementById('insights-placeholder').style.display = 'block';
+            document.getElementById('insights-placeholder').innerHTML = `<div class="inline-notice error">${escHtml(err.message || 'AI insights failed. Ensure ANTHROPIC_API_KEY is set.')}</div>`;
+            toast(err.message || 'AI insights failed.', 'error');
+        } finally {
+            btn.disabled = false;
+            btn.textContent = 'Regenerate Insights';
+        }
+    }
+
+    // Filter event listeners
+    document.getElementById('needs-urgency-filter').addEventListener('change', () => { allNeedsData = []; loadAllNeeds(); });
+    document.getElementById('needs-search').addEventListener('input', debounce(() => { allNeedsData = []; loadAllNeeds(); }, 400));
+    document.getElementById('donation-status-filter').addEventListener('change', () => { allDonationsData = []; loadDonations(); });
+
+    function debounce(fn, delay) {
+        let t;
+        return function (...args) { clearTimeout(t); t = setTimeout(() => fn.apply(this, args), delay); };
+    }
+
+    async function handleLogout() {
+        try { await auth.logout(); } catch {}
+        window.location.href = '/login';
+    }
+
+    init();
+</script>
+
+</body>
+</html>

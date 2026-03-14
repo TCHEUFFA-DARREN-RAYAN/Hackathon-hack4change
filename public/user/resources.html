@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CommonGround — Get Help</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <div class="user-app">
+    <div class="back-bar">
+      <a href="/user/home">← Back</a>
+      <span style="flex:1;text-align:center;font-weight:600;">Get Help</span>
+    </div>
+
+    <div class="page-content">
+      <input type="search" class="search-box" id="search" placeholder="Search shelter, food, health...">
+
+      <div class="section-title">Categories</div>
+      <div class="service-grid">
+        <a href="/user/resources?cat=shelter" class="service-card"><span class="icon-wrap">🏠</span><span class="label">Shelter</span></a>
+        <a href="/user/resources?cat=food" class="service-card"><span class="icon-wrap">🍲</span><span class="label">Food</span></a>
+        <a href="/user/resources?cat=medical" class="service-card"><span class="icon-wrap">🩺</span><span class="label">Medical</span></a>
+        <a href="/user/resources?cat=jobs" class="service-card"><span class="icon-wrap">💼</span><span class="label">Jobs</span></a>
+        <a href="/user/resources?cat=legal" class="service-card"><span class="icon-wrap">⚖️</span><span class="label">Legal</span></a>
+        <a href="/user/resources?cat=hygiene" class="service-card"><span class="icon-wrap">🚿</span><span class="label">Hygiene</span></a>
+      </div>
+
+      <h2 class="section-title">Nearby now</h2>
+      <div id="resource-list" class="nearby-list"></div>
+    </div>
+
+    <nav class="bottom-nav">
+      <a href="/user/home"><span class="nav-icon">🏠</span> Home</a>
+      <a href="/user/map"><span class="nav-icon">🗺️</span> Map</a>
+      <a href="/user/messages"><span class="nav-icon">💬</span> Messages</a>
+      <a href="/user/profile"><span class="nav-icon">👤</span> Profile</a>
+    </nav>
+  </div>
+  <script src="../js/api.js"></script>
+  <script>
+    const params = new URLSearchParams(location.search);
+    const cat = params.get('cat');
+
+    async function load() {
+      try {
+        const { data } = await resources.list(cat || '');
+        const list = document.getElementById('resource-list');
+        list.innerHTML = (data || []).map(r => `
+          <a href="/user/messages" class="nearby-card">
+            <div class="map-thumb">📍</div>
+            <div class="info">
+              <div class="title">${r.name}</div>
+              <div class="meta">${r.address || ''} · ${r.current_count || 0}/${r.capacity || 0}</div>
+            </div>
+          </a>
+        `).join('') || '<p style="color:var(--text-muted);">No resources in this category</p>';
+      } catch (e) {
+        document.getElementById('resource-list').innerHTML = '<p style="color:var(--text-muted);">Unable to load</p>';
+      }
+    }
+    load();
+  </script>
+</body>
+</html>

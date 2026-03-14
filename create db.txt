@@ -1,0 +1,10 @@
+run this on work bench 
+
+-- Drop the existing user first
+DROP USER IF EXISTS 'hackaton'@'localhost';
+
+-- Now recreate everything cleanly
+CREATE USER 'hackaton'@'localhost' IDENTIFIED BY 'Hackathon123';
+CREATE DATABASE IF NOT EXISTS hackaton_test;
+GRANT ALL PRIVILEGES ON hackaton_test.* TO 'hackaton'@'localhost';
+FLUSH PRIVILEGES;

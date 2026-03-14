@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Staff Portal — CommonGround</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+<nav class="site-nav">
+    <div class="nav-inner">
+        <a href="/" class="nav-brand">CommonGround <span>GMHSC Network</span></a>
+        <div class="nav-actions">
+            <span class="text-muted text-sm" id="nav-org-name"></span>
+            <button class="btn btn-ghost btn-sm" onclick="handleLogout()">Sign out</button>
+        </div>
+    </div>
+</nav>
+
+<div class="portal-layout">
+
+    <nav class="portal-sidebar" aria-label="Staff navigation">
+        <div class="sidebar-section">
+            <span class="sidebar-label">Your Organization</span>
+            <a href="#" data-section="inventory" class="active" onclick="showSection('inventory', this)">Inventory</a>
+            <a href="#" data-section="needs" onclick="showSection('needs', this)">Needs</a>
+            <a href="#" data-section="donations" onclick="showSection('donations', this)">Incoming Donations</a>
+        </div>
+        <div class="sidebar-section" style="margin-top:auto;padding-top:1rem;border-top:1px solid var(--color-border-lt)">
+            <a href="/" style="color:var(--color-text-muted)">View Public Board</a>
+        </div>
+    </nav>
+
+    <main class="portal-main">
+        <div class="portal-header">
+            <div>
+                <h1 id="page-title">Inventory</h1>
+                <div class="text-muted text-sm" id="org-subtitle">Loading...</div>
+            </div>
+            <div id="header-actions"></div>
+        </div>
+
+        <!-- Inventory section -->
+        <div id="section-inventory">
+            <div class="metrics-row" id="inventory-metrics">
+                <div class="metric-card"><div class="metric-label">Total Items</div><div class="metric-value skeleton" style="height:2rem;width:60px;display:inline-block"></div></div>
+                <div class="metric-card accent-critical"><div class="metric-label">Critical</div><div class="metric-value skeleton" style="height:2rem;width:60px;display:inline-block"></div></div>
+                <div class="metric-card accent-accent"><div class="metric-label">Surplus</div><div class="metric-value skeleton" style="height:2rem;width:60px;display:inline-block"></div></div>
+            </div>
+
+            <div class="section">
+                <div class="section-header">
+                    <h2>Current inventory</h2>
+                    <button class="btn btn-primary btn-sm" onclick="openAddInventory()">Add item</button>
+                </div>
+                <div class="table-wrap">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Item</th>
+                                <th>Category</th>
+                                <th>Quantity</th>
+                                <th>Status</th>
+                                <th>Expires</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="inventory-tbody">
+                            <tr><td colspan="6"><div class="skeleton skeleton-text wide"></div></td></tr>
+                            <tr><td colspan="6"><div class="skeleton skeleton-text" style="width:70%"></div></td></tr>
+                            <tr><td colspan="6"><div class="skeleton skeleton-text" style="width:55%"></div></td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Needs section -->
+        <div id="section-needs" style="display:none">
+            <div class="section">
+                <div class="section-header">
+                    <h2>Active needs</h2>
+                    <button class="btn btn-primary btn-sm" onclick="openAddNeed()">Post a need</button>
+                </div>
+                <div class="table-wrap">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Item</th>
+                                <th>Category</th>
+                                <th>Qty needed</th>
+                                <th>Urgency</th>
+                                <th>Status</th>
+                                <th>Notes</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="needs-tbody">
+                            <tr><td colspan="7"><div class="skeleton skeleton-text wide"></div></td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Donations section -->
+        <div id="section-donations" style="display:none">
+            <div class="section">
+                <div class="section-header">
+                    <h2>Incoming donations</h2>
+                </div>
+                <div class="inline-notice info">These donations have been matched to your organization and are awaiting confirmation. Confirm receipt to close the loop with the donor.</div>
+                <div class="table-wrap" style="margin-top:1rem">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Item</th>
+                                <th>Qty</th>
+                                <th>Condition</th>
+                                <th>Donor</th>
+                                <th>Contact</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="donations-tbody">
+                            <tr><td colspan="7"><div class="skeleton skeleton-text wide"></div></td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+<!-- Add/Edit Inventory Modal -->
+<div id="inventory-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:1000;align-items:center;justify-content:center;padding:1rem">
+    <div class="card" style="width:100%;max-width:480px;max-height:90vh;overflow-y:auto">
+        <div class="card-header">
+            <h3 id="inventory-modal-title">Add inventory item</h3>
+            <button class="btn btn-ghost btn-sm" onclick="closeModal('inventory-modal')">Close</button>
+        </div>
+        <div id="inventory-modal-body">
+            <div class="form-group">
+                <label class="form-label" for="inv-item-name">Item name <span class="req">*</span></label>
+                <input type="text" id="inv-item-name" class="form-control" placeholder="e.g. Men's winter jackets">
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:.85rem">
+                <div class="form-group">
+                    <label class="form-label" for="inv-category">Category <span class="req">*</span></label>
+                    <select id="inv-category" class="form-control">
+                        <option value="">Select...</option>
+                        <option value="clothing">Clothing</option>
+                        <option value="bedding">Bedding</option>
+                        <option value="food">Food</option>
+                        <option value="hygiene">Hygiene</option>
+                        <option value="baby_supplies">Baby Supplies</option>
+                        <option value="goods">Household Goods</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="inv-status">Status <span class="req">*</span></label>
+                    <select id="inv-status" class="form-control">
+                        <option value="available">Available</option>
+                        <option value="low">Low</option>
+                        <option value="critical">Critical</option>
+                        <option value="surplus">Surplus</option>
+                    </select>
+                </div>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:.85rem">
+                <div class="form-group">
+                    <label class="form-label" for="inv-quantity">Quantity</label>
+                    <input type="number" id="inv-quantity" class="form-control" min="0" value="0">
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="inv-unit">Unit</label>
+                    <select id="inv-unit" class="form-control">
+                        <option value="items">Items</option>
+                        <option value="pairs">Pairs</option>
+                        <option value="bags">Bags</option>
+                        <option value="boxes">Boxes</option>
+                        <option value="cans">Cans</option>
+                        <option value="bottles">Bottles</option>
+                        <option value="packs">Packs</option>
+                        <option value="kg">Kilograms</option>
+                        <option value="sets">Sets</option>
+                        <option value="loaves">Loaves</option>
+                        <option value="portions">Portions</option>
+                        <option value="litres">Litres</option>
+                        <option value="bars">Bars</option>
+                        <option value="tubes">Tubes</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="form-label" for="inv-expiry">Expiry date <span class="text-muted">(for food/perishables)</span></label>
+                <input type="date" id="inv-expiry" class="form-control">
+            </div>
+            <div class="form-group">
+                <label class="form-label" for="inv-notes">Notes</label>
+                <textarea id="inv-notes" class="form-control" rows="2" placeholder="Size, brand, or other details"></textarea>
+            </div>
+            <input type="hidden" id="inv-edit-id">
+            <div style="display:flex;gap:.75rem;margin-top:1rem;justify-content:flex-end">
+                <button class="btn btn-ghost" onclick="closeModal('inventory-modal')">Cancel</button>
+                <button class="btn btn-primary" id="inv-save-btn" onclick="saveInventoryItem()">Save item</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add/Edit Need Modal -->
+<div id="need-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:1000;align-items:center;justify-content:center;padding:1rem">
+    <div class="card" style="width:100%;max-width:480px;max-height:90vh;overflow-y:auto">
+        <div class="card-header">
+            <h3 id="need-modal-title">Post a need</h3>
+            <button class="btn btn-ghost btn-sm" onclick="closeModal('need-modal')">Close</button>
+        </div>
+        <div class="form-group">
+            <label class="form-label" for="need-item-name">Item needed <span class="req">*</span></label>
+            <input type="text" id="need-item-name" class="form-control" placeholder="e.g. Sleeping bags">
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:.85rem">
+            <div class="form-group">
+                <label class="form-label" for="need-category">Category <span class="req">*</span></label>
+                <select id="need-category" class="form-control">
+                    <option value="">Select...</option>
+                    <option value="clothing">Clothing</option>
+                    <option value="bedding">Bedding</option>
+                    <option value="food">Food</option>
+                    <option value="hygiene">Hygiene</option>
+                    <option value="baby_supplies">Baby Supplies</option>
+                    <option value="goods">Household Goods</option>
+                    <option value="other">Other</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="form-label" for="need-urgency">Urgency <span class="req">*</span></label>
+                <select id="need-urgency" class="form-control">
+                    <option value="low">Low</option>
+                    <option value="medium" selected>Medium</option>
+                    <option value="high">High</option>
+                    <option value="critical">Critical</option>
+                </select>
+            </div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:.85rem">
+            <div class="form-group">
+                <label class="form-label" for="need-qty">Quantity needed</label>
+                <input type="number" id="need-qty" class="form-control" min="1" value="1">
+            </div>
+            <div class="form-group">
+                <label class="form-label" for="need-unit">Unit</label>
+                <select id="need-unit" class="form-control">
+                    <option value="items">Items</option>
+                    <option value="pairs">Pairs</option>
+                    <option value="boxes">Boxes</option>
+                    <option value="cans">Cans</option>
+                    <option value="packs">Packs</option>
+                    <option value="sets">Sets</option>
+                    <option value="bottles">Bottles</option>
+                    <option value="kg">Kilograms</option>
+                    <option value="tubes">Tubes</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="form-label" for="need-notes">Notes</label>
+            <textarea id="need-notes" class="form-control" rows="2" placeholder="Context for donors — why it's needed, sizes, brand preferences, etc."></textarea>
+        </div>
+        <input type="hidden" id="need-edit-id">
+        <div style="display:flex;gap:.75rem;margin-top:1rem;justify-content:flex-end">
+            <button class="btn btn-ghost" onclick="closeModal('need-modal')">Cancel</button>
+            <button class="btn btn-primary" id="need-save-btn" onclick="saveNeed()">Post need</button>
+        </div>
+    </div>
+</div>
+
+<script src="/js/api.js"></script>
+<script src="/js/utils.js"></script>
+<script>
+    let currentUser = null;
+    let inventoryData = [];
+    let needsData = [];
+
+    async function init() {
+        currentUser = await requireAuth('staff');
+        if (!currentUser) return;
+
+        document.getElementById('nav-org-name').textContent = currentUser.orgName || '';
+        document.getElementById('org-subtitle').textContent = currentUser.orgName || '';
+
+        await Promise.all([loadInventory(), loadNeeds(), loadDonations()]);
+    }
+
+    function showSection(name, linkEl) {
+        ['inventory', 'needs', 'donations'].forEach(s => {
+            document.getElementById(`section-${s}`).style.display = s === name ? 'block' : 'none';
+        });
+        document.querySelectorAll('.portal-sidebar a').forEach(a => a.classList.remove('active'));
+        if (linkEl) linkEl.classList.add('active');
+
+        const titles = { inventory: 'Inventory', needs: 'Needs', donations: 'Incoming Donations' };
+        document.getElementById('page-title').textContent = titles[name] || name;
+    }
+
+    // --- Inventory ---
+
+    async function loadInventory() {
+        try {
+            const res = await staff.inventory();
+            inventoryData = res.data || [];
+            renderInventory();
+            renderInventoryMetrics();
+        } catch (err) {
+            document.getElementById('inventory-tbody').innerHTML = `<tr><td colspan="6"><div class="inline-notice error">${escHtml(err.message)}</div></td></tr>`;
+        }
+    }
+
+    function renderInventoryMetrics() {
+        const critical = inventoryData.filter(i => i.status === 'critical').length;
+        const surplus  = inventoryData.filter(i => i.status === 'surplus').length;
+        document.getElementById('inventory-metrics').innerHTML = `
+            <div class="metric-card"><div class="metric-label">Total Items</div><div class="metric-value">${inventoryData.length}</div></div>
+            <div class="metric-card accent-critical"><div class="metric-label">Critical</div><div class="metric-value">${critical}</div></div>
+            <div class="metric-card accent-accent"><div class="metric-label">Surplus</div><div class="metric-value">${surplus}</div></div>`;
+    }
+
+    function renderInventory() {
+        const tbody = document.getElementById('inventory-tbody');
+        if (!inventoryData.length) {
+            tbody.innerHTML = `<tr><td colspan="6"><div class="empty-state"><span class="empty-icon">&#9723;</span><h3>No inventory items yet</h3><p>Add your first item to let coordinators and donors see what you have.</p></div></td></tr>`;
+            return;
+        }
+        tbody.innerHTML = inventoryData.map(item => `
+            <tr>
+                <td><strong>${escHtml(item.item_name)}</strong>${item.notes ? `<div class="text-xs text-muted">${escHtml(item.notes)}</div>` : ''}</td>
+                <td>${escHtml(item.category)}</td>
+                <td>${escHtml(String(item.quantity))} ${escHtml(item.unit)}</td>
+                <td><span class="badge badge-${escHtml(item.status)}">${escHtml(item.status)}</span></td>
+                <td>${item.expiry_date ? formatDate(item.expiry_date) : '<span class="text-muted">—</span>'}</td>
+                <td>
+                    <div class="gap-row">
+                        <button class="btn btn-ghost btn-sm" onclick="openEditInventory('${escHtml(item.id)}')">Edit</button>
+                        <button class="btn btn-danger btn-sm" onclick="deleteInventoryItem('${escHtml(item.id)}', '${escHtml(item.item_name).replace(/'/g, "\\'")}')">Delete</button>
+                    </div>
+                </td>
+            </tr>`).join('');
+    }
+
+    function openAddInventory() {
+        document.getElementById('inventory-modal-title').textContent = 'Add inventory item';
+        document.getElementById('inv-item-name').value = '';
+        document.getElementById('inv-category').value = '';
+        document.getElementById('inv-status').value = 'available';
+        document.getElementById('inv-quantity').value = 0;
+        document.getElementById('inv-unit').value = 'items';
+        document.getElementById('inv-expiry').value = '';
+        document.getElementById('inv-notes').value = '';
+        document.getElementById('inv-edit-id').value = '';
+        document.getElementById('inv-save-btn').textContent = 'Save item';
+        openModal('inventory-modal');
+    }
+
+    function openEditInventory(id) {
+        const item = inventoryData.find(i => i.id === id);
+        if (!item) return;
+        document.getElementById('inventory-modal-title').textContent = 'Edit inventory item';
+        document.getElementById('inv-item-name').value = item.item_name;
+        document.getElementById('inv-category').value = item.category;
+        document.getElementById('inv-status').value = item.status;
+        document.getElementById('inv-quantity').value = item.quantity;
+        document.getElementById('inv-unit').value = item.unit;
+        document.getElementById('inv-expiry').value = item.expiry_date ? item.expiry_date.substring(0, 10) : '';
+        document.getElementById('inv-notes').value = item.notes || '';
+        document.getElementById('inv-edit-id').value = item.id;
+        document.getElementById('inv-save-btn').textContent = 'Save changes';
+        openModal('inventory-modal');
+    }
+
+    async function saveInventoryItem() {
+        const editId  = document.getElementById('inv-edit-id').value;
+        const itemName = document.getElementById('inv-item-name').value.trim();
+        const category = document.getElementById('inv-category').value;
+
+        if (!itemName || !category) { toast('Item name and category are required.', 'error'); return; }
+
+        const data = {
+            item_name:   itemName,
+            category:    category,
+            status:      document.getElementById('inv-status').value,
+            quantity:    parseInt(document.getElementById('inv-quantity').value) || 0,
+            unit:        document.getElementById('inv-unit').value,
+            expiry_date: document.getElementById('inv-expiry').value || null,
+            notes:       document.getElementById('inv-notes').value.trim() || null
+        };
+
+        const btn = document.getElementById('inv-save-btn');
+        btn.disabled = true;
+        try {
+            if (editId) await staff.updateInventory(editId, data);
+            else await staff.addInventory(data);
+
+            closeModal('inventory-modal');
+            toast(editId ? 'Item updated.' : 'Item added.', 'success');
+            await loadInventory();
+        } catch (err) {
+            toast(err.message || 'Failed to save item.', 'error');
+        } finally {
+            btn.disabled = false;
+        }
+    }
+
+    async function deleteInventoryItem(id, name) {
+        if (!confirm(`Remove "${name}" from inventory?`)) return;
+        try {
+            await staff.deleteInventory(id);
+            toast('Item removed.', 'success');
+            await loadInventory();
+        } catch (err) {
+            toast(err.message || 'Failed to delete item.', 'error');
+        }
+    }
+
+    // --- Needs ---
+
+    async function loadNeeds() {
+        try {
+            const res = await staff.needs();
+            needsData = res.data || [];
+            renderNeeds();
+        } catch (err) {
+            document.getElementById('needs-tbody').innerHTML = `<tr><td colspan="7"><div class="inline-notice error">${escHtml(err.message)}</div></td></tr>`;
+        }
+    }
+
+    function renderNeeds() {
+        const tbody = document.getElementById('needs-tbody');
+        if (!needsData.length) {
+            tbody.innerHTML = `<tr><td colspan="7"><div class="empty-state"><span class="empty-icon">&#9723;</span><h3>No active needs posted</h3><p>Post a need to let donors and the network know what your organization requires.</p></div></td></tr>`;
+            return;
+        }
+        tbody.innerHTML = needsData.map(n => `
+            <tr style="${n.fulfilled ? 'opacity:.55' : ''}">
+                <td><strong>${escHtml(n.item_name)}</strong></td>
+                <td>${escHtml(n.category)}</td>
+                <td>${escHtml(String(n.quantity_needed))} ${escHtml(n.unit)}</td>
+                <td><span class="badge badge-${escHtml(n.urgency)}">${escHtml(n.urgency)}</span></td>
+                <td>${n.fulfilled ? '<span class="badge badge-confirmed">Fulfilled</span>' : '<span class="badge badge-pending">Open</span>'}</td>
+                <td><span class="text-xs text-muted">${escHtml(n.notes || '—')}</span></td>
+                <td>
+                    <div class="gap-row">
+                        ${!n.fulfilled ? `
+                            <button class="btn btn-accent btn-sm" onclick="fulfillNeed('${escHtml(n.id)}', '${escHtml(n.item_name).replace(/'/g, "\\'")}')">Mark fulfilled</button>
+                            <button class="btn btn-ghost btn-sm" onclick="openEditNeed('${escHtml(n.id)}')">Edit</button>
+                            <button class="btn btn-danger btn-sm" onclick="deleteNeed('${escHtml(n.id)}')">Delete</button>
+                        ` : ''}
+                    </div>
+                </td>
+            </tr>`).join('');
+    }
+
+    function openAddNeed() {
+        document.getElementById('need-modal-title').textContent = 'Post a need';
+        document.getElementById('need-item-name').value = '';
+        document.getElementById('need-category').value = '';
+        document.getElementById('need-urgency').value = 'medium';
+        document.getElementById('need-qty').value = 1;
+        document.getElementById('need-unit').value = 'items';
+        document.getElementById('need-notes').value = '';
+        document.getElementById('need-edit-id').value = '';
+        document.getElementById('need-save-btn').textContent = 'Post need';
+        openModal('need-modal');
+    }
+
+    function openEditNeed(id) {
+        const n = needsData.find(x => x.id === id);
+        if (!n) return;
+        document.getElementById('need-modal-title').textContent = 'Edit need';
+        document.getElementById('need-item-name').value = n.item_name;
+        document.getElementById('need-category').value = n.category;
+        document.getElementById('need-urgency').value = n.urgency;
+        document.getElementById('need-qty').value = n.quantity_needed;
+        document.getElementById('need-unit').value = n.unit;
+        document.getElementById('need-notes').value = n.notes || '';
+        document.getElementById('need-edit-id').value = n.id;
+        document.getElementById('need-save-btn').textContent = 'Save changes';
+        openModal('need-modal');
+    }
+
+    async function saveNeed() {
+        const editId = document.getElementById('need-edit-id').value;
+        const item   = document.getElementById('need-item-name').value.trim();
+        const cat    = document.getElementById('need-category').value;
+        if (!item || !cat) { toast('Item name and category are required.', 'error'); return; }
+
+        const data = {
+            item_name:       item,
+            category:        cat,
+            urgency:         document.getElementById('need-urgency').value,
+            quantity_needed: parseInt(document.getElementById('need-qty').value) || 1,
+            unit:            document.getElementById('need-unit').value,
+            notes:           document.getElementById('need-notes').value.trim() || null
+        };
+
+        const btn = document.getElementById('need-save-btn');
+        btn.disabled = true;
+        try {
+            if (editId) await staff.updateNeed(editId, data);
+            else await staff.addNeed(data);
+            closeModal('need-modal');
+            toast(editId ? 'Need updated.' : 'Need posted.', 'success');
+            await loadNeeds();
+        } catch (err) {
+            toast(err.message || 'Failed to save.', 'error');
+        } finally {
+            btn.disabled = false;
+        }
+    }
+
+    async function fulfillNeed(id, name) {
+        if (!confirm(`Mark "${name}" as fulfilled?`)) return;
+        try {
+            await staff.fulfillNeed(id);
+            toast('Need marked as fulfilled.', 'success');
+            await loadNeeds();
+        } catch (err) {
+            toast(err.message || 'Failed.', 'error');
+        }
+    }
+
+    async function deleteNeed(id) {
+        if (!confirm('Delete this need?')) return;
+        try {
+            await staff.deleteNeed(id);
+            toast('Need removed.', 'success');
+            await loadNeeds();
+        } catch (err) {
+            toast(err.message || 'Failed.', 'error');
+        }
+    }
+
+    // --- Donations ---
+
+    async function loadDonations() {
+        try {
+            const res = await staff.donations();
+            renderDonations(res.data || []);
+        } catch (err) {
+            document.getElementById('donations-tbody').innerHTML = `<tr><td colspan="7"><div class="inline-notice error">${escHtml(err.message)}</div></td></tr>`;
+        }
+    }
+
+    function renderDonations(donations) {
+        const tbody = document.getElementById('donations-tbody');
+        if (!donations.length) {
+            tbody.innerHTML = `<tr><td colspan="7"><div class="empty-state"><span class="empty-icon">&#9723;</span><h3>No incoming donations</h3><p>Donations matched to your organization will appear here.</p></div></td></tr>`;
+            return;
+        }
+        tbody.innerHTML = donations.map(d => `
+            <tr>
+                <td><strong>${escHtml(d.item_name)}</strong></td>
+                <td>${escHtml(String(d.quantity))} ${escHtml(d.unit)}</td>
+                <td>${escHtml(d.condition)}</td>
+                <td>${escHtml(d.donor_name)}</td>
+                <td><span class="text-sm">${escHtml(d.donor_email)}${d.donor_phone ? '<br>' + escHtml(d.donor_phone) : ''}</span></td>
+                <td><span class="badge badge-${escHtml(d.status)}">${escHtml(d.status)}</span></td>
+                <td>
+                    ${d.status === 'matched' ? `<button class="btn btn-accent btn-sm" onclick="confirmDonation('${escHtml(d.id)}')">Confirm receipt</button>` : ''}
+                </td>
+            </tr>`).join('');
+    }
+
+    async function confirmDonation(id) {
+        try {
+            await staff.confirmDonation(id);
+            toast('Donation confirmed. The donor has been notified.', 'success');
+            await loadDonations();
+        } catch (err) {
+            toast(err.message || 'Failed to confirm donation.', 'error');
+        }
+    }
+
+    // --- Modal helpers ---
+
+    function openModal(id) {
+        const el = document.getElementById(id);
+        el.style.display = 'flex';
+        setTimeout(() => el.querySelector('.card').focus?.(), 50);
+    }
+    function closeModal(id) {
+        document.getElementById(id).style.display = 'none';
+    }
+
+    // Close modal on backdrop click
+    document.querySelectorAll('[id$="-modal"]').forEach(modal => {
+        modal.addEventListener('click', e => {
+            if (e.target === modal) closeModal(modal.id);
+        });
+    });
+
+    async function handleLogout() {
+        try { await auth.logout(); } catch {}
+        window.location.href = '/login';
+    }
+
+    init();
+</script>
+
+</body>
+</html>

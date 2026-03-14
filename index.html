@@ -1,0 +1,55 @@
+<!-- this page will just redirect you to the main index page bc the setup is a little complex for github pages or render -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CommonGround</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #1a5f4a 0%, #2d8b6f 100%);
+            color: white;
+        }
+        .redirect-container {
+            text-align: center;
+            padding: 2rem;
+        }
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+            margin: 0 auto 1rem auto;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+
+    <!-- Immediate redirect -->
+    <script>
+        // Redirect immediately
+        window.location.replace('./public/index.html');
+    </script>
+
+    <!-- Meta refresh as backup -->
+    <meta http-equiv="refresh" content="0; url=./public/index.html">
+</head>
+<body>
+    <div class="redirect-container">
+        <div class="spinner"></div>
+        <h2>Loading CommonGround...</h2>
+        <p>If you're not automatically redirected, <a href="./public/index.html" style="color: #fff; text-decoration: underline;">click here</a></p>
+    </div>
+</body>
+</html>
