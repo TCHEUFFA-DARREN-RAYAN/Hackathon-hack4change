@@ -1,5 +1,6 @@
 'use client';
 import React, { useState, useRef, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Eye, EyeOff, Mail, Lock, Chrome, Twitter, Gamepad2 } from 'lucide-react';
 
 interface LoginFormProps {
@@ -78,6 +79,7 @@ const ToggleSwitch: React.FC<ToggleSwitchProps> = ({ checked, onChange, id }) =>
 
 // VideoBackground Component
 const VideoBackground: React.FC<VideoBackgroundProps> = ({ videoUrl }) => {
+    const { t } = useTranslation();
     const videoRef = useRef<HTMLVideoElement>(null);
 
     useEffect(() => {
@@ -100,7 +102,7 @@ const VideoBackground: React.FC<VideoBackgroundProps> = ({ videoUrl }) => {
                 playsInline
             >
                 <source src={videoUrl} type="video/mp4" />
-                Your browser does not support the video tag.
+                {t('login.videoUnsupported')}
             </video>
         </div>
     );
@@ -108,6 +110,7 @@ const VideoBackground: React.FC<VideoBackgroundProps> = ({ videoUrl }) => {
 
 // Main LoginForm Component
 const LoginForm: React.FC<LoginFormProps> = ({ onSubmit }) => {
+    const { t } = useTranslation();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
@@ -134,17 +137,17 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSubmit }) => {
                 <h2 className="text-3xl font-bold mb-2 relative group">
                     <span className="absolute -inset-1 bg-gradient-to-r from-purple-600/30 via-pink-500/30 to-blue-500/30 blur-xl opacity-75 group-hover:opacity-100 transition-all duration-500 animate-pulse"></span>
                     <span className="relative inline-block text-3xl font-bold mb-2 text-white">
-                        NexusGate
+                        {t('login.title')}
                     </span>
                     <span className="absolute -inset-0.5 bg-gradient-to-r from-purple-500/20 to-pink-500/20 blur-sm opacity-0 group-hover:opacity-100 transition-all duration-300"></span>
                 </h2>
                 <p className="text-white/80 flex flex-col items-center space-y-1">
                     <span className="relative group cursor-default">
                         <span className="absolute -inset-1 bg-gradient-to-r from-purple-600/20 to-pink-600/20 blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-500"></span>
-                        <span className="relative inline-block animate-pulse">Your gaming universe awaits</span>
+                        <span className="relative inline-block animate-pulse">{t('login.tagline')}</span>
                     </span>
                     <span className="text-xs text-white/50 animate-pulse">
-                        [Press Enter to join the adventure]
+                        {t('login.pressEnter')}
                     </span>
                     <div className="flex space-x-2 text-xs text-white/40">
                         <span className="animate-pulse">⚔️</span>
@@ -158,7 +161,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSubmit }) => {
                 <FormInput
                     icon={<Mail className="text-white/60" size={18} />}
                     type="email"
-                    placeholder="Email address"
+                    placeholder={t('login.emailPlaceholder')}
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     required
@@ -168,7 +171,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSubmit }) => {
                     <FormInput
                         icon={<Lock className="text-white/60" size={18} />}
                         type={showPassword ? "text" : "password"}
-                        placeholder="Password"
+                        placeholder={t('login.passwordPlaceholder')}
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                         required
@@ -177,7 +180,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSubmit }) => {
                         type="button"
                         className="absolute right-3 top-1/2 -translate-y-1/2 text-white/60 hover:text-white focus:outline-none transition-colors"
                         onClick={() => setShowPassword(!showPassword)}
-                        aria-label={showPassword ? "Hide password" : "Show password"}
+                        aria-label={showPassword ? t('login.hidePassword') : t('login.showPassword')}
                     >
                         {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                     </button>
@@ -197,11 +200,11 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSubmit }) => {
                             className="text-sm text-white/80 cursor-pointer hover:text-white transition-colors"
                             onClick={() => setRemember(!remember)}
                         >
-                            Remember me
+                            {t('login.rememberMe')}
                         </label>
                     </div>
                     <a href="#" className="text-sm text-white/80 hover:text-white transition-colors">
-                        Forgot password?
+                        {t('login.forgotPassword')}
                     </a>
                 </div>
 
@@ -213,7 +216,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSubmit }) => {
                             : 'bg-purple-600 hover:bg-purple-700'
                         } text-white font-medium transition-all duration-200 ease-in-out transform hover:-translate-y-1 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-opacity-50 disabled:opacity-70 disabled:cursor-not-allowed disabled:transform-none shadow-lg shadow-purple-500/20 hover:shadow-purple-500/40`}
                 >
-                    {isSubmitting ? 'Logging in...' : 'Enter NexusGate'}
+                    {isSubmitting ? t('login.loggingIn') : t('login.submitButton')}
                 </button>
             </form>
 
@@ -221,7 +224,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSubmit }) => {
                 <div className="relative flex items-center justify-center">
                     <div className="border-t border-white/10 absolute w-full"></div>
                     <div className="bg-transparent px-4 relative text-white/60 text-sm">
-                        quick access via
+                        {t('login.quickAccess')}
                     </div>
                 </div>
 
@@ -233,9 +236,9 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSubmit }) => {
             </div>
 
             <p className="mt-8 text-center text-sm text-white/60">
-                Don't have an account?{' '}
+                {t('login.noAccount')}{' '}
                 <a href="#" className="font-medium text-white hover:text-purple-300 transition-colors">
-                    Create Account
+                    {t('login.createAccount')}
                 </a>
             </p>
         </div>

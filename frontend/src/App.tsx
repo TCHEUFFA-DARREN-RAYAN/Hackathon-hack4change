@@ -1,6 +1,9 @@
 'use client';
 import { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import LoginPage from './components/ui/gaming-login';
+import { LanguageSwitcher } from './components/ui/language-switcher';
+import { Navbar1 } from './components/blocks/navbar1';
 
 const API_BASE = '/api';
 
@@ -27,6 +30,7 @@ function redirectAfterLogin(user: { isAdmin?: boolean }) {
 }
 
 function App() {
+  const { t } = useTranslation();
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -45,28 +49,44 @@ function App() {
       if (res.data) {
         redirectAfterLogin(res.data);
       } else {
-        setError(res.message || 'Sign in failed.');
+        setError(res.message || t('errors.signInFailed'));
       }
     } catch (err) {
-      setError((err as Error).message || 'Sign in failed. Check your email and password.');
+      setError((err as Error).message || t('errors.signInFailedDetails'));
     }
   };
 
   return (
-    <div className="relative min-h-screen w-full flex items-center justify-center px-4 py-12">
-      <LoginPage.VideoBackground videoUrl="https://videos.pexels.com/video-files/8128311/8128311-uhd_2560_1440_25fps.mp4" />
+    <div className="relative min-h-screen w-full">
+      <Navbar1
+        logo={{
+          url: '/',
+          src: '/assets/images/logo.png',
+          alt: t('common.commonGround'),
+          title: t('common.commonGround'),
+        }}
+        auth={{
+          login: { text: t('common.signIn'), url: '/login' },
+        }}
+      />
+      <div className="absolute top-4 right-4 z-30">
+        <LanguageSwitcher />
+      </div>
+      <div className="flex min-h-[calc(100vh-80px)] w-full items-center justify-center px-4 py-12">
+        <LoginPage.VideoBackground videoUrl="https://videos.pexels.com/video-files/8128311/8128311-uhd_2560_1440_25fps.mp4" />
 
-      <div className="relative z-20 w-full max-w-md animate-fadeIn">
+        <div className="relative z-20 w-full max-w-md animate-fadeIn">
         {error && (
           <div className="mb-4 p-4 rounded-lg bg-red-500/20 border border-red-500/50 text-red-200 text-sm">
             {error}
           </div>
         )}
-        <LoginPage.LoginForm onSubmit={handleLogin} />
+          <LoginPage.LoginForm onSubmit={handleLogin} />
+        </div>
       </div>
 
       <footer className="absolute bottom-4 left-0 right-0 text-center text-white/60 text-sm z-20">
-        © 2025 NexusGate. All rights reserved.
+        {t('footer.copyright')}
       </footer>
     </div>
   );

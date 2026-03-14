@@ -4,7 +4,8 @@
   "description": "CommonGround - Community app for homelessness support",
   "main": "backend/server.js",
   "scripts": {
-    "dev": "nodemon --delay 500ms backend/server.js",
+    "dev": "concurrently -n backend,frontend \"nodemon --delay 500ms backend/server.js\" \"cd frontend && npm run dev\"",
+    "dev:backend": "nodemon --delay 500ms backend/server.js",
     "start": "node backend/server.js",
     "migrate": "node scripts/migrate.js",
     "build:login": "cd frontend && npm run build",

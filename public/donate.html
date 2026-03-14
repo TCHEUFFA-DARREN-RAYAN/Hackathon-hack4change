@@ -5,193 +5,195 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Donate — CommonGround</title>
     <link rel="stylesheet" href="/css/style.css">
+    <script src="/js/i18n.js"></script>
 </head>
 <body>
 
 <nav class="site-nav">
     <div class="nav-inner">
-        <a href="/" class="nav-brand"><img src="/assets/images/logo.png" alt="Common Ground"> <span>GMHSC Network</span></a>
+        <a href="/" class="nav-brand"><img src="/assets/images/logo.png" alt="Common Ground"> <span data-i18n="navBrand">GMHSC Network</span></a>
         <div class="nav-links">
-            <a href="/">Needs Board</a>
-            <a href="/donate" class="active">Donate</a>
+            <a href="/" data-i18n="navNeedsBoard">Needs Board</a>
+            <a href="/donate" class="active" data-i18n="navDonate">Donate</a>
         </div>
         <div class="nav-actions">
-            <a href="/login" class="btn btn-ghost btn-sm">Staff login</a>
+            <button type="button" class="btn btn-ghost btn-sm" onclick="i18n.switchLocale()" title="EN / FR" style="margin-right:0.5rem">EN / FR</button>
+            <a href="/login" class="btn btn-ghost btn-sm" data-i18n="navStaffLogin">Staff login</a>
         </div>
     </div>
 </nav>
 
 <div class="step-form-wrap">
-    <h1 style="margin-bottom:.35rem">Make a donation</h1>
-    <p class="text-muted text-sm" style="margin-bottom:1.75rem">Your donation will be matched to the organization with the greatest need.</p>
+    <h1 style="margin-bottom:.35rem" data-i18n="donateTitle">Make a donation</h1>
+    <p class="text-muted text-sm" style="margin-bottom:1.75rem" data-i18n="donateSubtitle">Your donation will be matched to the organization with the greatest need.</p>
 
     <!-- Step progress -->
     <div class="step-progress" role="list">
         <div class="step-item active" id="step-indicator-1" role="listitem">
             <div class="step-num">1</div>
-            <div class="step-label">What are<br>you donating?</div>
+            <div class="step-label" data-i18n-html="step1Label">What are<br>you donating?</div>
         </div>
         <div class="step-item" id="step-indicator-2" role="listitem">
             <div class="step-num">2</div>
-            <div class="step-label">Your<br>contact info</div>
+            <div class="step-label" data-i18n-html="step2Label">Your<br>contact info</div>
         </div>
         <div class="step-item" id="step-indicator-3" role="listitem">
             <div class="step-num">3</div>
-            <div class="step-label">Match<br>preview</div>
+            <div class="step-label" data-i18n-html="step3Label">Match<br>preview</div>
         </div>
         <div class="step-item" id="step-indicator-4" role="listitem">
             <div class="step-num">4</div>
-            <div class="step-label">Confirmation</div>
+            <div class="step-label" data-i18n="step4Label">Confirmation</div>
         </div>
     </div>
 
     <!-- Step 1: Item details -->
     <div class="step-panel active card" id="step-1">
-        <h2>What are you donating?</h2>
+        <h2 data-i18n="whatDonating">What are you donating?</h2>
         <div class="form-group">
-            <label class="form-label" for="item-name">Item description <span class="req">*</span></label>
-            <input type="text" id="item-name" class="form-control" placeholder="e.g. Men's winter jackets, canned soup, sleeping bags" autocomplete="off">
-            <div class="form-error" id="err-item-name">Please describe the item.</div>
+            <label class="form-label" for="item-name"><span data-i18n="itemDesc">Item description</span> <span class="req">*</span></label>
+            <input type="text" id="item-name" class="form-control" data-i18n-placeholder="itemPlaceholder" placeholder="e.g. Men's winter jackets, canned soup, sleeping bags" autocomplete="off">
+            <div class="form-error" id="err-item-name" data-i18n="errItem">Please describe the item.</div>
         </div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:.85rem">
             <div class="form-group">
-                <label class="form-label" for="category">Category <span class="req">*</span></label>
+                <label class="form-label" for="category"><span data-i18n="category">Category</span> <span class="req">*</span></label>
                 <select id="category" class="form-control">
-                    <option value="">Select a category</option>
-                    <option value="clothing">Clothing</option>
-                    <option value="bedding">Bedding &amp; Linens</option>
-                    <option value="food">Food &amp; Beverages</option>
-                    <option value="hygiene">Hygiene Products</option>
-                    <option value="baby_supplies">Baby Supplies</option>
-                    <option value="goods">Household Goods</option>
-                    <option value="furniture">Furniture</option>
-                    <option value="other">Other</option>
+                    <option value="" data-i18n="selectCategory">Select a category</option>
+                    <option value="clothing" data-i18n="clothing">Clothing</option>
+                    <option value="bedding" data-i18n="bedding">Bedding &amp; Linens</option>
+                    <option value="food" data-i18n="food">Food &amp; Beverages</option>
+                    <option value="hygiene" data-i18n="hygiene">Hygiene Products</option>
+                    <option value="baby_supplies" data-i18n="babySupplies">Baby Supplies</option>
+                    <option value="goods" data-i18n="goods">Household Goods</option>
+                    <option value="furniture" data-i18n="furniture">Furniture</option>
+                    <option value="other" data-i18n="other">Other</option>
                 </select>
-                <div class="form-error" id="err-category">Please select a category.</div>
+                <div class="form-error" id="err-category" data-i18n="errCategory">Please select a category.</div>
             </div>
             <div class="form-group">
-                <label class="form-label" for="condition">Condition <span class="req">*</span></label>
+                <label class="form-label" for="condition"><span data-i18n="condition">Condition</span> <span class="req">*</span></label>
                 <select id="condition" class="form-control">
-                    <option value="new">New</option>
-                    <option value="good" selected>Good</option>
-                    <option value="fair">Fair</option>
+                    <option value="new" data-i18n="newCondition">New</option>
+                    <option value="good" selected data-i18n="goodCondition">Good</option>
+                    <option value="fair" data-i18n="fairCondition">Fair</option>
                 </select>
             </div>
         </div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:.85rem">
             <div class="form-group">
-                <label class="form-label" for="quantity">Quantity <span class="req">*</span></label>
+                <label class="form-label" for="quantity"><span data-i18n="quantity">Quantity</span> <span class="req">*</span></label>
                 <input type="number" id="quantity" class="form-control" placeholder="1" min="1" value="1">
-                <div class="form-error" id="err-quantity">Please enter a quantity.</div>
+                <div class="form-error" id="err-quantity" data-i18n="errQuantity">Please enter a quantity.</div>
             </div>
             <div class="form-group">
-                <label class="form-label" for="unit">Unit</label>
+                <label class="form-label" for="unit" data-i18n="unit">Unit</label>
                 <select id="unit" class="form-control">
-                    <option value="items">Items</option>
-                    <option value="pairs">Pairs</option>
-                    <option value="bags">Bags</option>
-                    <option value="boxes">Boxes</option>
-                    <option value="cans">Cans</option>
-                    <option value="bottles">Bottles</option>
-                    <option value="packs">Packs</option>
-                    <option value="kg">Kilograms</option>
-                    <option value="sets">Sets</option>
+                    <option value="items" data-i18n="items">Items</option>
+                    <option value="pairs" data-i18n="pairs">Pairs</option>
+                    <option value="bags" data-i18n="bags">Bags</option>
+                    <option value="boxes" data-i18n="boxes">Boxes</option>
+                    <option value="cans" data-i18n="cans">Cans</option>
+                    <option value="bottles" data-i18n="bottles">Bottles</option>
+                    <option value="packs" data-i18n="packs">Packs</option>
+                    <option value="kg" data-i18n="kg">Kilograms</option>
+                    <option value="sets" data-i18n="sets">Sets</option>
                 </select>
             </div>
         </div>
         <div class="step-nav">
             <span></span>
-            <button class="btn btn-primary" onclick="goToStep(2)">Next</button>
+            <button class="btn btn-primary" onclick="goToStep(2)" data-i18n="nextBtn">Next</button>
         </div>
     </div>
 
     <!-- Step 2: Contact info -->
     <div class="step-panel card" id="step-2">
-        <h2>Your contact information</h2>
-        <div class="inline-notice info" style="margin-bottom:1.25rem">
+        <h2 data-i18n="contactInfo">Your contact information</h2>
+        <div class="inline-notice info" style="margin-bottom:1.25rem" data-i18n="contactNotice">
             Your contact details are only shared with the matched organization to arrange pickup or drop-off.
         </div>
         <div class="form-group">
-            <label class="form-label" for="donor-name">Full name <span class="req">*</span></label>
-            <input type="text" id="donor-name" class="form-control" placeholder="Your name" autocomplete="name">
-            <div class="form-error" id="err-donor-name">Please enter your name.</div>
+            <label class="form-label" for="donor-name"><span data-i18n="fullName">Full name</span> <span class="req">*</span></label>
+            <input type="text" id="donor-name" class="form-control" data-i18n-placeholder="yourNamePlaceholder" placeholder="Your name" autocomplete="name">
+            <div class="form-error" id="err-donor-name" data-i18n="errName">Please enter your name.</div>
         </div>
         <div class="form-group">
-            <label class="form-label" for="donor-email">Email address <span class="req">*</span></label>
-            <input type="email" id="donor-email" class="form-control" placeholder="you@email.com" autocomplete="email">
-            <div class="form-error" id="err-donor-email">Please enter a valid email address.</div>
+            <label class="form-label" for="donor-email"><span data-i18n="emailAddress">Email address</span> <span class="req">*</span></label>
+            <input type="email" id="donor-email" class="form-control" data-i18n-placeholder="emailPlaceholder" placeholder="you@email.com" autocomplete="email">
+            <div class="form-error" id="err-donor-email" data-i18n="errEmail">Please enter a valid email address.</div>
         </div>
         <div class="form-group">
-            <label class="form-label" for="donor-phone">Phone number <span class="text-muted">(optional)</span></label>
-            <input type="tel" id="donor-phone" class="form-control" placeholder="506-000-0000" autocomplete="tel">
+            <label class="form-label" for="donor-phone"><span data-i18n="phoneNumber">Phone number</span> <span class="text-muted" data-i18n="optional">(optional)</span></label>
+            <input type="tel" id="donor-phone" class="form-control" data-i18n-placeholder="phonePlaceholder" placeholder="506-000-0000" autocomplete="tel">
         </div>
         <div class="form-group">
-            <label class="form-label" for="preferred-org">Preferred organization <span class="text-muted">(optional)</span></label>
+            <label class="form-label" for="preferred-org"><span data-i18n="preferredOrg">Preferred organization</span> <span class="text-muted" data-i18n="optional">(optional)</span></label>
             <select id="preferred-org" class="form-control">
-                <option value="">Let the system find the best match</option>
+                <option value="" data-i18n="letSystemMatch">Let the system find the best match</option>
             </select>
-            <div class="form-hint">Leave blank to have the system match your donation to the organization with the greatest need.</div>
+            <div class="form-hint" data-i18n="contactHint">Leave blank to have the system match your donation to the organization with the greatest need.</div>
         </div>
         <div class="step-nav">
-            <button class="btn btn-ghost" onclick="goToStep(1)">Back</button>
-            <button class="btn btn-primary" onclick="goToStep(3)">Next — see match</button>
+            <button class="btn btn-ghost" onclick="goToStep(1)" data-i18n="backBtn">Back</button>
+            <button class="btn btn-primary" onclick="goToStep(3)" data-i18n="nextSeeMatch">Next — see match</button>
         </div>
     </div>
 
     <!-- Step 3: Match preview -->
     <div class="step-panel card" id="step-3">
-        <h2>Where your donation goes</h2>
+        <h2 data-i18n="whereDonationGoes">Where your donation goes</h2>
         <div id="match-loading" style="display:none">
             <div class="skeleton skeleton-block" style="height:80px;margin-bottom:.75rem"></div>
             <div class="skeleton skeleton-block" style="height:80px;margin-bottom:.75rem"></div>
             <div class="skeleton skeleton-block" style="height:80px"></div>
-            <p class="text-muted text-sm" style="margin-top:.75rem;text-align:center">Finding the best match for your donation...</p>
+            <p class="text-muted text-sm" style="margin-top:.75rem;text-align:center" data-i18n="findingMatch">Finding the best match for your donation...</p>
         </div>
         <div id="match-results" style="display:none">
-            <p class="text-sm text-muted" style="margin-bottom:.75rem">Based on current needs across the network, here are the top matches for your donation. Select one to proceed.</p>
+            <p class="text-sm text-muted" style="margin-bottom:.75rem" data-i18n="topMatches">Based on current needs across the network, here are the top matches for your donation. Select one to proceed.</p>
             <div class="match-cards" id="match-cards"></div>
             <div id="custom-org-row" style="margin-top:.75rem;display:none">
-                <label class="form-label" for="custom-org-select">Or choose a different organization</label>
+                <label class="form-label" for="custom-org-select" data-i18n="orChooseDifferent">Or choose a different organization</label>
                 <select id="custom-org-select" class="form-control">
-                    <option value="">Select an organization</option>
+                    <option value="" data-i18n="selectOrg">Select an organization</option>
                 </select>
             </div>
             <div style="margin-top:.6rem">
-                <button class="btn btn-ghost btn-sm" id="show-all-orgs-btn" onclick="toggleCustomOrg()">Choose a different organization instead</button>
+                <button class="btn btn-ghost btn-sm" id="show-all-orgs-btn" onclick="toggleCustomOrg()" data-i18n="chooseDifferentInstead">Choose a different organization instead</button>
             </div>
         </div>
         <div id="match-error" style="display:none">
-            <div class="inline-notice warning">
+            <div class="inline-notice warning" data-i18n="noMatchingNeeds">
                 No matching needs found. Please select an organization manually below.
             </div>
             <div class="form-group" style="margin-top:1rem">
-                <label class="form-label" for="fallback-org">Select an organization <span class="req">*</span></label>
+                <label class="form-label" for="fallback-org"><span data-i18n="selectOrgRequired">Select an organization</span> <span class="req">*</span></label>
                 <select id="fallback-org" class="form-control">
-                    <option value="">Select an organization</option>
+                    <option value="" data-i18n="selectOrg">Select an organization</option>
                 </select>
             </div>
         </div>
         <div class="step-nav">
-            <button class="btn btn-ghost" onclick="goToStep(2)">Back</button>
-            <button class="btn btn-primary" id="confirm-match-btn" onclick="confirmMatch()" disabled>Confirm this match</button>
+            <button class="btn btn-ghost" onclick="goToStep(2)" data-i18n="backBtn">Back</button>
+            <button class="btn btn-primary" id="confirm-match-btn" onclick="confirmMatch()" disabled data-i18n="confirmMatch">Confirm this match</button>
         </div>
     </div>
 
     <!-- Step 4: Confirmation -->
     <div class="step-panel card" id="step-4">
-        <h2>Your donation has been submitted</h2>
-        <div class="inline-notice success" style="margin-bottom:1.25rem">
+        <h2 data-i18n="donationSubmitted">Your donation has been submitted</h2>
+        <div class="inline-notice success" style="margin-bottom:1.25rem" data-i18n="thankYou">
             Thank you. The organization has been notified and will be in touch to arrange collection.
         </div>
         <div class="confirm-box" id="confirm-box"></div>
         <div class="mt-3">
-            <h3 style="font-size:.95rem;margin-bottom:.5rem">Next steps</h3>
-            <p class="text-sm text-muted">The organization's staff will review your donation and contact you at the email or phone number you provided to arrange pickup or drop-off.</p>
-            <p class="text-sm text-muted mt-1">Questions? Contact the organization directly using the details above.</p>
+            <h3 style="font-size:.95rem;margin-bottom:.5rem" data-i18n="nextSteps">Next steps</h3>
+            <p class="text-sm text-muted" data-i18n="nextStepsDesc">The organization's staff will review your donation and contact you at the email or phone number you provided to arrange pickup or drop-off.</p>
+            <p class="text-sm text-muted mt-1" data-i18n="questionsContact">Questions? Contact the organization directly using the details above.</p>
         </div>
         <div class="step-nav" style="margin-top:1.75rem">
-            <a href="/" class="btn btn-outline">Back to needs board</a>
-            <a href="/donate" class="btn btn-primary" onclick="resetForm()">Donate another item</a>
+            <a href="/" class="btn btn-outline" data-i18n="backToNeedsBoard">Back to needs board</a>
+            <a href="/donate" class="btn btn-primary" onclick="resetForm()" data-i18n="donateAnother">Donate another item</a>
         </div>
     </div>
 </div>
@@ -199,6 +201,7 @@
 <script src="/js/api.js"></script>
 <script src="/js/utils.js"></script>
 <script>
+    i18n.apply();
     let currentStep = 1;
     let donationId = null;
     let selectedOrgId = null;
@@ -330,7 +333,7 @@
             const org = allOrgs.find(o => o.id === preferred);
             selectedOrgId   = org ? org.id : null;
             selectedOrgName = org ? org.name : '';
-            selectedReasoning = 'Organization selected directly by donor.';
+            selectedReasoning = i18n.t('selectedDirectly');
             loading.style.display = 'none';
             renderManualMatch(org);
             return;
@@ -392,7 +395,7 @@
         document.getElementById('match-cards').innerHTML = `
             <div class="match-card selected">
                 <div class="match-org">${escHtml(org.name)}</div>
-                <div class="match-reasoning">Selected by you.</div>
+                <div class="match-reasoning">${escHtml(i18n.t('selectedByYou'))}</div>
             </div>`;
         document.getElementById('confirm-match-btn').disabled = false;
     }
@@ -412,7 +415,7 @@
         const btn = document.getElementById('show-all-orgs-btn');
         const showing = row.style.display !== 'none';
         row.style.display = showing ? 'none' : 'block';
-        btn.textContent = showing ? 'Choose a different organization instead' : 'Use system recommendation instead';
+        btn.textContent = showing ? i18n.t('chooseDifferentInstead') : i18n.t('useSystemRecommendation');
         if (!showing) {
             // Reset to first match selection
         }
@@ -425,18 +428,18 @@
             if (org) {
                 selectedOrgId   = org.id;
                 selectedOrgName = org.name;
-                selectedReasoning = 'Manually selected by donor.';
+                selectedReasoning = i18n.t('manuallySelected');
                 document.getElementById('confirm-match-btn').disabled = false;
             }
         });
     }
 
     async function confirmMatch() {
-        if (!selectedOrgId) { toast('Please select an organization.', 'error'); return; }
+        if (!selectedOrgId) { toast(i18n.t('pleaseSelectOrg'), 'error'); return; }
 
         const btn = document.getElementById('confirm-match-btn');
         btn.disabled = true;
-        btn.textContent = 'Submitting...';
+        btn.textContent = i18n.t('submitting');
 
         try {
             // Submit donation
@@ -459,21 +462,21 @@
 
             showConfirmation();
         } catch (err) {
-            toast(err.message || 'Submission failed. Please try again.', 'error');
+            toast(err.message || i18n.t('submissionFailed'), 'error');
             btn.disabled = false;
-            btn.textContent = 'Confirm this match';
+            btn.textContent = i18n.t('confirmMatch');
         }
     }
 
     function showConfirmation() {
         const org = allOrgs.find(o => o.id === selectedOrgId);
         document.getElementById('confirm-box').innerHTML = `
-            <h3>Matched to: ${escHtml(selectedOrgName)}</h3>
-            <div class="detail"><strong>Item:</strong> ${escHtml(document.getElementById('item-name').value.trim())} &mdash; ${escHtml(document.getElementById('quantity').value)} ${escHtml(document.getElementById('unit').value)} (${escHtml(document.getElementById('condition').value)})</div>
-            <div class="detail"><strong>Your name:</strong> ${escHtml(document.getElementById('donor-name').value.trim())}</div>
-            <div class="detail"><strong>Your email:</strong> ${escHtml(document.getElementById('donor-email').value.trim())}</div>
-            ${org && org.contact_email ? `<div class="detail" style="margin-top:.75rem"><strong>Organization contact:</strong> ${escHtml(org.contact_email)}</div>` : ''}
-            ${org && org.address ? `<div class="detail"><strong>Address:</strong> ${escHtml(org.address)}</div>` : ''}
+            <h3>${i18n.t('matchedTo')} ${escHtml(selectedOrgName)}</h3>
+            <div class="detail"><strong>${i18n.t('item')}</strong> ${escHtml(document.getElementById('item-name').value.trim())} &mdash; ${escHtml(document.getElementById('quantity').value)} ${escHtml(document.getElementById('unit').value)} (${escHtml(document.getElementById('condition').value)})</div>
+            <div class="detail"><strong>${i18n.t('yourName')}</strong> ${escHtml(document.getElementById('donor-name').value.trim())}</div>
+            <div class="detail"><strong>${i18n.t('yourEmail')}</strong> ${escHtml(document.getElementById('donor-email').value.trim())}</div>
+            ${org && org.contact_email ? `<div class="detail" style="margin-top:.75rem"><strong>${i18n.t('orgContact')}</strong> ${escHtml(org.contact_email)}</div>` : ''}
+            ${org && org.address ? `<div class="detail"><strong>${i18n.t('address')}</strong> ${escHtml(org.address)}</div>` : ''}
         `;
         goToStep(4);
     }

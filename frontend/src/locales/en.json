@@ -1,0 +1,39 @@
+{
+  "common": {
+    "signIn": "Sign in",
+    "donate": "Donate",
+    "needsBoard": "Needs Board",
+    "staffLogin": "Staff login",
+    "commonGround": "CommonGround",
+    "gmhscNetwork": "GMHSC Network"
+  },
+  "login": {
+    "title": "NexusGate",
+    "tagline": "Your gaming universe awaits",
+    "pressEnter": "[Press Enter to join the adventure]",
+    "emailPlaceholder": "Email address",
+    "passwordPlaceholder": "Password",
+    "showPassword": "Show password",
+    "hidePassword": "Hide password",
+    "rememberMe": "Remember me",
+    "forgotPassword": "Forgot password?",
+    "submitButton": "Enter NexusGate",
+    "loggingIn": "Logging in...",
+    "quickAccess": "quick access via",
+    "noAccount": "Don't have an account?",
+    "createAccount": "Create Account",
+    "videoUnsupported": "Your browser does not support the video tag."
+  },
+  "errors": {
+    "signInFailed": "Sign in failed.",
+    "signInFailedDetails": "Sign in failed. Check your email and password.",
+    "requestFailed": "Request failed"
+  },
+  "footer": {
+    "copyright": "© 2025 NexusGate. All rights reserved."
+  },
+  "language": {
+    "switchToEnglish": "Switch to English",
+    "switchToFrench": "Passer au français"
+  }
+}

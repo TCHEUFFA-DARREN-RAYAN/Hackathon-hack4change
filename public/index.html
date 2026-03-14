@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CommonGround — What shelters need right now</title>
+    <script src="/js/i18n.js"></script>
     <meta name="description" content="See what Moncton's homeless-serving organizations need and donate directly to those with the greatest need.">
     <link rel="stylesheet" href="/css/style.css">
     <style>
@@ -55,40 +56,42 @@
 
 <nav class="site-nav">
     <div class="nav-inner">
-        <a href="/" class="nav-brand"><img src="/assets/images/logo.png" alt="Common Ground"> <span>GMHSC Network</span></a>
+        <a href="/" class="nav-brand"><img src="/assets/images/logo.png" alt="Common Ground"> <span data-i18n="navBrand">GMHSC Network</span></a>
         <div class="nav-actions">
-            <a href="/login" class="btn btn-ghost btn-sm">Staff login</a>
+            <a href="/donate" class="btn btn-ghost btn-sm" style="margin-right:0.5rem" data-i18n="navDonate">Donate</a>
+            <button type="button" class="btn btn-ghost btn-sm" onclick="i18n.switchLocale()" title="EN / FR">EN / FR</button>
+            <a href="/login" class="btn btn-ghost btn-sm" data-i18n="navStaffLogin">Staff login</a>
         </div>
     </div>
 </nav>
 
 <div class="hero">
     <div class="container">
-        <h1>What shelters need right now</h1>
-        <p>28 organizations in the Greater Moncton area, coordinated in one place. See what's urgently needed and donate directly.</p>
+        <h1 data-i18n="pageTitle">What shelters need right now</h1>
+        <p data-i18n="pageDescription">28 organizations in the Greater Moncton area, coordinated in one place. See what's urgently needed and donate directly.</p>
         <div class="hero-actions">
-            <a href="/donate" class="btn btn-hero btn-lg">I have something to donate</a>
+            <a href="/donate" class="btn btn-hero btn-lg" data-i18n="heroCta">I have something to donate</a>
         </div>
     </div>
 </div>
 
 <div class="filters-bar">
     <div class="filters-inner">
-        <input type="search" id="search" placeholder="Search by item or organization..." autocomplete="off" aria-label="Search needs">
+        <input type="search" id="search" data-i18n-placeholder="searchPlaceholder" placeholder="Search by item or organization..." autocomplete="off" aria-label="Search needs">
         <select id="filter-urgency" aria-label="Filter by urgency">
-            <option value="">All urgency levels</option>
-            <option value="critical">Critical</option>
-            <option value="high">High</option>
-            <option value="medium">Medium</option>
-            <option value="low">Low</option>
+            <option value="" data-i18n="filterUrgency">All urgency levels</option>
+            <option value="critical" data-i18n="urgencyCritical">Critical</option>
+            <option value="high" data-i18n="urgencyHigh">High</option>
+            <option value="medium" data-i18n="urgencyMedium">Medium</option>
+            <option value="low" data-i18n="urgencyLow">Low</option>
         </select>
         <select id="filter-category" aria-label="Filter by organization type">
-            <option value="">All organizations</option>
-            <option value="shelter_housing">Shelter &amp; Housing</option>
-            <option value="food_nutrition">Food &amp; Nutrition</option>
-            <option value="goods_essentials">Goods &amp; Essentials</option>
-            <option value="mental_health">Mental Health</option>
-            <option value="outreach">Outreach</option>
+            <option value="" data-i18n="filterCategory">All organizations</option>
+            <option value="shelter_housing" data-i18n="catShelterHousing">Shelter &amp; Housing</option>
+            <option value="food_nutrition" data-i18n="catFoodNutrition">Food &amp; Nutrition</option>
+            <option value="goods_essentials" data-i18n="catGoodsEssentials">Goods &amp; Essentials</option>
+            <option value="mental_health" data-i18n="catMentalHealth">Mental Health</option>
+            <option value="outreach" data-i18n="catOutreach">Outreach</option>
         </select>
         <span class="results-count" id="results-count"></span>
     </div>
@@ -122,13 +125,9 @@
 <script src="/js/api.js"></script>
 <script src="/js/utils.js"></script>
 <script>
-    const CAT_LABELS = {
-        shelter_housing:  'Shelter & Housing',
-        food_nutrition:   'Food & Nutrition',
-        goods_essentials: 'Goods & Essentials',
-        mental_health:    'Mental Health',
-        outreach:         'Outreach'
-    };
+    i18n.apply();
+    const CAT_LABELS = i18n.CAT_LABELS();
+    const URGENCY_LABELS = i18n.URGENCY_LABELS();
 
     const URGENCY_RANK = { critical: 0, high: 1, medium: 2, low: 3 };
     const PAGE_SIZE = 6;
@@ -156,8 +155,8 @@
                 <div style="grid-column:1/-1">
                     <div class="empty-state">
                         <span class="empty-icon">&#10003;</span>
-                        <h3>No active needs match your filters</h3>
-                        <p>Try clearing the filters or check back later.</p>
+                        <h3>${i18n.t('noActiveNeeds')}</h3>
+                        <p>${i18n.t('tryClearingFilters')}</p>
                     </div>
                 </div>`;
             pagination.style.display = 'none';
@@ -175,11 +174,11 @@
             const needsHtml = org.top_needs.length
                 ? org.top_needs.map(n => `
                     <div class="need-item">
-                        <span class="badge badge-${escHtml(n.urgency)}" style="flex-shrink:0">${escHtml(n.urgency)}</span>
+                        <span class="badge badge-${escHtml(n.urgency)}" style="flex-shrink:0">${escHtml(URGENCY_LABELS[n.urgency] || n.urgency)}</span>
                         <span class="need-name">${escHtml(n.item_name)}</span>
                         <span class="need-qty">${escHtml(String(n.quantity_needed))} ${escHtml(n.unit)}</span>
                     </div>`).join('')
-                : `<p class="text-muted text-sm" style="padding:.4rem 0">No active needs posted</p>`;
+                : `<p class="text-muted text-sm" style="padding:.4rem 0">${i18n.t('noActiveNeedsPosted')}</p>`;
 
             return `
                 <div class="org-card${hasCritical ? ' has-critical' : ''}">
@@ -192,8 +191,8 @@
                     </div>
                     <div class="needs-list">${needsHtml}</div>
                     <div class="org-card-footer">
-                        <span class="updated">Updated ${timeAgo(org.updated_at)}</span>
-                        <a href="/donate?org=${encodeURIComponent(org.id)}" class="btn btn-primary btn-sm">Donate</a>
+                        <span class="updated">${i18n.t('updated')} ${timeAgo(org.updated_at)}</span>
+                        <a href="/donate?org=${encodeURIComponent(org.id)}" class="btn btn-primary btn-sm">${i18n.t('donate')}</a>
                     </div>
                 </div>`;
         }).join('');
@@ -207,7 +206,7 @@
 
         el.style.display = 'flex';
 
-        let html = `<button class="page-btn" id="prev-btn" ${currentPage === 1 ? 'disabled' : ''} onclick="goToPage(${currentPage - 1})">&#8592; Prev</button>`;
+        let html = `<button class="page-btn" id="prev-btn" ${currentPage === 1 ? 'disabled' : ''} onclick="goToPage(${currentPage - 1})">&#8592; ${i18n.t('prev')}</button>`;
 
         // Show up to 5 page numbers centered around current page
         const delta = 2;
@@ -227,9 +226,9 @@
             html += `<button class="page-btn" onclick="goToPage(${totalPages})">${totalPages}</button>`;
         }
 
-        html += `<button class="page-btn" id="next-btn" ${currentPage === totalPages ? 'disabled' : ''} onclick="goToPage(${currentPage + 1})">Next &#8594;</button>`;
+        html += `<button class="page-btn" id="next-btn" ${currentPage === totalPages ? 'disabled' : ''} onclick="goToPage(${currentPage + 1})">${i18n.t('next')} &#8594;</button>`;
 
-        html += `<span class="page-info">${filteredOrgs.length} organization${filteredOrgs.length !== 1 ? 's' : ''}</span>`;
+        html += `<span class="page-info">${filteredOrgs.length} ${filteredOrgs.length !== 1 ? i18n.t('organizationsPlural') : i18n.t('organizations')}</span>`;
 
         el.innerHTML = html;
     }
@@ -263,7 +262,7 @@
         filteredOrgs = sortOrgs(result);
         currentPage = 1;
         document.getElementById('results-count').textContent =
-            filteredOrgs.length + ' organization' + (filteredOrgs.length !== 1 ? 's' : '');
+            filteredOrgs.length + ' ' + (filteredOrgs.length !== 1 ? i18n.t('organizationsPlural') : i18n.t('organizations'));
         renderPage();
     }
 
@@ -275,7 +274,7 @@
         } catch {
             document.getElementById('org-grid').innerHTML = `
                 <div style="grid-column:1/-1">
-                    <div class="inline-notice error">Failed to load the needs board. Please refresh the page.</div>
+                    <div class="inline-notice error">${i18n.t('failedToLoad')}</div>
                 </div>`;
         }
     }

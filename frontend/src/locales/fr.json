@@ -1,0 +1,39 @@
+{
+  "common": {
+    "signIn": "Connexion",
+    "donate": "Donner",
+    "needsBoard": "Tableau des besoins",
+    "staffLogin": "Connexion personnel",
+    "commonGround": "CommonGround",
+    "gmhscNetwork": "Réseau GMHSC"
+  },
+  "login": {
+    "title": "NexusGate",
+    "tagline": "Votre univers de jeu vous attend",
+    "pressEnter": "[Appuyez sur Entrée pour rejoindre l'aventure]",
+    "emailPlaceholder": "Adresse courriel",
+    "passwordPlaceholder": "Mot de passe",
+    "showPassword": "Afficher le mot de passe",
+    "hidePassword": "Masquer le mot de passe",
+    "rememberMe": "Se souvenir de moi",
+    "forgotPassword": "Mot de passe oublié?",
+    "submitButton": "Entrer dans NexusGate",
+    "loggingIn": "Connexion en cours...",
+    "quickAccess": "accès rapide via",
+    "noAccount": "Vous n'avez pas de compte?",
+    "createAccount": "Créer un compte",
+    "videoUnsupported": "Votre navigateur ne prend pas en charge la balise vidéo."
+  },
+  "errors": {
+    "signInFailed": "Échec de la connexion.",
+    "signInFailedDetails": "Échec de la connexion. Vérifiez votre courriel et mot de passe.",
+    "requestFailed": "Échec de la requête"
+  },
+  "footer": {
+    "copyright": "© 2025 NexusGate. Tous droits réservés."
+  },
+  "language": {
+    "switchToEnglish": "Switch to English",
+    "switchToFrench": "Passer au français"
+  }
+}
