@@ -97,6 +97,7 @@ const run = async () => {
                 item_name VARCHAR(255) NOT NULL,
                 category VARCHAR(100) NOT NULL,
                 quantity INT NOT NULL DEFAULT 0,
+                target_quantity INT NULL,
                 unit VARCHAR(50) NOT NULL DEFAULT 'units',
                 status ENUM('available', 'low', 'critical', 'surplus') NOT NULL DEFAULT 'available',
                 expiry_date DATE NULL,
@@ -325,8 +326,8 @@ const run = async () => {
 
         for (const row of inventoryData) {
             await conn.query(
-                `INSERT INTO inventory_items (id, org_id, item_name, category, quantity, unit, status, expiry_date) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
-                [randomUUID(), ...row]
+                `INSERT INTO inventory_items (id, org_id, item_name, category, quantity, target_quantity, unit, status, expiry_date) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+                [randomUUID(), row[0], row[1], row[2], row[3], null, row[4], row[5], row[6]]
             );
         }
         console.log(`  ${inventoryData.length} inventory items created`);

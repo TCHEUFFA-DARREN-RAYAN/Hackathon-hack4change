@@ -25,12 +25,9 @@
             <span class="sidebar-label">Dashboard</span>
             <a href="#" data-section="overview" class="active" onclick="showSection('overview', this)">Overview</a>
             <a href="#" data-section="organizations" onclick="showSection('organizations', this)">Organizations</a>
-            <a href="#" data-section="staff" onclick="showSection('staff', this)">Staff</a>
         </div>
         <div class="sidebar-section">
             <span class="sidebar-label">Coordination</span>
-            <a href="#" data-section="chat" onclick="showSection('chat', this)">Chat</a>
-            <a href="#" data-section="inventory" onclick="showSection('inventory', this)">Inventory</a>
             <a href="#" data-section="needs" onclick="showSection('needs', this)">All Needs</a>
             <a href="#" data-section="donations" onclick="showSection('donations', this)">Donations Pipeline</a>
             <a href="#" data-section="surplus-requests" onclick="showSection('surplus-requests', this)">Surplus Requests</a>
@@ -38,22 +35,12 @@
         </div>
         <div class="sidebar-section">
             <span class="sidebar-label">Intelligence</span>
-            <a href="#" data-section="analytics" onclick="showSection('analytics', this)">Analytics</a>
             <a href="#" data-section="insights" onclick="showSection('insights', this)">Network Insights</a>
         </div>
         <div class="sidebar-section" style="margin-top:auto;border-top:1px solid var(--color-border-lt);padding-top:1rem">
             <span class="sidebar-label">Exports</span>
-            <select id="export-org-filter" class="form-control" style="max-width:100%;margin-bottom:.5rem;font-size:.85rem">
-                <option value="">All organizations</option>
-            </select>
-            <a href="#" onclick="doExport('needs'); return false;">Needs CSV</a>
-            <a href="#" onclick="doExport('inventory'); return false;">Inventory CSV</a>
-            <a href="#" onclick="doExport('donations'); return false;">Donations CSV</a>
-            <a href="#" onclick="doExport('organizations'); return false;">Organizations CSV</a>
-            <a href="#" onclick="doExport('staff'); return false;">Staff CSV</a>
-            <a href="#" onclick="doExport('surplus-requests'); return false;">Surplus Requests CSV</a>
-            <a href="#" onclick="doExport('transfers'); return false;">Transfers CSV</a>
-            <a href="#" onclick="doExport('meeting-report'); return false;">Meeting Report</a>
+            <a href="#" onclick="coordinator.exportNeeds(); return false;">Download Needs CSV</a>
+            <a href="#" onclick="coordinator.exportInventory(); return false;">Download Inventory CSV</a>
         </div>
     </nav>
 
@@ -113,10 +100,6 @@
         <div id="section-organizations" style="display:none">
             <div class="portal-header">
                 <h1>Organizations</h1>
-                <div style="display:flex;gap:.5rem;align-items:center">
-                    <button class="btn btn-outline btn-sm" onclick="coordinator.exportOrganizations()">Export CSV</button>
-                    <button class="btn btn-primary btn-sm" onclick="openAddOrg()">Add organization</button>
-                </div>
             </div>
             <div class="table-wrap">
                 <table class="data-table">
@@ -128,127 +111,12 @@
                             <th>Total Needs</th>
                             <th>Surplus Items</th>
                             <th>Last Updated</th>
-                            <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody id="orgs-tbody">
-                        <tr><td colspan="7"><div class="skeleton skeleton-text wide"></div></td></tr>
-                        <tr><td colspan="7"><div class="skeleton skeleton-text" style="width:70%"></div></td></tr>
-                        <tr><td colspan="7"><div class="skeleton skeleton-text" style="width:55%"></div></td></tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-        <!-- Chat section -->
-        <div id="section-chat" style="display:none">
-            <div class="portal-header">
-                <h1>Chat</h1>
-                <div style="display:flex;gap:.5rem;align-items:center">
-                    <button class="btn btn-outline btn-sm" id="chat-new-btn" onclick="openNewChatModal()">New chat</button>
-                </div>
-            </div>
-            <div class="chat-layout">
-                <aside class="chat-thread-list">
-                    <div class="chat-thread-search" style="padding:.5rem;border-bottom:1px solid var(--color-border-lt)">
-                        <input type="search" id="chat-thread-search" class="form-control" placeholder="Search threads..." style="width:100%;font-size:.9rem">
-                    </div>
-                    <div id="chat-threads" class="chat-threads">
-                        <div class="skeleton skeleton-text" style="margin:.5rem">Loading threads...</div>
-                    </div>
-                </aside>
-                <div class="chat-main">
-                    <div id="chat-empty" class="chat-empty-state">
-                        <p class="text-muted">Select a thread or start a new chat with staff.</p>
-                        <p class="text-sm text-muted">Org channels: discuss with all staff in an organization.</p>
-                        <p class="text-sm text-muted">Direct: 1:1 with a staff member.</p>
-                    </div>
-                    <div id="chat-active" style="display:none;flex:1;flex-direction:column;min-height:0">
-                        <div class="chat-header" style="padding:.75rem 1rem;border-bottom:1px solid var(--color-border-lt);background:var(--color-bg)">
-                            <strong id="chat-thread-title">—</strong>
-                            <span class="text-sm text-muted" id="chat-thread-subtitle"></span>
-                        </div>
-                        <div id="chat-messages" class="chat-messages">
-                            <!-- messages rendered here -->
-                        </div>
-                        <div class="chat-input-wrap" style="padding:.75rem 1rem;border-top:1px solid var(--color-border-lt);background:var(--color-bg)">
-                            <form id="chat-send-form" onsubmit="sendChatMessage(event)" style="display:flex;gap:.5rem;align-items:flex-end">
-                                <textarea id="chat-input" class="form-control" rows="1" placeholder="Type a message..." style="flex:1;resize:none;min-height:40px;max-height:120px" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendChatMessage(event)}"></textarea>
-                                <button type="submit" class="btn btn-primary btn-sm">Send</button>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Staff section -->
-        <div id="section-staff" style="display:none">
-            <div class="portal-header">
-                <h1>Staff Management</h1>
-                <div style="display:flex;gap:.5rem;align-items:center">
-                    <button class="btn btn-outline btn-sm" onclick="doExport('staff')">Export CSV</button>
-                    <button class="btn btn-primary btn-sm" onclick="openAddStaff()">Add staff</button>
-                </div>
-            </div>
-            <div style="display:flex;gap:.6rem;flex-wrap:wrap;margin-bottom:1rem">
-                <select id="staff-org-filter" class="form-control" style="max-width:240px" onchange="loadStaff()">
-                    <option value="">All organizations</option>
-                </select>
-            </div>
-            <div class="table-wrap">
-                <table class="data-table">
-                    <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>Email</th>
-                            <th>Organization</th>
-                            <th>Status</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody id="staff-tbody">
-                        <tr><td colspan="5"><div class="skeleton skeleton-text wide"></div></td></tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-        <!-- Inventory section -->
-        <div id="section-inventory" style="display:none">
-            <div class="portal-header">
-                <h1>Network Inventory</h1>
-                <button class="btn btn-outline btn-sm" onclick="doExport('inventory')">Export CSV</button>
-            </div>
-            <div style="display:flex;gap:.6rem;flex-wrap:wrap;margin-bottom:1rem">
-                <select id="inventory-org-filter" class="form-control" style="max-width:220px" onchange="loadInventory()">
-                    <option value="">All organizations</option>
-                </select>
-                <select id="inventory-status-filter" class="form-control" style="max-width:140px" onchange="loadInventory()">
-                    <option value="">All statuses</option>
-                    <option value="available">Available</option>
-                    <option value="low">Low</option>
-                    <option value="critical">Critical</option>
-                    <option value="surplus">Surplus</option>
-                </select>
-                <input type="search" id="inventory-search" class="form-control" placeholder="Search items..." style="max-width:200px" oninput="debounceInventorySearch()">
-            </div>
-            <div class="table-wrap">
-                <table class="data-table">
-                    <thead>
-                        <tr>
-                            <th>Organization</th>
-                            <th>Item</th>
-                            <th>Category</th>
-                            <th>Qty</th>
-                            <th>Unit</th>
-                            <th>Status</th>
-                            <th>Expires</th>
-                            <th>Last Updated</th>
-                        </tr>
-                    </thead>
-                    <tbody id="inventory-tbody">
-                        <tr><td colspan="8"><div class="skeleton skeleton-text wide"></div></td></tr>
+                        <tr><td colspan="6"><div class="skeleton skeleton-text wide"></div></td></tr>
+                        <tr><td colspan="6"><div class="skeleton skeleton-text" style="width:70%"></div></td></tr>
+                        <tr><td colspan="6"><div class="skeleton skeleton-text" style="width:55%"></div></td></tr>
                     </tbody>
                 </table>
             </div>
@@ -258,12 +126,9 @@
         <div id="section-needs" style="display:none">
             <div class="portal-header">
                 <h1>All Network Needs</h1>
-                <button class="btn btn-outline btn-sm" onclick="doExport('needs')">Export CSV</button>
+                <button class="btn btn-outline btn-sm" onclick="coordinator.exportNeeds()">Export CSV</button>
             </div>
             <div style="display:flex;gap:.6rem;flex-wrap:wrap;margin-bottom:1rem">
-                <select id="needs-org-filter" class="form-control" style="max-width:220px" onchange="loadAllNeeds()">
-                    <option value="">All organizations</option>
-                </select>
                 <input type="search" id="needs-search" class="form-control" placeholder="Search..." style="max-width:240px">
                 <select id="needs-urgency-filter" class="form-control" style="max-width:180px">
                     <option value="">All urgency levels</option>
@@ -297,12 +162,8 @@
         <div id="section-donations" style="display:none">
             <div class="portal-header">
                 <h1>Donations Pipeline</h1>
-                <button class="btn btn-outline btn-sm" onclick="doExport('donations')">Export CSV</button>
             </div>
             <div style="display:flex;gap:.6rem;flex-wrap:wrap;margin-bottom:1rem">
-                <select id="donation-org-filter" class="form-control" style="max-width:220px" onchange="loadDonations()">
-                    <option value="">All organizations</option>
-                </select>
                 <select id="donation-status-filter" class="form-control" style="max-width:200px">
                     <option value="">All statuses</option>
                     <option value="pending">Pending</option>
@@ -335,7 +196,6 @@
         <div id="section-surplus-requests" style="display:none">
             <div class="portal-header">
                 <h1>Surplus Requests</h1>
-                <button class="btn btn-outline btn-sm" onclick="doExport('surplus-requests')">Export CSV</button>
             </div>
             <div class="inline-notice info">Staff can request surplus items from other organizations. Approve or reject requests to facilitate coordination.</div>
             <div style="margin-top:1rem">
@@ -369,10 +229,7 @@
         <div id="section-transfers" style="display:none">
             <div class="portal-header">
                 <h1>Surplus Transfers</h1>
-                <div style="display:flex;gap:.5rem;align-items:center">
-                    <button class="btn btn-outline btn-sm" onclick="doExport('transfers')">Export CSV</button>
-                    <button class="btn btn-primary btn-sm" onclick="openCreateTransfer()">Initiate Transfer</button>
-                </div>
+                <button class="btn btn-primary btn-sm" onclick="openCreateTransfer()">Initiate Transfer</button>
             </div>
             <div class="inline-notice info">Initiate transfers of surplus items from one organization to another. Staff at the receiving org can confirm receipt.</div>
             <div style="margin-top:1rem">
@@ -401,63 +258,6 @@
                         <tr><td colspan="7"><div class="skeleton skeleton-text wide"></div></td></tr>
                     </tbody>
                 </table>
-            </div>
-        </div>
-
-        <!-- Analytics section -->
-        <div id="section-analytics" style="display:none">
-            <div class="portal-header">
-                <h1>Analytics</h1>
-                <div style="display:flex;gap:.5rem;align-items:center;flex-wrap:wrap">
-                    <select id="analytics-period" class="form-control" style="max-width:140px" onchange="toggleAnalyticsCustom(); loadAnalytics()">
-                        <option value="7">Last 7 days</option>
-                        <option value="30" selected>Last 30 days</option>
-                        <option value="90">Last 90 days</option>
-                        <option value="custom">Custom range</option>
-                    </select>
-                    <span id="analytics-custom-range" style="display:none">
-                        <input type="date" id="analytics-from" class="form-control" style="max-width:140px">
-                        <span>to</span>
-                        <input type="date" id="analytics-to" class="form-control" style="max-width:140px">
-                        <button class="btn btn-outline btn-sm" onclick="loadAnalytics()">Apply</button>
-                    </span>
-                    <select id="analytics-org" class="form-control" style="max-width:200px" onchange="loadAnalytics()">
-                        <option value="">All organizations</option>
-                    </select>
-                    <button class="btn btn-outline btn-sm" onclick="coordinator.exportMeetingReport(getExportParams())">Export Meeting Report</button>
-                </div>
-            </div>
-            <div class="section">
-                <h2>Period summary</h2>
-                <div id="analytics-period-label" class="text-muted text-sm" style="margin-bottom:1rem"></div>
-                <div class="metrics-row" id="analytics-metrics">
-                    <div class="metric-card"><div class="metric-label">Donations (period)</div><div class="metric-value skeleton" style="height:2rem;width:50px"></div></div>
-                    <div class="metric-card accent-primary"><div class="metric-label">Delivered</div><div class="metric-value skeleton" style="height:2rem;width:50px"></div></div>
-                    <div class="metric-card accent-high"><div class="metric-label">Needs fulfilled</div><div class="metric-value skeleton" style="height:2rem;width:50px"></div></div>
-                    <div class="metric-card"><div class="metric-label">Transfers completed</div><div class="metric-value skeleton" style="height:2rem;width:50px"></div></div>
-                </div>
-            </div>
-            <div class="section">
-                <h2>Donations pipeline (in period)</h2>
-                <div class="pipeline" id="analytics-pipeline">
-                    <div class="pipeline-stage"><div class="stage-count skeleton" style="height:1.5rem;width:30px;margin:0 auto"></div><div class="stage-label">Pending</div></div>
-                    <div class="pipeline-stage"><div class="stage-count skeleton" style="height:1.5rem;width:30px;margin:0 auto"></div><div class="stage-label">Matched</div></div>
-                    <div class="pipeline-stage"><div class="stage-count skeleton" style="height:1.5rem;width:30px;margin:0 auto"></div><div class="stage-label">Confirmed</div></div>
-                    <div class="pipeline-stage"><div class="stage-count skeleton" style="height:1.5rem;width:30px;margin:0 auto"></div><div class="stage-label">Delivered</div></div>
-                </div>
-            </div>
-            <div class="section">
-                <h2>Donations by day</h2>
-                <div class="table-wrap">
-                    <table class="data-table">
-                        <thead>
-                            <tr><th>Date</th><th>Count</th></tr>
-                        </thead>
-                        <tbody id="analytics-by-day-tbody">
-                            <tr><td colspan="2"><div class="skeleton skeleton-text wide"></div></td></tr>
-                        </tbody>
-                    </table>
-                </div>
             </div>
         </div>
 
@@ -508,94 +308,6 @@
         </div>
 
     </main>
-</div>
-
-<!-- Organization Modal (Add/Edit) -->
-<div id="org-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:1000;align-items:center;justify-content:center;padding:1rem">
-    <div class="card" style="width:100%;max-width:480px">
-        <div class="card-header">
-            <h3 id="org-modal-title">Add organization</h3>
-            <button class="btn btn-ghost btn-sm" onclick="closeOrgModal()">Close</button>
-        </div>
-        <div class="card-body">
-            <input type="hidden" id="org-edit-id">
-            <div class="form-group">
-                <label class="form-label">Name</label>
-                <input type="text" id="org-name" class="form-control" required>
-            </div>
-            <div class="form-group">
-                <label class="form-label">Category</label>
-                <select id="org-category" class="form-control" required>
-                    <option value="shelter_housing">Shelter & Housing</option>
-                    <option value="food_nutrition">Food & Nutrition</option>
-                    <option value="goods_essentials">Goods & Essentials</option>
-                    <option value="mental_health">Mental Health</option>
-                    <option value="outreach">Outreach</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label class="form-label">Address</label>
-                <input type="text" id="org-address" class="form-control">
-            </div>
-            <div class="form-group">
-                <label class="form-label">Contact email</label>
-                <input type="email" id="org-contact-email" class="form-control">
-            </div>
-            <div class="form-group">
-                <label class="form-label">Contact phone</label>
-                <input type="text" id="org-contact-phone" class="form-control">
-            </div>
-            <div class="form-group">
-                <label class="form-label">Website</label>
-                <input type="url" id="org-website" class="form-control">
-            </div>
-            <div class="form-group">
-                <label class="form-label">Notes</label>
-                <textarea id="org-notes" class="form-control" rows="2"></textarea>
-            </div>
-            <div style="display:flex;gap:.75rem;margin-top:1rem;justify-content:flex-end">
-                <button class="btn btn-ghost" onclick="closeOrgModal()">Cancel</button>
-                <button class="btn btn-primary" id="org-save-btn" onclick="saveOrg()">Save</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Staff Modal (Add/Edit) -->
-<div id="staff-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:1000;align-items:center;justify-content:center;padding:1rem">
-    <div class="card" style="width:100%;max-width:420px">
-        <div class="card-header">
-            <h3 id="staff-modal-title">Add staff</h3>
-            <button class="btn btn-ghost btn-sm" onclick="closeStaffModal()">Close</button>
-        </div>
-        <div class="card-body">
-            <input type="hidden" id="staff-edit-id">
-            <div class="form-group">
-                <label class="form-label">Organization</label>
-                <select id="staff-org" class="form-control" required></select>
-            </div>
-            <div class="form-group">
-                <label class="form-label">First name</label>
-                <input type="text" id="staff-first" class="form-control" required>
-            </div>
-            <div class="form-group">
-                <label class="form-label">Last name</label>
-                <input type="text" id="staff-last" class="form-control" required>
-            </div>
-            <div class="form-group">
-                <label class="form-label">Email</label>
-                <input type="email" id="staff-email" class="form-control" required>
-            </div>
-            <div class="form-group" id="staff-password-group">
-                <label class="form-label">Password</label>
-                <input type="password" id="staff-password" class="form-control" placeholder="Required for new staff">
-            </div>
-            <div style="display:flex;gap:.75rem;margin-top:1rem;justify-content:flex-end">
-                <button class="btn btn-ghost" onclick="closeStaffModal()">Cancel</button>
-                <button class="btn btn-primary" id="staff-save-btn" onclick="saveStaff()">Save</button>
-            </div>
-        </div>
-    </div>
 </div>
 
 <!-- Create Transfer Modal -->
@@ -657,7 +369,7 @@
     }
 
     function showSection(name, linkEl) {
-        ['overview', 'organizations', 'staff', 'inventory', 'needs', 'donations', 'surplus-requests', 'transfers', 'analytics', 'insights'].forEach(s => {
+        ['overview', 'organizations', 'needs', 'donations', 'surplus-requests', 'transfers', 'insights'].forEach(s => {
             const el = document.getElementById(`section-${s}`);
             if (el) el.style.display = s === name ? 'block' : 'none';
         });
@@ -665,166 +377,11 @@
         if (linkEl) linkEl.classList.add('active');
 
         if (name === 'organizations' && !allOrgsData.length) loadOrgs();
-        if (name === 'staff') loadStaff();
-        if (name === 'inventory') loadInventory();
         if (name === 'needs' && !allNeedsData.length) loadAllNeeds();
         if (name === 'donations' && !allDonationsData.length) loadDonations();
         if (name === 'surplus-requests') loadSurplusRequests();
         if (name === 'transfers') loadTransfers();
-        if (name === 'analytics') loadAnalytics();
         return false;
-    }
-
-    function populateExportOrgFilter() {
-        const sel = document.getElementById('export-org-filter');
-        if (!sel || sel.options.length > 1) return;
-        sel.innerHTML = '<option value="">All organizations</option>';
-        allOrgsData.forEach(o => {
-            const opt = document.createElement('option');
-            opt.value = o.id;
-            opt.textContent = o.name;
-            sel.appendChild(opt);
-        });
-    }
-
-    function getExportParams() {
-        const orgId = document.getElementById('export-org-filter')?.value || document.getElementById('analytics-org')?.value || '';
-        const period = document.getElementById('analytics-period')?.value;
-        const params = {};
-        if (orgId) params.org_id = orgId;
-        if (period === 'custom') {
-            const from = document.getElementById('analytics-from')?.value;
-            const to = document.getElementById('analytics-to')?.value;
-            if (from) params.from = from;
-            if (to) params.to = to;
-        } else if (period) {
-            const to = new Date();
-            const from = new Date();
-            from.setDate(from.getDate() - parseInt(period));
-            params.from = from.toISOString().slice(0, 10);
-            params.to = to.toISOString().slice(0, 10);
-        }
-        return params;
-    }
-
-    function doExport(type) {
-        let orgId = document.getElementById('export-org-filter')?.value || '';
-        if (!orgId) {
-            const section = document.querySelector('[id^="section-"]:not([style*="display: none"])');
-            if (section) {
-                const id = section.id.replace('section-', '');
-                if (id === 'staff') orgId = document.getElementById('staff-org-filter')?.value || '';
-                else if (id === 'inventory') orgId = document.getElementById('inventory-org-filter')?.value || '';
-                else if (id === 'needs') orgId = document.getElementById('needs-org-filter')?.value || '';
-                else if (id === 'donations') orgId = document.getElementById('donation-org-filter')?.value || '';
-                else if (id === 'analytics') orgId = document.getElementById('analytics-org')?.value || '';
-            }
-        }
-        const params = orgId ? { org_id: orgId } : {};
-        if (type === 'meeting-report') {
-            Object.assign(params, getExportParams());
-        }
-        const fns = {
-            'needs': () => coordinator.exportNeeds(params),
-            'inventory': () => coordinator.exportInventory(params),
-            'donations': () => coordinator.exportDonations(params),
-            'organizations': () => coordinator.exportOrganizations(),
-            'staff': () => coordinator.exportStaff(params),
-            'surplus-requests': () => coordinator.exportSurplusRequests(params),
-            'transfers': () => coordinator.exportTransfers(params),
-            'meeting-report': () => coordinator.exportMeetingReport(params)
-        };
-        if (fns[type]) fns[type]();
-    }
-
-    function toggleAnalyticsCustom() {
-        const periodSel = document.getElementById('analytics-period');
-        const customRange = document.getElementById('analytics-custom-range');
-        if (periodSel.value === 'custom') {
-            customRange.style.display = 'flex';
-            customRange.style.alignItems = 'center';
-            customRange.style.gap = '.5rem';
-            const d = new Date();
-            document.getElementById('analytics-to').value = d.toISOString().slice(0, 10);
-            d.setDate(d.getDate() - 30);
-            document.getElementById('analytics-from').value = d.toISOString().slice(0, 10);
-        } else {
-            customRange.style.display = 'none';
-        }
-    }
-
-    async function loadAnalytics() {
-        const periodSel = document.getElementById('analytics-period');
-        const customRange = document.getElementById('analytics-custom-range');
-        if (periodSel.value === 'custom') {
-            customRange.style.display = 'flex';
-            customRange.style.alignItems = 'center';
-            customRange.style.gap = '.5rem';
-        } else {
-            customRange.style.display = 'none';
-        }
-        let from, to;
-        if (periodSel.value === 'custom') {
-            from = document.getElementById('analytics-from').value;
-            to = document.getElementById('analytics-to').value;
-            if (!from || !to) {
-                const d = new Date();
-                to = d.toISOString().slice(0, 10);
-                d.setDate(d.getDate() - 30);
-                from = d.toISOString().slice(0, 10);
-                document.getElementById('analytics-from').value = from;
-                document.getElementById('analytics-to').value = to;
-            }
-        } else {
-            const days = parseInt(periodSel.value) || 30;
-            const d = new Date();
-            to = d.toISOString().slice(0, 10);
-            d.setDate(d.getDate() - days);
-            from = d.toISOString().slice(0, 10);
-        }
-        const orgId = document.getElementById('analytics-org').value || '';
-        try {
-            const params = { from, to };
-            if (orgId) params.org_id = orgId;
-            if (!allOrgsData.length) {
-                const orgRes = await coordinator.orgs();
-                allOrgsData = orgRes.data || [];
-            }
-            const res = await coordinator.analytics(params);
-            renderAnalytics(res.data);
-            const analyticsOrgSel = document.getElementById('analytics-org');
-            if (analyticsOrgSel.options.length <= 1 && allOrgsData.length) {
-                analyticsOrgSel.innerHTML = '<option value="">All organizations</option>';
-                allOrgsData.forEach(o => { const opt = document.createElement('option'); opt.value = o.id; opt.textContent = o.name; analyticsOrgSel.appendChild(opt); });
-            }
-            populateExportOrgFilter();
-        } catch (err) {
-            document.getElementById('analytics-metrics').innerHTML = `<div class="inline-notice error">${escHtml(err.message)}</div>`;
-        }
-    }
-
-    function renderAnalytics(data) {
-        const p = data.period;
-        document.getElementById('analytics-period-label').textContent = `${p.from} to ${p.to}${data.donations_by_day?.length ? ' · ' + data.donations_by_day.length + ' days with activity' : ''}`;
-        const totalDonations = (data.donations_pipeline?.pending || 0) + (data.donations_pipeline?.matched || 0) + (data.donations_pipeline?.confirmed || 0) + (data.donations_pipeline?.delivered || 0);
-        document.getElementById('analytics-metrics').innerHTML = `
-            <div class="metric-card"><div class="metric-label">Donations (period)</div><div class="metric-value">${totalDonations}</div></div>
-            <div class="metric-card accent-primary"><div class="metric-label">Delivered</div><div class="metric-value">${data.donations_delivered || 0}</div></div>
-            <div class="metric-card accent-high"><div class="metric-label">Needs fulfilled</div><div class="metric-value">${data.needs_fulfilled || 0}</div></div>
-            <div class="metric-card"><div class="metric-label">Transfers completed</div><div class="metric-value">${data.transfers_completed || 0}</div></div>`;
-        const d = data.donations_pipeline || {};
-        document.getElementById('analytics-pipeline').innerHTML = `
-            <div class="pipeline-stage"><div class="stage-count">${d.pending || 0}</div><div class="stage-label">Pending</div></div>
-            <div class="pipeline-stage"><div class="stage-count">${d.matched || 0}</div><div class="stage-label">Matched</div></div>
-            <div class="pipeline-stage"><div class="stage-count">${d.confirmed || 0}</div><div class="stage-label">Confirmed</div></div>
-            <div class="pipeline-stage"><div class="stage-count">${d.delivered || 0}</div><div class="stage-label">Delivered</div></div>`;
-        const byDay = data.donations_by_day || [];
-        const tbody = document.getElementById('analytics-by-day-tbody');
-        if (!byDay.length) {
-            tbody.innerHTML = '<tr><td colspan="2"><div class="empty-state"><p>No donation activity in this period.</p></div></td></tr>';
-        } else {
-            tbody.innerHTML = byDay.map(r => `<tr><td>${formatDate(r.day)}</td><td>${r.count}</td></tr>`).join('');
-        }
     }
 
     async function loadOverview() {
@@ -929,10 +486,9 @@
     function renderOrgs() {
         const tbody = document.getElementById('orgs-tbody');
         if (!allOrgsData.length) {
-            tbody.innerHTML = '<tr><td colspan="7"><div class="empty-state"><p>No organizations found.</p></div></td></tr>';
+            tbody.innerHTML = '<tr><td colspan="6"><div class="empty-state"><p>No organizations found.</p></div></td></tr>';
             return;
         }
-        populateExportOrgFilter();
         tbody.innerHTML = allOrgsData.map(o => `
             <tr>
                 <td><strong>${escHtml(o.name)}</strong><div class="text-xs text-muted">${escHtml(o.address || '')}</div></td>
@@ -943,316 +499,18 @@
                 <td>${escHtml(String(o.total_needs))}</td>
                 <td>${escHtml(String(o.surplus_items || 0))}</td>
                 <td class="text-sm text-muted">${o.last_inventory_update ? timeAgo(o.last_inventory_update) : '<span style="color:var(--color-critical)">Never</span>'}</td>
-                <td><button class="btn btn-ghost btn-sm" onclick="openEditOrg('${o.id}')">Edit</button></td>
             </tr>`).join('');
-    }
-
-    function openAddOrg() {
-        document.getElementById('org-modal-title').textContent = 'Add organization';
-        document.getElementById('org-edit-id').value = '';
-        document.getElementById('org-name').value = '';
-        document.getElementById('org-category').value = 'outreach';
-        document.getElementById('org-address').value = '';
-        document.getElementById('org-contact-email').value = '';
-        document.getElementById('org-contact-phone').value = '';
-        document.getElementById('org-website').value = '';
-        document.getElementById('org-notes').value = '';
-        document.getElementById('org-modal').style.display = 'flex';
-    }
-
-    function openEditOrg(id) {
-        const o = allOrgsData.find(x => x.id === id);
-        if (!o) return;
-        document.getElementById('org-modal-title').textContent = 'Edit organization';
-        document.getElementById('org-edit-id').value = o.id;
-        document.getElementById('org-name').value = o.name || '';
-        document.getElementById('org-category').value = o.category || 'outreach';
-        document.getElementById('org-address').value = o.address || '';
-        document.getElementById('org-contact-email').value = o.contact_email || '';
-        document.getElementById('org-contact-phone').value = o.contact_phone || '';
-        document.getElementById('org-website').value = o.website || '';
-        document.getElementById('org-notes').value = o.notes || '';
-        document.getElementById('org-modal').style.display = 'flex';
-    }
-
-    function closeOrgModal() {
-        document.getElementById('org-modal').style.display = 'none';
-    }
-
-    async function saveOrg() {
-        const id = document.getElementById('org-edit-id').value;
-        const data = {
-            name: document.getElementById('org-name').value.trim(),
-            category: document.getElementById('org-category').value,
-            address: document.getElementById('org-address').value.trim() || null,
-            contact_email: document.getElementById('org-contact-email').value.trim() || null,
-            contact_phone: document.getElementById('org-contact-phone').value.trim() || null,
-            website: document.getElementById('org-website').value.trim() || null,
-            notes: document.getElementById('org-notes').value.trim() || null
-        };
-        if (!data.name) {
-            toast('Name is required.', 'error');
-            return;
-        }
-        const btn = document.getElementById('org-save-btn');
-        btn.disabled = true;
-        try {
-            if (id) {
-                await coordinator.updateOrg(id, data);
-                toast('Organization updated.', 'success');
-            } else {
-                await coordinator.createOrg(data);
-                toast('Organization created.', 'success');
-            }
-            closeOrgModal();
-            allOrgsData = [];
-            loadOrgs();
-        } catch (err) {
-            toast(err.message || 'Failed to save.', 'error');
-        } finally {
-            btn.disabled = false;
-        }
-    }
-
-    let allStaffData = [];
-
-    async function loadStaff() {
-        const orgId = document.getElementById('staff-org-filter').value || undefined;
-        try {
-            if (!allOrgsData.length) {
-                const orgRes = await coordinator.orgs();
-                allOrgsData = orgRes.data || [];
-            }
-            const res = await coordinator.staff(orgId ? { org_id: orgId } : {});
-            allStaffData = res.data || [];
-            renderStaff();
-            const filterSel = document.getElementById('staff-org-filter');
-            if (filterSel.options.length <= 1) {
-                filterSel.innerHTML = '<option value="">All organizations</option>';
-                allOrgsData.forEach(o => {
-                    const opt = document.createElement('option');
-                    opt.value = o.id;
-                    opt.textContent = o.name;
-                    filterSel.appendChild(opt);
-                });
-            }
-            populateExportOrgFilter();
-        } catch (err) {
-            document.getElementById('staff-tbody').innerHTML = `<tr><td colspan="5"><div class="inline-notice error">${escHtml(err.message)}</div></td></tr>`;
-        }
-    }
-
-    function renderStaff() {
-        const tbody = document.getElementById('staff-tbody');
-        if (!allStaffData.length) {
-            tbody.innerHTML = '<tr><td colspan="5"><div class="empty-state"><p>No staff found.</p></div></td></tr>';
-            return;
-        }
-        tbody.innerHTML = allStaffData.map(s => `
-            <tr>
-                <td><strong>${escHtml(s.first_name)} ${escHtml(s.last_name)}</strong></td>
-                <td>${escHtml(s.email)}</td>
-                <td>${escHtml(s.org_name || '')}</td>
-                <td><span class="badge badge-${s.status === 'active' ? 'completed' : 'pending'}">${escHtml(s.status)}</span></td>
-                <td>
-                    <button class="btn btn-ghost btn-sm" onclick="openEditStaff('${s.id}')">Edit</button>
-                    ${s.status === 'active'
-                        ? `<button class="btn btn-ghost btn-sm" onclick="deactivateStaff('${s.id}', '${escHtml(s.first_name)} ${escHtml(s.last_name)}')">Deactivate</button>`
-                        : `<button class="btn btn-ghost btn-sm" onclick="activateStaff('${s.id}')">Activate</button>`}
-                </td>
-            </tr>`).join('');
-    }
-
-    function openAddStaff() {
-        document.getElementById('staff-modal-title').textContent = 'Add staff';
-        document.getElementById('staff-edit-id').value = '';
-        document.getElementById('staff-first').value = '';
-        document.getElementById('staff-last').value = '';
-        document.getElementById('staff-email').value = '';
-        document.getElementById('staff-password').value = '';
-        document.getElementById('staff-password-group').style.display = 'block';
-        document.getElementById('staff-org').disabled = false;
-        populateStaffOrgSelect();
-        document.getElementById('staff-modal').style.display = 'flex';
-    }
-
-    function openEditStaff(id) {
-        const s = allStaffData.find(x => x.id === id);
-        if (!s) return;
-        document.getElementById('staff-modal-title').textContent = 'Edit staff';
-        document.getElementById('staff-edit-id').value = s.id;
-        document.getElementById('staff-first').value = s.first_name;
-        document.getElementById('staff-last').value = s.last_name;
-        document.getElementById('staff-email').value = s.email;
-        document.getElementById('staff-password').value = '';
-        document.getElementById('staff-password-group').style.display = 'none';
-        document.getElementById('staff-org').disabled = true;
-        populateStaffOrgSelect(s.org_id);
-        document.getElementById('staff-modal').style.display = 'flex';
-    }
-
-    async function populateStaffOrgSelect(selectedId) {
-        const sel = document.getElementById('staff-org');
-        sel.innerHTML = '';
-        let orgs = allOrgsData.length ? allOrgsData : [];
-        if (!orgs.length) {
-            const r = await coordinator.orgs();
-            orgs = r.data || [];
-        }
-        orgs.forEach(o => {
-            const opt = document.createElement('option');
-            opt.value = o.id;
-            opt.textContent = o.name;
-            if (o.id === selectedId) opt.selected = true;
-            sel.appendChild(opt);
-        });
-    }
-
-    function closeStaffModal() {
-        document.getElementById('staff-modal').style.display = 'none';
-    }
-
-    async function saveStaff() {
-        const id = document.getElementById('staff-edit-id').value;
-        const orgId = document.getElementById('staff-org').value;
-        const first = document.getElementById('staff-first').value.trim();
-        const last = document.getElementById('staff-last').value.trim();
-        const email = document.getElementById('staff-email').value.trim();
-        const password = document.getElementById('staff-password').value;
-
-        if (!first || !last || !email) {
-            toast('Please fill in name and email.', 'error');
-            return;
-        }
-        if (!id && !password) {
-            toast('Password is required for new staff.', 'error');
-            return;
-        }
-
-        const btn = document.getElementById('staff-save-btn');
-        btn.disabled = true;
-        try {
-            if (id) {
-                await coordinator.updateStaff(id, { first_name: first, last_name: last, email });
-                toast('Staff updated.', 'success');
-            } else {
-                if (!orgId) {
-                    toast('Please select an organization.', 'error');
-                    return;
-                }
-                await coordinator.createStaff({ org_id: orgId, first_name: first, last_name: last, email, password });
-                toast('Staff created.', 'success');
-            }
-            closeStaffModal();
-            loadStaff();
-        } catch (err) {
-            toast(err.message || 'Failed to save.', 'error');
-        } finally {
-            btn.disabled = false;
-        }
-    }
-
-    async function deactivateStaff(id, name) {
-        if (!confirm(`Deactivate ${name}? They will no longer be able to sign in.`)) return;
-        try {
-            await coordinator.updateStaff(id, { status: 'inactive' });
-            toast('Staff deactivated.', 'success');
-            loadStaff();
-        } catch (err) {
-            toast(err.message || 'Failed to deactivate.', 'error');
-        }
-    }
-
-    async function activateStaff(id) {
-        try {
-            await coordinator.updateStaff(id, { status: 'active' });
-            toast('Staff activated.', 'success');
-            loadStaff();
-        } catch (err) {
-            toast(err.message || 'Failed to activate.', 'error');
-        }
-    }
-
-    let allInventoryData = [];
-    let inventorySearchDebounce = null;
-
-    async function loadInventory() {
-        try {
-            if (!allOrgsData.length) {
-                const orgRes = await coordinator.orgs();
-                allOrgsData = orgRes.data || [];
-            }
-            const params = {};
-            const orgId = document.getElementById('inventory-org-filter').value;
-            const status = document.getElementById('inventory-status-filter').value;
-            const search = document.getElementById('inventory-search').value.trim();
-            if (orgId) params.org_id = orgId;
-            if (status) params.status = status;
-            if (search) params.search = search;
-            const res = await coordinator.inventory(params);
-            allInventoryData = res.data || [];
-            renderInventory();
-            const filterSel = document.getElementById('inventory-org-filter');
-            if (filterSel.options.length <= 1) {
-                filterSel.innerHTML = '<option value="">All organizations</option>';
-                allOrgsData.forEach(o => {
-                    const opt = document.createElement('option');
-                    opt.value = o.id;
-                    opt.textContent = o.name;
-                    filterSel.appendChild(opt);
-                });
-            }
-            populateExportOrgFilter();
-        } catch (err) {
-            document.getElementById('inventory-tbody').innerHTML = `<tr><td colspan="8"><div class="inline-notice error">${escHtml(err.message)}</div></td></tr>`;
-        }
-    }
-
-    function renderInventory() {
-        const tbody = document.getElementById('inventory-tbody');
-        if (!allInventoryData.length) {
-            tbody.innerHTML = '<tr><td colspan="8"><div class="empty-state"><p>No inventory items found.</p></div></td></tr>';
-            return;
-        }
-        tbody.innerHTML = allInventoryData.map(i => `
-            <tr>
-                <td><strong>${escHtml(i.org_name || '')}</strong></td>
-                <td>${escHtml(i.item_name)}</td>
-                <td>${escHtml(i.category)}</td>
-                <td>${escHtml(String(i.quantity))}</td>
-                <td>${escHtml(i.unit || 'units')}</td>
-                <td><span class="badge badge-${escHtml(i.status)}">${escHtml(i.status)}</span></td>
-                <td class="text-sm">${i.expiry_date ? formatDate(i.expiry_date) : '<span class="text-muted">—</span>'}</td>
-                <td class="text-sm text-muted">${i.updated_at ? timeAgo(i.updated_at) : '—'}</td>
-            </tr>`).join('');
-    }
-
-    function debounceInventorySearch() {
-        clearTimeout(inventorySearchDebounce);
-        inventorySearchDebounce = setTimeout(() => loadInventory(), 400);
     }
 
     async function loadAllNeeds() {
         const params = {
             urgency: document.getElementById('needs-urgency-filter').value,
-            search:  document.getElementById('needs-search').value,
-            org_id:  document.getElementById('needs-org-filter')?.value || ''
+            search:  document.getElementById('needs-search').value
         };
-        if (!params.org_id) delete params.org_id;
         try {
-            if (!allOrgsData.length) {
-                const orgRes = await coordinator.orgs();
-                allOrgsData = orgRes.data || [];
-            }
-            const needsOrgSel = document.getElementById('needs-org-filter');
-            if (needsOrgSel && needsOrgSel.options.length <= 1 && allOrgsData.length) {
-                needsOrgSel.innerHTML = '<option value="">All organizations</option>';
-                allOrgsData.forEach(o => { const opt = document.createElement('option'); opt.value = o.id; opt.textContent = o.name; needsOrgSel.appendChild(opt); });
-            }
             const res = await coordinator.needs(params);
             allNeedsData = res.data || [];
             renderAllNeeds();
-            populateExportOrgFilter();
         } catch (err) {
             document.getElementById('all-needs-tbody').innerHTML = `<tr><td colspan="7"><div class="inline-notice error">${escHtml(err.message)}</div></td></tr>`;
         }
@@ -1278,24 +536,10 @@
 
     async function loadDonations() {
         const status = document.getElementById('donation-status-filter').value;
-        const orgId = document.getElementById('donation-org-filter')?.value || '';
-        const params = {};
-        if (status) params.status = status;
-        if (orgId) params.org_id = orgId;
         try {
-            if (!allOrgsData.length) {
-                const orgRes = await coordinator.orgs();
-                allOrgsData = orgRes.data || [];
-            }
-            const donationOrgSel = document.getElementById('donation-org-filter');
-            if (donationOrgSel && donationOrgSel.options.length <= 1 && allOrgsData.length) {
-                donationOrgSel.innerHTML = '<option value="">All organizations</option>';
-                allOrgsData.forEach(o => { const opt = document.createElement('option'); opt.value = o.id; opt.textContent = o.name; donationOrgSel.appendChild(opt); });
-            }
-            const res = await coordinator.donations(params);
+            const res = await coordinator.donations(status ? { status } : {});
             allDonationsData = res.data || [];
             renderDonations();
-            populateExportOrgFilter();
         } catch (err) {
             document.getElementById('donations-tbody').innerHTML = `<tr><td colspan="7"><div class="inline-notice error">${escHtml(err.message)}</div></td></tr>`;
         }
@@ -1573,10 +817,8 @@
 
     // Filter event listeners
     document.getElementById('needs-urgency-filter').addEventListener('change', () => { allNeedsData = []; loadAllNeeds(); });
-    document.getElementById('needs-org-filter')?.addEventListener('change', () => { allNeedsData = []; loadAllNeeds(); });
     document.getElementById('needs-search').addEventListener('input', debounce(() => { allNeedsData = []; loadAllNeeds(); }, 400));
     document.getElementById('donation-status-filter').addEventListener('change', () => { allDonationsData = []; loadDonations(); });
-    document.getElementById('donation-org-filter')?.addEventListener('change', () => { allDonationsData = []; loadDonations(); });
 
     function debounce(fn, delay) {
         let t;

@@ -1,6 +1,17 @@
 const { promisePool } = require('../config/database');
 const { randomUUID } = require('crypto');
 
+function computeStatus(quantity, targetQuantity) {
+    const q = Number(quantity) || 0;
+    const t = Number(targetQuantity) || 0;
+    if (t <= 0) return q > 0 ? 'available' : 'low';
+    const ratio = q / t;
+    if (ratio < 0.25) return 'critical';
+    if (ratio < 0.5) return 'low';
+    if (ratio >= 1) return 'surplus';
+    return 'available';
+}
+
 class InventoryModel {
     static async findByOrg(orgId) {
         const [rows] = await promisePool.query(
@@ -19,17 +30,20 @@ class InventoryModel {
 
     static async create(data) {
         const id = randomUUID();
-        const { org_id, item_name, category, quantity, unit, status, expiry_date, notes } = data;
+        const { org_id, item_name, category, quantity, target_quantity, unit, expiry_date, notes } = data;
+        const q = quantity || 0;
+        const t = target_quantity != null ? target_quantity : null;
+        const status = computeStatus(q, t);
         await promisePool.query(
-            `INSERT INTO inventory_items (id, org_id, item_name, category, quantity, unit, status, expiry_date, notes)
-             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-            [id, org_id, item_name, category, quantity || 0, unit || 'units', status || 'available', expiry_date || null, notes || null]
+            `INSERT INTO inventory_items (id, org_id, item_name, category, quantity, target_quantity, unit, status, expiry_date, notes)
+             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+            [id, org_id, item_name, category, q, t, unit || 'units', status, expiry_date || null, notes || null]
         );
         return this.findById(id);
     }
 
     static async update(id, orgId, data) {
-        const allowed = ['item_name', 'category', 'quantity', 'unit', 'status', 'expiry_date', 'notes'];
+        const allowed = ['item_name', 'category', 'quantity', 'target_quantity', 'unit', 'expiry_date', 'notes'];
         const fields = [];
         const values = [];
         for (const key of allowed) {
@@ -39,6 +53,13 @@ class InventoryModel {
             }
         }
         if (!fields.length) return null;
+        const item = await this.findById(id);
+        if (!item || item.org_id !== orgId) return null;
+        const q = data.quantity !== undefined ? data.quantity : item.quantity;
+        const t = data.target_quantity !== undefined ? data.target_quantity : item.target_quantity;
+        const status = computeStatus(q, t);
+        fields.push('`status` = ?');
+        values.push(status);
         values.push(id, orgId);
         await promisePool.query(
             `UPDATE inventory_items SET ${fields.join(', ')} WHERE id = ? AND org_id = ?`,

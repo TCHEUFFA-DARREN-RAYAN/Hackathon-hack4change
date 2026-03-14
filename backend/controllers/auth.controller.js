@@ -3,17 +3,24 @@ const StaffModel = require('../models/staff.model');
 const { hashPassword, comparePassword } = require('../utils/hash.util');
 const { generateAccessToken, generateRefreshToken, verifyRefreshToken } = require('../utils/jwt.util');
 
-const getCookieOpts = () => ({
-    httpOnly: true,
-    sameSite: process.env.COOKIE_SAME_SITE || 'lax',
-    secure: process.env.COOKIE_SECURE === 'true' || process.env.COOKIE_SECURE === '1',
-    maxAge: 7 * 24 * 60 * 60 * 1000
-});
+const getCookieOpts = (remember = true) => {
+    const opts = {
+        httpOnly: true,
+        sameSite: process.env.COOKIE_SAME_SITE || 'lax',
+        secure: process.env.COOKIE_SECURE === 'true' || process.env.COOKIE_SECURE === '1'
+    };
+    if (remember) {
+        opts.maxAge = 30 * 24 * 60 * 60 * 1000; // 30 days when "remember me" is on
+    }
+    // When remember=false, omit maxAge → session cookie (expires when browser closes)
+    return opts;
+};
 
 class AuthController {
     static async login(req, res) {
         try {
-            const { email, password } = req.body;
+            const { email, password, remember } = req.body;
+            const rememberMe = remember === true || remember === 'true';
             const normalizedEmail = (email || '').trim().toLowerCase();
             const normalizedPassword = (password || '').trim();
 
@@ -29,8 +36,9 @@ class AuthController {
                     const payload = { id: admin.id, email: admin.email, role: 'coordinator', isAdmin: true };
                     const accessToken = generateAccessToken(payload);
                     const refreshToken = generateRefreshToken(payload);
-                    res.cookie('token', accessToken, getCookieOpts());
-                    res.cookie('refreshToken', refreshToken, getCookieOpts());
+                    const cookieOpts = getCookieOpts(rememberMe);
+                    res.cookie('token', accessToken, cookieOpts);
+                    res.cookie('refreshToken', refreshToken, cookieOpts);
                     return res.json({
                         success: true,
                         data: {
@@ -57,8 +65,9 @@ class AuthController {
             const payload = { id: staff.id, email: staff.email, role: 'staff', orgId: staff.org_id, isAdmin: false };
             const accessToken = generateAccessToken(payload);
             const refreshToken = generateRefreshToken(payload);
-            res.cookie('token', accessToken, getCookieOpts());
-            res.cookie('refreshToken', refreshToken, getCookieOpts());
+            const cookieOpts = getCookieOpts(rememberMe);
+            res.cookie('token', accessToken, cookieOpts);
+            res.cookie('refreshToken', refreshToken, cookieOpts);
             return res.json({
                 success: true,
                 data: {

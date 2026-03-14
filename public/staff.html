@@ -3,93 +3,195 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Staff Portal — CommonGround</title>
-    <link rel="stylesheet" href="/css/style.css">
+    <title>Organization Dashboard — CommonGround</title>
+    <link rel="stylesheet" href="/css/dashboard.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
 
-<nav class="site-nav">
-    <div class="nav-inner">
-        <a href="/" class="nav-brand"><img src="/assets/images/logo.png" alt="Common Ground"> <span>GMHSC Network</span></a>
-        <div class="nav-actions">
-            <span class="text-muted text-sm" id="nav-org-name"></span>
-            <button class="btn btn-ghost btn-sm" onclick="handleLogout()">Sign out</button>
-        </div>
+<div id="topbar">
+    <div class="topbar-brand">
+        <img src="/assets/images/logo.png" alt="Common Ground">
+        <span>GMHSC Network</span>
     </div>
-</nav>
+    <div class="topbar-actions">
+        <span class="text-muted" id="nav-org-name"></span>
+        <button class="btn btn-outline btn-sm" onclick="handleLogout()">Sign out</button>
+    </div>
+</div>
 
-<div class="portal-layout">
+<div id="app">
+    <aside id="sidebar" aria-label="Organization navigation">
+        <div class="sidebar-brand">
+            <span class="brand-dot"></span>
+            <span>Resource Hub</span>
+        </div>
+        <ul class="nav-links">
+            <li><span class="sidebar-label">Overview</span></li>
+            <li><a href="#" data-section="dashboard" class="active" onclick="showSection('dashboard', this)">
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+                Dashboard
+            </a></li>
+            <li><span class="sidebar-label">Resources</span></li>
+            <li><a href="#" data-section="inventory" onclick="showSection('inventory', this)">
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 7V4a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v3"/><rect x="2" y="9" width="20" height="12" rx="2"/><path d="M12 14v4"/></svg>
+                Inventory
+            </a></li>
+            <li><a href="#" data-section="needs" onclick="showSection('needs', this)">
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4"/><path d="M12 18v4"/><path d="M4.93 4.93l2.83 2.83"/><path d="M16.24 16.24l2.83 2.83"/><path d="M2 12h4"/><path d="M18 12h4"/><path d="M4.93 19.07l2.83-2.83"/><path d="M16.24 7.76l2.83-2.83"/></svg>
+                Your Needs
+            </a></li>
+            <li><a href="#" data-section="other-needs" onclick="showSection('other-needs', this)">
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                Other Needs
+            </a></li>
+            <li><span class="sidebar-label">Incoming</span></li>
+            <li><a href="#" data-section="donations" onclick="showSection('donations', this)">
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 12v10H4V12"/><rect x="2" y="9" width="20" height="12" rx="2"/><path d="M12 9V2"/><path d="M8 5l4-4 4 4"/></svg>
+                Donations
+            </a></li>
+            <li><span class="sidebar-label">Insights</span></li>
+            <li><a href="#" data-section="analytics" onclick="showSection('analytics', this)">
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg>
+                Analytics
+            </a></li>
+            <li><span class="sidebar-label">Communication</span></li>
+            <li><a href="#" data-section="chats" onclick="showSection('chats', this)">
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                Chats
+            </a></li>
+        </ul>
+        <div class="sidebar-footer">
+            <a href="/">View Public Board</a>
+        </div>
+    </aside>
 
-    <nav class="portal-sidebar" aria-label="Staff navigation">
-        <div class="sidebar-section">
-            <span class="sidebar-label">Your Organization</span>
-            <a href="#" data-section="inventory" class="active" onclick="showSection('inventory', this)">Inventory</a>
-            <a href="#" data-section="needs" onclick="showSection('needs', this)">Needs</a>
-            <a href="#" data-section="donations" onclick="showSection('donations', this)">Incoming Donations</a>
-            <a href="#" data-section="transfers" onclick="showSection('transfers', this)">Incoming Transfers</a>
-        </div>
-        <div class="sidebar-section">
-            <span class="sidebar-label">Network</span>
-            <a href="#" data-section="surplus" onclick="showSection('surplus', this)">Request Surplus</a>
-        </div>
-        <div class="sidebar-section" style="margin-top:auto;padding-top:1rem;border-top:1px solid var(--color-border-lt)">
-            <a href="/" style="color:var(--color-text-muted)">View Public Board</a>
-        </div>
-    </nav>
-
-    <main class="portal-main">
-        <div class="portal-header">
-            <div>
-                <h1 id="page-title">Inventory</h1>
-                <div class="text-muted text-sm" id="org-subtitle">Loading...</div>
+    <main id="main">
+        <div id="page-content">
+        <div class="page-header">
+            <div class="page-header-left">
+                <h1 id="page-title">Dashboard</h1>
+                <p id="org-subtitle">Loading...</p>
             </div>
-            <div id="header-actions"></div>
+            <div class="page-header-actions" id="header-actions"></div>
         </div>
 
-        <!-- Inventory section -->
-        <div id="section-inventory">
-            <div id="expiring-alert" style="display:none;margin-bottom:1rem;padding:.75rem 1rem;background:#fff8e6;border:1px solid #f0d78c;border-radius:var(--radius-sm)">
+        <!-- Dashboard -->
+        <div id="section-dashboard">
+            <div class="dashboard-hero">
+                <h2>Welcome back</h2>
+                <p id="dashboard-hero-org">Your organization overview</p>
+            </div>
+            <div class="metrics-row" id="dashboard-metrics">
+                <div class="metric-card"><div class="metric-label">Inventory Items</div><div class="metric-value skeleton" style="height:2rem;width:50px;display:inline-block"></div></div>
+                <div class="metric-card accent-critical"><div class="metric-label">Critical</div><div class="metric-value skeleton" style="height:2rem;width:50px;display:inline-block"></div></div>
+                <div class="metric-card accent-accent"><div class="metric-label">Surplus</div><div class="metric-value skeleton" style="height:2rem;width:50px;display:inline-block"></div></div>
+                <div class="metric-card accent-primary"><div class="metric-label">Open Needs</div><div class="metric-value skeleton" style="height:2rem;width:50px;display:inline-block"></div></div>
+                <div class="metric-card accent-high"><div class="metric-label">Pending Donations</div><div class="metric-value skeleton" style="height:2rem;width:50px;display:inline-block"></div></div>
+            </div>
+            <div class="section">
+                <div class="section-header"><h2>Quick actions</h2></div>
+                <div style="display:flex;gap:.75rem;flex-wrap:wrap">
+                    <button class="btn btn-primary btn-sm" onclick="showSection('inventory', document.querySelector('[data-section=inventory]')); openAddInventory();">Add inventory item</button>
+                    <button class="btn btn-outline btn-sm" onclick="showSection('needs', document.querySelector('[data-section=needs]')); openAddNeed();">Post a need</button>
+                    <a href="/" class="btn btn-ghost btn-sm">View public board</a>
+                </div>
+            </div>
+            <div id="dashboard-expiring" class="section" style="display:none">
+                <div class="section-header"><h2>Expiring soon</h2></div>
+                <div id="dashboard-expiring-list"></div>
+            </div>
+            <div id="dashboard-actions" class="section">
+                <div class="section-header">
+                    <h2>Action items</h2>
+                    <button class="btn btn-ghost btn-sm" onclick="loadActionItems()">Refresh</button>
+                </div>
+                <div id="action-items-container" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:12px">
+                    <div class="skeleton skeleton-block" style="height:80px"></div>
+                    <div class="skeleton skeleton-block" style="height:80px"></div>
+                </div>
+            </div>
+            <div id="dashboard-activity" class="section">
+                <div class="section-header">
+                    <h2>Recent activity</h2>
+                    <button class="btn btn-ghost btn-sm" onclick="loadRecentActivity()">Refresh</button>
+                </div>
+                <div class="activity-list" id="activity-container">
+                    <div class="skeleton skeleton-block" style="height:50px;margin-bottom:.3rem"></div>
+                    <div class="skeleton skeleton-block" style="height:50px;margin-bottom:.3rem"></div>
+                    <div class="skeleton skeleton-block" style="height:50px"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Inventory -->
+        <div id="section-inventory" style="display:none">
+            <div id="expiring-alert" class="alert alert-warn" style="display:none;margin-bottom:1rem">
                 <strong>Expiring soon</strong>
                 <div id="expiring-alert-list" class="text-sm" style="margin-top:.4rem"></div>
             </div>
-            <div class="metrics-row" id="inventory-metrics">
-                <div class="metric-card"><div class="metric-label">Total Items</div><div class="metric-value skeleton" style="height:2rem;width:60px;display:inline-block"></div></div>
-                <div class="metric-card accent-critical"><div class="metric-label">Critical</div><div class="metric-value skeleton" style="height:2rem;width:60px;display:inline-block"></div></div>
-                <div class="metric-card accent-accent"><div class="metric-label">Surplus</div><div class="metric-value skeleton" style="height:2rem;width:60px;display:inline-block"></div></div>
-            </div>
-
             <div class="section">
-                <div class="section-header">
-                    <h2>Current inventory</h2>
-                    <button class="btn btn-primary btn-sm" onclick="openAddInventory()">Add item</button>
+                <div class="section-header" style="margin-bottom:8px">
+                    <div>
+                        <h2 style="font-size:20px;margin-bottom:4px">Inventory</h2>
+                        <p class="text-sm text-muted">Add, edit, and manage your organization's items.</p>
+                    </div>
+                    <button class="btn btn-primary btn-sm" onclick="openAddInventory()">+ Add item</button>
+                </div>
+                <div class="inv-toolbar">
+                    <div class="inv-search">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+                        <input type="search" id="inv-search" placeholder="Search by item or category..." autocomplete="off" aria-label="Search inventory">
+                    </div>
+                    <div class="inv-dropdown-wrap">
+                        <label class="inv-dropdown-label">Category</label>
+                        <select id="inv-cat-select" class="form-control inv-dropdown" onchange="setInvCategory(this.value)">
+                            <option value="">All categories</option>
+                            <option value="housing">Housing</option>
+                            <option value="food">Food</option>
+                            <option value="hygiene">Hygiene</option>
+                            <option value="goods">Goods</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                    <div class="inv-dropdown-wrap">
+                        <label class="inv-dropdown-label">Status</label>
+                        <select id="inv-status-select" class="form-control inv-dropdown" onchange="setInvStatus(this.value)">
+                            <option value="">All statuses</option>
+                            <option value="critical">Critical</option>
+                            <option value="low">Low</option>
+                            <option value="available">Available</option>
+                            <option value="surplus">Surplus</option>
+                        </select>
+                    </div>
+                    <span class="inv-results" id="inv-results-count">0 results</span>
                 </div>
                 <div class="table-wrap">
                     <table class="data-table">
                         <thead>
                             <tr>
+                                <th>Status</th>
                                 <th>Item</th>
                                 <th>Category</th>
-                                <th>Quantity</th>
-                                <th>Status</th>
-                                <th>Expires</th>
+                                <th>Progress</th>
+                                <th>Unit</th>
+                                <th>Expiring</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
-                        <tbody id="inventory-tbody">
-                            <tr><td colspan="6"><div class="skeleton skeleton-text wide"></div></td></tr>
-                            <tr><td colspan="6"><div class="skeleton skeleton-text" style="width:70%"></div></td></tr>
-                            <tr><td colspan="6"><div class="skeleton skeleton-text" style="width:55%"></div></td></tr>
-                        </tbody>
+                        <tbody id="inventory-tbody"></tbody>
                     </table>
                 </div>
             </div>
         </div>
 
-        <!-- Needs section -->
+        <!-- Your Needs -->
         <div id="section-needs" style="display:none">
             <div class="section">
                 <div class="section-header">
-                    <h2>Active needs</h2>
+                    <h2>Your needs</h2>
                     <button class="btn btn-primary btn-sm" onclick="openAddNeed()">Post a need</button>
                 </div>
                 <div class="table-wrap">
@@ -105,49 +207,35 @@
                                 <th>Actions</th>
                             </tr>
                         </thead>
-                        <tbody id="needs-tbody">
-                            <tr><td colspan="7"><div class="skeleton skeleton-text wide"></div></td></tr>
-                        </tbody>
+                        <tbody id="needs-tbody"></tbody>
                     </table>
                 </div>
             </div>
         </div>
 
-        <!-- Incoming Transfers section -->
-        <div id="section-transfers" style="display:none">
+        <!-- Other Needs -->
+        <div id="section-other-needs" style="display:none">
             <div class="section">
                 <div class="section-header">
-                    <h2>Incoming transfers from other organizations</h2>
+                    <h2>Needs from other organizations</h2>
+                    <button class="btn btn-ghost btn-sm" onclick="loadOtherNeeds()">Refresh</button>
                 </div>
-                <div class="inline-notice info">These are surplus items being transferred to your organization. Confirm receipt when you receive them.</div>
-                <div class="table-wrap" style="margin-top:1rem">
-                    <table class="data-table">
-                        <thead>
-                            <tr>
-                                <th>Item</th>
-                                <th>Qty</th>
-                                <th>From</th>
-                                <th>Status</th>
-                                <th>Date</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody id="transfers-tbody">
-                            <tr><td colspan="6"><div class="skeleton skeleton-text wide"></div></td></tr>
-                        </tbody>
-                    </table>
+                <p class="text-sm text-muted" style="margin-bottom:1rem">See what other organizations in the network need. Reach out via Chats if you can help supply.</p>
+                <div class="other-needs-list" id="other-needs-list">
+                    <div class="skeleton skeleton-block" style="height:80px;margin-bottom:.5rem"></div>
+                    <div class="skeleton skeleton-block" style="height:80px;margin-bottom:.5rem"></div>
                 </div>
             </div>
         </div>
 
-        <!-- Donations section -->
+        <!-- Donations -->
         <div id="section-donations" style="display:none">
             <div class="section">
                 <div class="section-header">
                     <h2>Incoming donations</h2>
                 </div>
-                <div class="inline-notice info">These donations have been matched to your organization and are awaiting confirmation. Confirm receipt to close the loop with the donor.</div>
-                <div class="table-wrap" style="margin-top:1rem">
+                <p class="text-sm text-muted" style="margin-bottom:1rem">Donations matched to your organization. Confirm receipt when you receive them.</p>
+                <div class="table-wrap">
                     <table class="data-table">
                         <thead>
                             <tr>
@@ -160,90 +248,54 @@
                                 <th>Actions</th>
                             </tr>
                         </thead>
-                        <tbody id="donations-tbody">
-                            <tr><td colspan="7"><div class="skeleton skeleton-text wide"></div></td></tr>
-                        </tbody>
+                        <tbody id="donations-tbody"></tbody>
                     </table>
                 </div>
             </div>
         </div>
 
-        <!-- Request Surplus section -->
-        <div id="section-surplus" style="display:none">
+        <!-- Analytics -->
+        <div id="section-analytics" style="display:none">
             <div class="section">
-                <div class="section-header">
-                    <h2>Request surplus from other organizations</h2>
-                </div>
-                <div class="inline-notice info">Browse surplus items across the network. Request what you need — the coordinator will approve and facilitate the transfer.</div>
-                <div class="table-wrap" style="margin-top:1rem">
-                    <table class="data-table">
-                        <thead>
-                            <tr>
-                                <th>Organization</th>
-                                <th>Item</th>
-                                <th>Category</th>
-                                <th>Available</th>
-                                <th>Expires</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody id="surplus-tbody">
-                            <tr><td colspan="6"><div class="skeleton skeleton-text wide"></div></td></tr>
-                        </tbody>
-                    </table>
+                <div class="section-header"><h2>Inventory analytics</h2></div>
+                <div class="analytics-grid" id="analytics-grid">
+                    <div class="analytics-card">
+                        <h4>Status distribution</h4>
+                        <div id="chart-status"></div>
+                    </div>
+                    <div class="analytics-card">
+                        <h4>Category breakdown</h4>
+                        <div id="chart-category"></div>
+                    </div>
                 </div>
             </div>
-            <div class="section" style="margin-top:1.5rem">
-                <div class="section-header"><h2>Your surplus requests</h2></div>
-                <div class="table-wrap">
-                    <table class="data-table">
-                        <thead>
-                            <tr>
-                                <th>From</th>
-                                <th>Item</th>
-                                <th>Qty</th>
-                                <th>Status</th>
-                                <th>Date</th>
-                            </tr>
-                        </thead>
-                        <tbody id="surplus-requests-tbody">
-                            <tr><td colspan="5"><div class="skeleton skeleton-text wide"></div></td></tr>
-                        </tbody>
-                    </table>
+        </div>
+
+        <!-- Chats -->
+        <div id="section-chats" style="display:none">
+            <div class="section">
+                <div class="section-header"><h2>Messages</h2></div>
+                <div class="chat-layout">
+                    <div class="chat-threads">
+                        <div class="chat-threads-header">Conversations</div>
+                        <div id="chat-threads-list"></div>
+                    </div>
+                    <div class="chat-panel">
+                        <div class="chat-panel-header" id="chat-panel-title">Select a conversation</div>
+                        <div class="chat-messages" id="chat-messages"><div class="chat-empty" id="chat-empty-placeholder">Select a conversation to view messages</div></div>
+                        <div class="chat-input-wrap" id="chat-input-wrap" style="display:none">
+                            <input type="text" id="chat-input" placeholder="Type a message..." onkeydown="if(event.key==='Enter')sendChatMessage()">
+                            <button class="btn btn-primary btn-sm" onclick="sendChatMessage()">Send</button>
+                        </div>
+                    </div>
                 </div>
             </div>
+        </div>
         </div>
     </main>
 </div>
 
-<!-- Request Surplus Modal -->
-<div id="surplus-request-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:1000;align-items:center;justify-content:center;padding:1rem">
-    <div class="card" style="width:100%;max-width:420px">
-        <div class="card-header">
-            <h3>Request surplus</h3>
-            <button class="btn btn-ghost btn-sm" onclick="closeModal('surplus-request-modal')">Close</button>
-        </div>
-        <div class="card-body">
-            <input type="hidden" id="surplus-request-item-id">
-            <input type="hidden" id="surplus-request-from-org">
-            <p id="surplus-request-summary" class="text-sm" style="margin-bottom:1rem"></p>
-            <div class="form-group">
-                <label class="form-label">Quantity</label>
-                <input type="number" id="surplus-request-qty" class="form-control" min="1">
-            </div>
-            <div class="form-group">
-                <label class="form-label">Notes (optional)</label>
-                <textarea id="surplus-request-notes" class="form-control" rows="2"></textarea>
-            </div>
-            <div style="display:flex;gap:.75rem;margin-top:1rem;justify-content:flex-end">
-                <button class="btn btn-ghost" onclick="closeModal('surplus-request-modal')">Cancel</button>
-                <button class="btn btn-primary" id="surplus-request-btn" onclick="submitSurplusRequest()">Submit Request</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Add/Edit Inventory Modal -->
+<!-- Modals -->
 <div id="inventory-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:1000;align-items:center;justify-content:center;padding:1rem">
     <div class="card" style="width:100%;max-width:480px;max-height:90vh;overflow-y:auto">
         <div class="card-header">
@@ -253,64 +305,35 @@
         <div id="inventory-modal-body">
             <div class="form-group">
                 <label class="form-label" for="inv-item-name">Item name <span class="req">*</span></label>
-                <input type="text" id="inv-item-name" class="form-control" placeholder="e.g. Men's winter jackets">
-            </div>
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:.85rem">
-                <div class="form-group">
-                    <label class="form-label" for="inv-category">Category <span class="req">*</span></label>
-                    <select id="inv-category" class="form-control">
-                        <option value="">Select...</option>
-                        <option value="clothing">Clothing</option>
-                        <option value="bedding">Bedding</option>
-                        <option value="food">Food</option>
-                        <option value="hygiene">Hygiene</option>
-                        <option value="baby_supplies">Baby Supplies</option>
-                        <option value="goods">Household Goods</option>
-                        <option value="other">Other</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label class="form-label" for="inv-status">Status <span class="req">*</span></label>
-                    <select id="inv-status" class="form-control">
-                        <option value="available">Available</option>
-                        <option value="low">Low</option>
-                        <option value="critical">Critical</option>
-                        <option value="surplus">Surplus</option>
-                    </select>
-                </div>
-            </div>
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:.85rem">
-                <div class="form-group">
-                    <label class="form-label" for="inv-quantity">Quantity</label>
-                    <input type="number" id="inv-quantity" class="form-control" min="0" value="0">
-                </div>
-                <div class="form-group">
-                    <label class="form-label" for="inv-unit">Unit</label>
-                    <select id="inv-unit" class="form-control">
-                        <option value="items">Items</option>
-                        <option value="pairs">Pairs</option>
-                        <option value="bags">Bags</option>
-                        <option value="boxes">Boxes</option>
-                        <option value="cans">Cans</option>
-                        <option value="bottles">Bottles</option>
-                        <option value="packs">Packs</option>
-                        <option value="kg">Kilograms</option>
-                        <option value="sets">Sets</option>
-                        <option value="loaves">Loaves</option>
-                        <option value="portions">Portions</option>
-                        <option value="litres">Litres</option>
-                        <option value="bars">Bars</option>
-                        <option value="tubes">Tubes</option>
-                    </select>
-                </div>
+                <input type="text" id="inv-item-name" class="form-control" placeholder="e.g. Shelf-stable milk">
             </div>
             <div class="form-group">
-                <label class="form-label" for="inv-expiry">Expiry date <span class="text-muted">(for food/perishables)</span></label>
+                <label class="form-label" for="inv-category">Category <span class="req">*</span></label>
+                <select id="inv-category" class="form-control">
+                    <option value="">Select...</option>
+                    <option value="housing">Housing</option>
+                    <option value="food">Food</option>
+                    <option value="hygiene">Hygiene</option>
+                    <option value="goods">Goods</option>
+                    <option value="other">Other</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="form-label" for="inv-quantity">Quantity <span class="req">*</span></label>
+                <input type="number" id="inv-quantity" class="form-control" min="0" value="0">
+            </div>
+            <div class="form-group">
+                <label class="form-label" for="inv-unit">Unit</label>
+                <select id="inv-unit" class="form-control">
+                    <option value="items">Items</option>
+                    <option value="boxes">Boxes</option>
+                    <option value="kg">kg</option>
+                    <option value="packs">Packs</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="form-label" for="inv-expiry">Expiry date</label>
                 <input type="date" id="inv-expiry" class="form-control">
-            </div>
-            <div class="form-group">
-                <label class="form-label" for="inv-notes">Notes</label>
-                <textarea id="inv-notes" class="form-control" rows="2" placeholder="Size, brand, or other details"></textarea>
             </div>
             <input type="hidden" id="inv-edit-id">
             <div style="display:flex;gap:.75rem;margin-top:1rem;justify-content:flex-end">
@@ -321,7 +344,6 @@
     </div>
 </div>
 
-<!-- Add/Edit Need Modal -->
 <div id="need-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:1000;align-items:center;justify-content:center;padding:1rem">
     <div class="card" style="width:100%;max-width:480px;max-height:90vh;overflow-y:auto">
         <div class="card-header">
@@ -394,6 +416,11 @@
     let currentUser = null;
     let inventoryData = [];
     let needsData = [];
+    let donationsData = [];
+    let expiringData = [];
+    let chatThreads = [];
+    let selectedThreadId = null;
+    const SECTIONS = ['dashboard', 'inventory', 'needs', 'other-needs', 'donations', 'analytics', 'chats'];
 
     async function init() {
         currentUser = await requireAuth('staff');
@@ -401,26 +428,112 @@
 
         document.getElementById('nav-org-name').textContent = currentUser.orgName || '';
         document.getElementById('org-subtitle').textContent = currentUser.orgName || '';
+        document.getElementById('dashboard-hero-org').textContent = currentUser.orgName || 'Your organization overview';
+
+        const invSearch = document.getElementById('inv-search');
+        if (invSearch) invSearch.addEventListener('input', () => { invSearchQuery = invSearch.value.trim().toLowerCase(); applyInventoryFilters(); });
 
         await Promise.all([loadInventory(), loadNeeds(), loadDonations(), loadExpiring()]);
+        renderDashboard();
     }
 
     function showSection(name, linkEl) {
-        ['inventory', 'needs', 'donations', 'transfers', 'surplus'].forEach(s => {
-            document.getElementById(`section-${s}`).style.display = s === name ? 'block' : 'none';
+        SECTIONS.forEach(s => {
+            const el = document.getElementById(`section-${s}`);
+            if (el) el.style.display = s === name ? 'block' : 'none';
         });
-        document.querySelectorAll('.portal-sidebar a').forEach(a => a.classList.remove('active'));
+        document.querySelectorAll('#sidebar a[data-section]').forEach(a => a.classList.remove('active'));
         if (linkEl) linkEl.classList.add('active');
 
-        const titles = { inventory: 'Inventory', needs: 'Needs', donations: 'Incoming Donations', transfers: 'Incoming Transfers', surplus: 'Request Surplus' };
+        const titles = {
+            dashboard: 'Dashboard',
+            inventory: 'Inventory',
+            needs: 'Your Needs',
+            'other-needs': 'Other Needs',
+            donations: 'Donations',
+            analytics: 'Analytics',
+            chats: 'Chats'
+        };
         document.getElementById('page-title').textContent = titles[name] || name;
 
-        if (name === 'transfers') loadTransfers();
-        if (name === 'surplus') { loadSurplus(); loadSurplusRequests(); }
+        if (name === 'other-needs') loadOtherNeeds();
+        if (name === 'analytics') renderAnalytics();
+        if (name === 'chats') loadChatThreads();
+    }
+
+    function renderDashboard() {
+        const critical = inventoryData.filter(i => i.status === 'critical').length;
+        const surplus = inventoryData.filter(i => i.status === 'surplus').length;
+        const openNeeds = needsData.filter(n => !n.fulfilled).length;
+        const pendingDonations = donationsData.filter(d => d.status === 'matched' || d.status === 'pending').length;
+
+        document.getElementById('dashboard-metrics').innerHTML = `
+            <div class="metric-card">
+                <div class="metric-label">Inventory Items</div>
+                <div class="metric-value">${inventoryData.length}</div>
+                <div class="metric-sub">total</div>
+            </div>
+            <div class="metric-card accent-critical">
+                <div class="metric-label">Critical</div>
+                <div class="metric-value">${critical}</div>
+                <div class="metric-sub">need attention</div>
+            </div>
+            <div class="metric-card accent-accent">
+                <div class="metric-label">Surplus</div>
+                <div class="metric-value">${surplus}</div>
+                <div class="metric-sub">can share</div>
+            </div>
+            <div class="metric-card accent-primary">
+                <div class="metric-label">Open Needs</div>
+                <div class="metric-value">${openNeeds}</div>
+                <div class="metric-sub">unfulfilled</div>
+            </div>
+            <div class="metric-card accent-high">
+                <div class="metric-label">Pending</div>
+                <div class="metric-value">${pendingDonations}</div>
+                <div class="metric-sub">donations</div>
+            </div>
+            <div class="metric-card" style="border-left: 3px solid #e67e22;">
+                <div class="metric-label">Expiring Soon</div>
+                <div class="metric-value" style="color: #e67e22;">${expiringData.length}</div>
+                <div class="metric-sub">next 30 days</div>
+            </div>`;
+
+        loadExpiring().then(() => {
+            const expiringEl = document.getElementById('dashboard-expiring');
+            const listEl = document.getElementById('dashboard-expiring-list');
+            expiringEl.style.display = listEl && listEl.innerHTML ? 'block' : 'none';
+        });
+        loadActionItems();
+        loadRecentActivity();
+    }
+
+    async function loadExpiring() {
+        try {
+            const res = await staff.expiring(30);
+            expiringData = res.data || [];
+            const alertEl = document.getElementById('expiring-alert');
+            const listEl = document.getElementById('expiring-alert-list');
+            const dashList = document.getElementById('dashboard-expiring-list');
+            if (!expiringData.length) {
+                alertEl.style.display = 'none';
+                if (dashList) dashList.innerHTML = '';
+                return;
+            }
+            const text = expiringData.slice(0, 5).map(i => `${escHtml(i.quantity)} ${escHtml(i.unit)} of ${escHtml(i.item_name)} expiring ${formatDate(i.expiry_date)}`).join('; ');
+            listEl.innerHTML = expiringData.length > 5 ? text + ` (and ${expiringData.length - 5} more)` : text;
+            alertEl.style.display = 'block';
+            if (dashList) dashList.innerHTML = expiringData.slice(0, 5).map(i => `
+                <div style="display:flex;align-items:center;gap:.75rem;padding:.5rem .85rem;background:#fef3c7;border:1px solid #fcd34d;border-radius:8px;margin-bottom:.4rem">
+                    <span class="text-sm"><strong>${escHtml(i.quantity)} ${escHtml(i.unit)}</strong> of ${escHtml(i.item_name)}</span>
+                    <span class="text-xs text-muted">expires ${formatDate(i.expiry_date)}</span>
+                </div>`).join('');
+        } catch {
+            document.getElementById('expiring-alert').style.display = 'none';
+        }
     }
 
     // --- Inventory ---
-
     async function loadInventory() {
         try {
             const res = await staff.inventory();
@@ -432,64 +545,132 @@
         }
     }
 
-    async function loadExpiring() {
-        try {
-            const res = await staff.expiring(30);
-            const items = res.data || [];
-            const alertEl = document.getElementById('expiring-alert');
-            const listEl = document.getElementById('expiring-alert-list');
-            if (!items.length) {
-                alertEl.style.display = 'none';
-                return;
+    let invCategoryFilter = '';
+    let invStatusFilter = '';
+    let invSearchQuery = '';
+
+    function setInvCategory(cat) {
+        invCategoryFilter = cat;
+        const sel = document.getElementById('inv-cat-select');
+        if (sel) sel.value = cat || '';
+        applyInventoryFilters();
+    }
+    function setInvStatus(status) {
+        invStatusFilter = status;
+        const sel = document.getElementById('inv-status-select');
+        if (sel) sel.value = status || '';
+        applyInventoryFilters();
+    }
+
+    function applyInventoryFilters() {
+        invSearchQuery = (document.getElementById('inv-search')?.value || '').toLowerCase().trim();
+        renderInventory();
+    }
+
+    const CAT_FILTER_MAP = { housing: ['housing', 'clothing', 'bedding', 'shelter'], food: ['food'], hygiene: ['hygiene'], goods: ['goods', 'baby_supplies'], other: ['other'] };
+
+    function getFilteredInventory() {
+        return inventoryData.filter(item => {
+            if (invCategoryFilter) {
+                const allowed = CAT_FILTER_MAP[invCategoryFilter] || [invCategoryFilter];
+                if (!allowed.includes(item.category)) return false;
             }
-            alertEl.style.display = 'block';
-            listEl.innerHTML = items.slice(0, 5).map(i => `${escHtml(i.quantity)} ${escHtml(i.unit)} of ${escHtml(i.item_name)} expiring ${formatDate(i.expiry_date)}`).join('; ');
-            if (items.length > 5) listEl.innerHTML += ` (and ${items.length - 5} more)`;
-        } catch {
-            document.getElementById('expiring-alert').style.display = 'none';
-        }
+            if (invStatusFilter && item.status !== invStatusFilter) return false;
+            if (invSearchQuery) {
+                const match = (item.item_name || '').toLowerCase().includes(invSearchQuery) ||
+                    (item.category || '').toLowerCase().includes(invSearchQuery);
+                if (!match) return false;
+            }
+            return true;
+        });
     }
 
     function renderInventoryMetrics() {
         const critical = inventoryData.filter(i => i.status === 'critical').length;
-        const surplus  = inventoryData.filter(i => i.status === 'surplus').length;
-        document.getElementById('inventory-metrics').innerHTML = `
+        const surplus = inventoryData.filter(i => i.status === 'surplus').length;
+        const el = document.getElementById('inventory-metrics');
+        if (!el) return;
+        el.innerHTML = `
             <div class="metric-card"><div class="metric-label">Total Items</div><div class="metric-value">${inventoryData.length}</div></div>
             <div class="metric-card accent-critical"><div class="metric-label">Critical</div><div class="metric-value">${critical}</div></div>
             <div class="metric-card accent-accent"><div class="metric-label">Surplus</div><div class="metric-value">${surplus}</div></div>`;
     }
 
     function renderInventory() {
+        const filtered = getFilteredInventory();
         const tbody = document.getElementById('inventory-tbody');
-        if (!inventoryData.length) {
-            tbody.innerHTML = `<tr><td colspan="6"><div class="empty-state"><span class="empty-icon">&#9723;</span><h3>No inventory items yet</h3><p>Add your first item to let coordinators and donors see what you have.</p></div></td></tr>`;
+        const countEl = document.getElementById('inv-results-count');
+        if (countEl) countEl.textContent = filtered.length + ' result' + (filtered.length !== 1 ? 's' : '');
+
+        if (!filtered.length) {
+            tbody.innerHTML = `<tr><td colspan="8"><div class="empty-state"><span class="empty-icon">&#9723;</span><h3>No inventory items</h3><p>${inventoryData.length ? 'No items match your filters.' : 'Add your first item to get started.'}</p></div></td></tr>`;
             return;
         }
-        tbody.innerHTML = inventoryData.map(item => `
-            <tr>
-                <td><strong>${escHtml(item.item_name)}</strong>${item.notes ? `<div class="text-xs text-muted">${escHtml(item.notes)}</div>` : ''}</td>
-                <td>${escHtml(item.category)}</td>
-                <td>${escHtml(String(item.quantity))} ${escHtml(item.unit)}</td>
-                <td><span class="badge badge-${escHtml(item.status)}">${escHtml(item.status)}</span></td>
+        const CAT_LABELS = { housing: 'Housing', clothing: 'Clothing', bedding: 'Bedding', shelter: 'Shelter', food: 'Food', hygiene: 'Hygiene', goods: 'Goods', baby_supplies: 'Baby supplies', other: 'Other' };
+        const UNIT_DISPLAY = { items: 'items', boxes: 'boxes', kg: 'kg', packs: 'packs' };
+        const catBadge = (c) => ['housing','clothing','bedding','shelter'].includes(c) ? 'housing' : c === 'food' ? 'food' : c === 'hygiene' ? 'hygiene' : ['goods','baby_supplies'].includes(c) ? 'goods' : 'goods';
+        tbody.innerHTML = filtered.map(item => {
+            const unit = UNIT_DISPLAY[item.unit] || item.unit || 'items';
+            const target = item.target_quantity != null ? Number(item.target_quantity) : 0;
+            const current = Number(item.quantity) || 0;
+            const pct = target > 0 ? Math.min(100, Math.round((current / target) * 100)) : 100;
+            const progressClass = current >= target && target > 0 ? 'progress-surplus' : pct < 25 ? 'progress-critical' : pct < 50 ? 'progress-low' : 'progress-ok';
+            const progressLabel = target > 0 ? `${current} / ${target}` : `${current}`;
+            const progressHtml = target > 0
+                ? `<div class="inv-progress-cell"><span class="inv-progress-label">${progressLabel}</span><div class="inv-progress-bar"><div class="inv-progress-fill ${progressClass}" style="width:${pct}%"></div></div><span class="inv-progress-pct">${pct}%</span></div>`
+                : `<span class="inv-progress-simple">${current}</span>`;
+            return `<tr>
+                <td><span class="inv-status-dot ${escHtml(item.status)}"></span><span class="badge badge-${escHtml(item.status)}">${escHtml(item.status)}</span></td>
+                <td><strong>${escHtml(item.item_name)}</strong></td>
+                <td><span class="badge badge-${catBadge(item.category)}">${escHtml(CAT_LABELS[item.category] || item.category)}</span></td>
+                <td>${progressHtml}</td>
+                <td>${escHtml(unit)}</td>
                 <td>${item.expiry_date ? formatDate(item.expiry_date) : '<span class="text-muted">—</span>'}</td>
                 <td>
-                    <div class="gap-row">
-                        <button class="btn btn-ghost btn-sm" onclick="openEditInventory('${escHtml(item.id)}')">Edit</button>
+                    <div class="gap-row inv-actions-row">
+                        <div class="inv-qty-controls">
+                            <button class="btn btn-ghost btn-sm inv-qty-btn" onclick="adjustQty('${escHtml(item.id)}', -1)" title="Decrease">−</button>
+                            <span class="inv-qty-display">${current}</span>
+                            <button class="btn btn-ghost btn-sm inv-qty-btn" onclick="adjustQty('${escHtml(item.id)}', 1)" title="Increase">+</button>
+                        </div>
+                        <button class="btn btn-ghost btn-sm" onclick="openEditInventory('${escHtml(item.id)}')">Manage</button>
                         <button class="btn btn-danger btn-sm" onclick="deleteInventoryItem('${escHtml(item.id)}', '${escHtml(item.item_name).replace(/'/g, "\\'")}')">Delete</button>
                     </div>
                 </td>
-            </tr>`).join('');
+            </tr>`;
+        }).join('');
     }
+
+    async function adjustQty(id, delta) {
+        const item = inventoryData.find(i => i.id === id);
+        if (!item) return;
+        const n = Math.max(0, (Number(item.quantity) || 0) + delta);
+        try {
+            await staff.updateInventory(id, {
+                item_name: item.item_name,
+                category: item.category,
+                quantity: n,
+                target_quantity: null,
+                unit: item.unit,
+                expiry_date: item.expiry_date || null,
+                notes: null
+            });
+            toast('Quantity updated.', 'success');
+            await loadInventory();
+        } catch (err) {
+            toast(err.message || 'Failed to update.', 'error');
+        }
+    }
+
+    const INV_UNITS = ['items', 'boxes', 'kg', 'packs'];
 
     function openAddInventory() {
         document.getElementById('inventory-modal-title').textContent = 'Add inventory item';
         document.getElementById('inv-item-name').value = '';
         document.getElementById('inv-category').value = '';
-        document.getElementById('inv-status').value = 'available';
         document.getElementById('inv-quantity').value = 0;
         document.getElementById('inv-unit').value = 'items';
         document.getElementById('inv-expiry').value = '';
-        document.getElementById('inv-notes').value = '';
         document.getElementById('inv-edit-id').value = '';
         document.getElementById('inv-save-btn').textContent = 'Save item';
         openModal('inventory-modal');
@@ -498,34 +679,31 @@
     function openEditInventory(id) {
         const item = inventoryData.find(i => i.id === id);
         if (!item) return;
-        document.getElementById('inventory-modal-title').textContent = 'Edit inventory item';
+        document.getElementById('inventory-modal-title').textContent = 'Manage item';
         document.getElementById('inv-item-name').value = item.item_name;
         document.getElementById('inv-category').value = item.category;
-        document.getElementById('inv-status').value = item.status;
         document.getElementById('inv-quantity').value = item.quantity;
-        document.getElementById('inv-unit').value = item.unit;
+        document.getElementById('inv-unit').value = INV_UNITS.includes(item.unit) ? item.unit : 'items';
         document.getElementById('inv-expiry').value = item.expiry_date ? item.expiry_date.substring(0, 10) : '';
-        document.getElementById('inv-notes').value = item.notes || '';
         document.getElementById('inv-edit-id').value = item.id;
         document.getElementById('inv-save-btn').textContent = 'Save changes';
         openModal('inventory-modal');
     }
 
     async function saveInventoryItem() {
-        const editId  = document.getElementById('inv-edit-id').value;
+        const editId = document.getElementById('inv-edit-id').value;
         const itemName = document.getElementById('inv-item-name').value.trim();
         const category = document.getElementById('inv-category').value;
-
         if (!itemName || !category) { toast('Item name and category are required.', 'error'); return; }
 
         const data = {
-            item_name:   itemName,
-            category:    category,
-            status:      document.getElementById('inv-status').value,
-            quantity:    parseInt(document.getElementById('inv-quantity').value) || 0,
-            unit:        document.getElementById('inv-unit').value,
+            item_name: itemName,
+            category: category,
+            quantity: parseInt(document.getElementById('inv-quantity').value) || 0,
+            target_quantity: null,
+            unit: document.getElementById('inv-unit').value,
             expiry_date: document.getElementById('inv-expiry').value || null,
-            notes:       document.getElementById('inv-notes').value.trim() || null
+            notes: null
         };
 
         const btn = document.getElementById('inv-save-btn');
@@ -533,10 +711,10 @@
         try {
             if (editId) await staff.updateInventory(editId, data);
             else await staff.addInventory(data);
-
             closeModal('inventory-modal');
             toast(editId ? 'Item updated.' : 'Item added.', 'success');
             await loadInventory();
+            renderDashboard();
         } catch (err) {
             toast(err.message || 'Failed to save item.', 'error');
         } finally {
@@ -550,128 +728,13 @@
             await staff.deleteInventory(id);
             toast('Item removed.', 'success');
             await loadInventory();
+            renderDashboard();
         } catch (err) {
             toast(err.message || 'Failed to delete item.', 'error');
         }
     }
 
-    // --- Surplus & Transfers ---
-
-    let surplusData = [];
-    let surplusRequestsData = [];
-    let transfersData = [];
-
-    async function loadSurplus() {
-        try {
-            const res = await staff.surplus();
-            surplusData = res.data || [];
-            const tbody = document.getElementById('surplus-tbody');
-            if (!surplusData.length) {
-                tbody.innerHTML = '<tr><td colspan="6"><div class="empty-state"><p>No surplus items available from other organizations.</p></div></td></tr>';
-                return;
-            }
-            tbody.innerHTML = surplusData.map(i => `
-                <tr>
-                    <td>${escHtml(i.org_name)}</td>
-                    <td>${escHtml(i.item_name)}</td>
-                    <td>${escHtml(i.category)}</td>
-                    <td>${escHtml(String(i.quantity))} ${escHtml(i.unit)}</td>
-                    <td>${i.expiry_date ? formatDate(i.expiry_date) : '<span class="text-muted">—</span>'}</td>
-                    <td><button class="btn btn-primary btn-sm" onclick="openSurplusRequestModal('${escHtml(i.id)}', '${escHtml(i.org_id).replace(/'/g, "\\'")}', '${escHtml(i.item_name).replace(/'/g, "\\'")}', ${i.quantity})">Request</button></td>
-                </tr>`).join('');
-        } catch (err) {
-            document.getElementById('surplus-tbody').innerHTML = `<tr><td colspan="6"><div class="inline-notice error">${escHtml(err.message)}</div></td></tr>`;
-        }
-    }
-
-    async function loadSurplusRequests() {
-        try {
-            const res = await staff.surplusRequests();
-            surplusRequestsData = res.data || [];
-            const tbody = document.getElementById('surplus-requests-tbody');
-            if (!surplusRequestsData.length) {
-                tbody.innerHTML = '<tr><td colspan="5"><div class="empty-state"><p>No surplus requests yet.</p></div></td></tr>';
-                return;
-            }
-            tbody.innerHTML = surplusRequestsData.map(r => `
-                <tr>
-                    <td>${escHtml(r.from_org_name)}</td>
-                    <td>${escHtml(r.item_name)}</td>
-                    <td>${escHtml(String(r.quantity_requested))} ${escHtml(r.unit)}</td>
-                    <td><span class="badge badge-${escHtml(r.status)}">${escHtml(r.status)}</span></td>
-                    <td class="text-xs text-muted">${timeAgo(r.created_at)}</td>
-                </tr>`).join('');
-        } catch (err) {
-            document.getElementById('surplus-requests-tbody').innerHTML = `<tr><td colspan="5"><div class="inline-notice error">${escHtml(err.message)}</div></td></tr>`;
-        }
-    }
-
-    async function loadTransfers() {
-        try {
-            const res = await staff.transfers();
-            transfersData = res.data || [];
-            const tbody = document.getElementById('transfers-tbody');
-            if (!transfersData.length) {
-                tbody.innerHTML = '<tr><td colspan="6"><div class="empty-state"><p>No incoming transfers.</p></div></td></tr>';
-                return;
-            }
-            tbody.innerHTML = transfersData.map(t => `
-                <tr>
-                    <td>${escHtml(t.item_name)}</td>
-                    <td>${escHtml(String(t.quantity))} ${escHtml(t.unit)}</td>
-                    <td>${escHtml(t.from_org_name)}</td>
-                    <td><span class="badge badge-${escHtml(t.status)}">${escHtml(t.status)}</span></td>
-                    <td class="text-xs text-muted">${timeAgo(t.created_at)}</td>
-                    <td>${t.status === 'pending' || t.status === 'in_transit' ? `<button class="btn btn-primary btn-sm" onclick="completeTransfer('${escHtml(t.id)}')">Confirm Receipt</button>` : '—'}</td>
-                </tr>`).join('');
-        } catch (err) {
-            document.getElementById('transfers-tbody').innerHTML = `<tr><td colspan="6"><div class="inline-notice error">${escHtml(err.message)}</div></td></tr>`;
-        }
-    }
-
-    function openSurplusRequestModal(itemId, fromOrgId, itemName, maxQty) {
-        document.getElementById('surplus-request-item-id').value = itemId;
-        document.getElementById('surplus-request-from-org').value = fromOrgId;
-        document.getElementById('surplus-request-summary').textContent = `Request "${itemName}" from another organization. Max available: ${maxQty}.`;
-        document.getElementById('surplus-request-qty').value = Math.min(1, maxQty);
-        document.getElementById('surplus-request-qty').max = maxQty;
-        document.getElementById('surplus-request-notes').value = '';
-        openModal('surplus-request-modal');
-    }
-
-    async function submitSurplusRequest() {
-        const itemId = document.getElementById('surplus-request-item-id').value;
-        const fromOrgId = document.getElementById('surplus-request-from-org').value;
-        const qty = parseInt(document.getElementById('surplus-request-qty').value) || 1;
-        const notes = document.getElementById('surplus-request-notes').value.trim() || null;
-
-        const btn = document.getElementById('surplus-request-btn');
-        btn.disabled = true;
-        try {
-            await staff.requestSurplus({ from_org_id: fromOrgId, inventory_item_id: itemId, quantity_requested: qty, notes });
-            closeModal('surplus-request-modal');
-            toast('Request submitted. The coordinator will review it.', 'success');
-            loadSurplus();
-            loadSurplusRequests();
-        } catch (err) {
-            toast(err.message || 'Failed to submit request.', 'error');
-        } finally {
-            btn.disabled = false;
-        }
-    }
-
-    async function completeTransfer(id) {
-        try {
-            await staff.completeTransfer(id);
-            toast('Transfer marked as received.', 'success');
-            loadTransfers();
-        } catch (err) {
-            toast(err.message || 'Failed to complete transfer.', 'error');
-        }
-    }
-
     // --- Needs ---
-
     async function loadNeeds() {
         try {
             const res = await staff.needs();
@@ -738,17 +801,17 @@
 
     async function saveNeed() {
         const editId = document.getElementById('need-edit-id').value;
-        const item   = document.getElementById('need-item-name').value.trim();
-        const cat    = document.getElementById('need-category').value;
+        const item = document.getElementById('need-item-name').value.trim();
+        const cat = document.getElementById('need-category').value;
         if (!item || !cat) { toast('Item name and category are required.', 'error'); return; }
 
         const data = {
-            item_name:       item,
-            category:        cat,
-            urgency:         document.getElementById('need-urgency').value,
+            item_name: item,
+            category: cat,
+            urgency: document.getElementById('need-urgency').value,
             quantity_needed: parseInt(document.getElementById('need-qty').value) || 1,
-            unit:            document.getElementById('need-unit').value,
-            notes:           document.getElementById('need-notes').value.trim() || null
+            unit: document.getElementById('need-unit').value,
+            notes: document.getElementById('need-notes').value.trim() || null
         };
 
         const btn = document.getElementById('need-save-btn');
@@ -759,6 +822,7 @@
             closeModal('need-modal');
             toast(editId ? 'Need updated.' : 'Need posted.', 'success');
             await loadNeeds();
+            renderDashboard();
         } catch (err) {
             toast(err.message || 'Failed to save.', 'error');
         } finally {
@@ -772,6 +836,7 @@
             await staff.fulfillNeed(id);
             toast('Need marked as fulfilled.', 'success');
             await loadNeeds();
+            renderDashboard();
         } catch (err) {
             toast(err.message || 'Failed.', 'error');
         }
@@ -783,17 +848,49 @@
             await staff.deleteNeed(id);
             toast('Need removed.', 'success');
             await loadNeeds();
+            renderDashboard();
         } catch (err) {
             toast(err.message || 'Failed.', 'error');
         }
     }
 
-    // --- Donations ---
+    // --- Other Needs ---
+    async function loadOtherNeeds() {
+        const listEl = document.getElementById('other-needs-list');
+        try {
+            const res = await pub.orgsWithNeeds();
+            const allOrgs = res.data || [];
+            const otherOrgs = allOrgs.filter(o => o.id !== currentUser.orgId && o.top_needs && o.top_needs.length > 0);
+            if (!otherOrgs.length) {
+                listEl.innerHTML = '<div class="empty-state"><p>No needs from other organizations at the moment.</p></div>';
+                return;
+            }
+            listEl.innerHTML = otherOrgs.flatMap(org => (org.top_needs || []).map(n => {
+                const urg = n.urgency || 'medium';
+                const hasCrit = urg === 'critical';
+                const hasHigh = urg === 'high';
+                return `
+                <div class="other-need-card ${hasCrit ? 'has-critical' : hasHigh ? 'has-high' : ''}">
+                    <div class="other-need-org">${escHtml(org.name)}</div>
+                    <div class="other-need-item">Needs <strong>${escHtml(String(n.quantity_needed))} ${escHtml(n.unit)}</strong> of <strong>${escHtml(n.item_name)}</strong></div>
+                    <div class="other-need-meta">
+                        <span class="badge badge-${escHtml(urg)}">${escHtml(urg)}</span>
+                        ${n.notes ? `<span class="ms-1">${escHtml(n.notes)}</span>` : ''}
+                        <span class="ms-1">${timeAgo(n.created_at)}</span>
+                    </div>
+                </div>`;
+            })).join('');
+        } catch (err) {
+            listEl.innerHTML = `<div class="inline-notice error">${escHtml(err.message)}</div>`;
+        }
+    }
 
+    // --- Donations ---
     async function loadDonations() {
         try {
             const res = await staff.donations();
-            renderDonations(res.data || []);
+            donationsData = res.data || [];
+            renderDonations(donationsData);
         } catch (err) {
             document.getElementById('donations-tbody').innerHTML = `<tr><td colspan="7"><div class="inline-notice error">${escHtml(err.message)}</div></td></tr>`;
         }
@@ -824,27 +921,296 @@
             await staff.confirmDonation(id);
             toast('Donation confirmed. The donor has been notified.', 'success');
             await loadDonations();
+            renderDashboard();
         } catch (err) {
             toast(err.message || 'Failed to confirm donation.', 'error');
         }
     }
 
-    // --- Modal helpers ---
+    // --- Analytics ---
+    function renderAnalytics() {
+        const statusCounts = {};
+        const categoryCounts = {};
+        inventoryData.forEach(i => {
+            statusCounts[i.status] = (statusCounts[i.status] || 0) + 1;
+            categoryCounts[i.category] = (categoryCounts[i.category] || 0) + 1;
+        });
+        const maxStatus = Math.max(...Object.values(statusCounts), 1);
+        const maxCat = Math.max(...Object.values(categoryCounts), 1);
+        const colors = { critical: '#dc2626', low: '#64748b', available: '#059669', surplus: '#0891b2', high: '#d97706' };
+        const catColors = ['#0f766e', '#0891b2', '#059669', '#d97706', '#7c3aed', '#dc2626', '#64748b'];
 
+        document.getElementById('chart-status').innerHTML = Object.entries(statusCounts).map(([k, v], i) => `
+            <div class="chart-bar">
+                <span class="chart-bar-label">${escHtml(k)}</span>
+                <div class="chart-bar-track"><div class="chart-bar-fill" style="width:${(v/maxStatus)*100}%;background:${colors[k] || catColors[i % catColors.length]}"></div></div>
+                <span class="chart-bar-value">${v}</span>
+            </div>`).join('') || '<p class="text-muted text-sm">No inventory data yet.</p>';
+
+        document.getElementById('chart-category').innerHTML = Object.entries(categoryCounts).map(([k, v], i) => `
+            <div class="chart-bar">
+                <span class="chart-bar-label">${escHtml(k)}</span>
+                <div class="chart-bar-track"><div class="chart-bar-fill" style="width:${(v/maxCat)*100}%;background:${catColors[i % catColors.length]}"></div></div>
+                <span class="chart-bar-value">${v}</span>
+            </div>`).join('') || '<p class="text-muted text-sm">No inventory data yet.</p>';
+    }
+
+    // --- Chats ---
+    async function loadChatThreads() {
+        try {
+            const res = await staff.chatThreads();
+            chatThreads = res.data || [];
+            const listEl = document.getElementById('chat-threads-list');
+            if (!chatThreads.length) {
+                listEl.innerHTML = '<div class="chat-empty" style="padding:1rem">No conversations yet.</div>';
+                return;
+            }
+            listEl.innerHTML = chatThreads.map(t => {
+                const name = t.type === 'org_channel' ? (t.org_name || 'Org channel') : (t.staff_first_name ? `${t.staff_first_name} ${t.staff_last_name}` : 'Direct');
+                const initial = t.type === 'org_channel' ? (t.org_name || 'O').charAt(0) : (t.staff_first_name || 'D').charAt(0);
+                return `<div class="chat-thread-item ${t.id === selectedThreadId ? 'active' : ''}" id="thread-${t.id}" onclick="selectThread('${t.id}')">
+                    <div class="chat-thread-avatar">${escHtml(initial)}</div>
+                    <div class="chat-thread-info">
+                        <div class="chat-thread-name">${escHtml(name)}</div>
+                        <div class="chat-thread-preview">${t.type === 'org_channel' ? 'Internal channel' : 'Direct message'}</div>
+                    </div>
+                </div>`;
+            }).join('');
+        } catch (err) {
+            document.getElementById('chat-threads-list').innerHTML = `<div class="chat-empty" style="padding:1rem">${escHtml(err.message)}</div>`;
+        }
+    }
+
+    async function selectThread(id) {
+        selectedThreadId = id;
+        document.querySelectorAll('.chat-thread-item').forEach(el => el.classList.remove('active'));
+        const el = document.getElementById('thread-' + id);
+        if (el) el.classList.add('active');
+
+        const t = chatThreads.find(x => x.id === id);
+        const name = t ? (t.type === 'org_channel' ? (t.org_name || 'Org channel') : (t.staff_first_name ? `${t.staff_first_name} ${t.staff_last_name}` : 'Direct')) : 'Chat';
+        document.getElementById('chat-panel-title').textContent = name;
+        document.getElementById('chat-input-wrap').style.display = 'flex';
+        await loadChatMessages();
+    }
+
+    async function loadChatMessages() {
+        if (!selectedThreadId) return;
+        try {
+            const res = await staff.chatMessages(selectedThreadId);
+            const messages = res.data || [];
+            const msgEl = document.getElementById('chat-messages');
+            if (!messages.length) {
+                msgEl.innerHTML = '<div class="chat-empty">No messages yet. Start the conversation.</div>';
+                return;
+            }
+            msgEl.innerHTML = messages.map(m => {
+                const isOwn = m.sender_type === 'staff' && m.sender_id === currentUser.id;
+                return `<div class="chat-msg ${isOwn ? 'own' : ''}">
+                    <div class="chat-msg-bubble">${escHtml(m.content)}</div>
+                    <div class="chat-msg-meta">${escHtml(m.sender_name || 'Unknown')} · ${timeAgo(m.created_at)}</div>
+                </div>`;
+            }).join('');
+            msgEl.scrollTop = msgEl.scrollHeight;
+        } catch (err) {
+            document.getElementById('chat-messages').innerHTML = `<div class="chat-empty">${escHtml(err.message)}</div>`;
+        }
+    }
+
+    async function sendChatMessage() {
+        const input = document.getElementById('chat-input');
+        const content = input.value.trim();
+        if (!content || !selectedThreadId) return;
+        try {
+            await staff.sendChatMessage(selectedThreadId, content);
+            input.value = '';
+            await loadChatMessages();
+        } catch (err) {
+            toast(err.message || 'Failed to send.', 'error');
+        }
+    }
+
+    // --- Action Items ---
+    async function loadActionItems() {
+        try {
+            const [shortages, donations, transfers, requests] = await Promise.all([
+                staff.needs({ urgency: 'critical' }).catch(() => ({ data: [] })),
+                staff.donations({ status: 'matched' }).catch(() => ({ data: [] })),
+                staff.transfers({ status: 'in_transit' }).catch(() => ({ data: [] })),
+                staff.surplusRequests({ status: 'pending' }).catch(() => ({ data: [] }))
+            ]);
+            renderActionItems({
+                shortages: shortages.data || [],
+                donations: donations.data || [],
+                transfers: transfers.data || [],
+                requests: requests.data || []
+            });
+        } catch (err) {
+            document.getElementById('action-items-container').innerHTML = `<div class="inline-notice error" style="grid-column:1/-1">${escHtml(err.message)}</div>`;
+        }
+    }
+
+    function renderActionItems(data) {
+        const container = document.getElementById('action-items-container');
+        const cards = [];
+
+        // Critical shortages
+        if (data.shortages && data.shortages.length > 0) {
+            data.shortages.slice(0, 2).forEach(n => {
+                cards.push(`
+                <div class="action-card critical">
+                    <div class="action-card-icon">!</div>
+                    <div class="action-card-content">
+                        <div class="action-card-title">Critical shortage</div>
+                        <div class="action-card-desc">${escHtml(String(n.quantity_needed))} ${escHtml(n.unit)} of ${escHtml(n.item_name)}</div>
+                        <div class="action-card-meta">Your organization needs this urgently</div>
+                    </div>
+                </div>`);
+            });
+        }
+
+        // Donations to confirm
+        if (data.donations && data.donations.length > 0) {
+            data.donations.slice(0, 2).forEach(d => {
+                cards.push(`
+                <div class="action-card pending">
+                    <div class="action-card-icon">✓</div>
+                    <div class="action-card-content">
+                        <div class="action-card-title">Donation to confirm</div>
+                        <div class="action-card-desc">${escHtml(String(d.quantity))} ${escHtml(d.unit)} of ${escHtml(d.item_name)}</div>
+                        <div class="action-card-meta">from ${escHtml(d.donor_name)}</div>
+                    </div>
+                    <div class="action-card-action">
+                        <button class="btn btn-primary btn-sm" onclick="showSection('donations', document.querySelector('[data-section=donations]'))">View</button>
+                    </div>
+                </div>`);
+            });
+        }
+
+        // Transfers awaiting receipt
+        if (data.transfers && data.transfers.length > 0) {
+            data.transfers.slice(0, 1).forEach(t => {
+                cards.push(`
+                <div class="action-card medium">
+                    <div class="action-card-icon">→</div>
+                    <div class="action-card-content">
+                        <div class="action-card-title">Transfer in transit</div>
+                        <div class="action-card-desc">${escHtml(String(t.quantity))} ${escHtml(t.unit)} of ${escHtml(t.item_name)}</div>
+                        <div class="action-card-meta">from ${escHtml(t.from_org_name)}</div>
+                    </div>
+                </div>`);
+            });
+        }
+
+        // Surplus requests
+        if (data.requests && data.requests.length > 0) {
+            data.requests.slice(0, 1).forEach(r => {
+                cards.push(`
+                <div class="action-card high">
+                    <div class="action-card-icon">?</div>
+                    <div class="action-card-content">
+                        <div class="action-card-title">Surplus request</div>
+                        <div class="action-card-desc">${escHtml(String(r.quantity_requested))} ${escHtml(r.unit)} of ${escHtml(r.item_name)}</div>
+                        <div class="action-card-meta">from ${escHtml(r.requesting_org_name)}</div>
+                    </div>
+                </div>`);
+            });
+        }
+
+        if (cards.length === 0) {
+            container.innerHTML = '<div class="activity-empty" style="grid-column:1/-1;padding:1.5rem">No action items at the moment. Great work!</div>';
+        } else {
+            container.innerHTML = cards.join('');
+        }
+    }
+
+    // --- Recent Activity ---
+    async function loadRecentActivity() {
+        try {
+            const [needs, donations, transfers, threads] = await Promise.all([
+                staff.needs().catch(() => ({ data: [] })),
+                staff.donations().catch(() => ({ data: [] })),
+                staff.transfers().catch(() => ({ data: [] })),
+                staff.chatThreads().catch(() => ({ data: [] }))
+            ]);
+            renderRecentActivity({
+                needs: needs.data || [],
+                donations: donations.data || [],
+                transfers: transfers.data || [],
+                threads: threads.data || []
+            });
+        } catch (err) {
+            document.getElementById('activity-container').innerHTML = `<div class="inline-notice error">${escHtml(err.message)}</div>`;
+        }
+    }
+
+    function renderRecentActivity(data) {
+        const container = document.getElementById('activity-container');
+        const items = [];
+
+        // Latest needs (3)
+        if (data.needs && data.needs.length > 0) {
+            data.needs.slice(0, 3).forEach(n => {
+                items.push(`
+                <div class="activity-item">
+                    <div class="activity-item-icon need">◆</div>
+                    <div class="activity-item-content">
+                        <div class="activity-item-title">Need posted: ${escHtml(n.item_name)}</div>
+                        <div class="activity-item-desc">${escHtml(String(n.quantity_needed))} ${escHtml(n.unit)} needed</div>
+                    </div>
+                    <div class="activity-item-time">${timeAgo(n.created_at)}</div>
+                </div>`);
+            });
+        }
+
+        // Latest donations (2)
+        if (data.donations && data.donations.length > 0) {
+            data.donations.slice(0, 2).forEach(d => {
+                items.push(`
+                <div class="activity-item">
+                    <div class="activity-item-icon donation">✓</div>
+                    <div class="activity-item-content">
+                        <div class="activity-item-title">Donation received: ${escHtml(d.item_name)}</div>
+                        <div class="activity-item-desc">${escHtml(String(d.quantity))} ${escHtml(d.unit)} from ${escHtml(d.donor_name)}</div>
+                    </div>
+                    <div class="activity-item-time">${timeAgo(d.created_at)}</div>
+                </div>`);
+            });
+        }
+
+        // Latest transfers (1)
+        if (data.transfers && data.transfers.length > 0) {
+            data.transfers.slice(0, 1).forEach(t => {
+                items.push(`
+                <div class="activity-item">
+                    <div class="activity-item-icon transfer">→</div>
+                    <div class="activity-item-content">
+                        <div class="activity-item-title">Transfer: ${escHtml(t.item_name)}</div>
+                        <div class="activity-item-desc">${escHtml(t.status)}</div>
+                    </div>
+                    <div class="activity-item-time">${timeAgo(t.created_at)}</div>
+                </div>`);
+            });
+        }
+
+        if (items.length === 0) {
+            container.innerHTML = '<div class="activity-empty">No recent activity yet.</div>';
+        } else {
+            container.innerHTML = items.join('');
+        }
+    }
+
+    // --- Modals ---
     function openModal(id) {
         const el = document.getElementById(id);
         el.style.display = 'flex';
-        setTimeout(() => el.querySelector('.card').focus?.(), 50);
+        setTimeout(() => el.querySelector('.card')?.focus?.(), 50);
     }
     function closeModal(id) {
         document.getElementById(id).style.display = 'none';
     }
-
-    // Close modal on backdrop click
     document.querySelectorAll('[id$="-modal"]').forEach(modal => {
-        modal.addEventListener('click', e => {
-            if (e.target === modal) closeModal(modal.id);
-        });
+        modal.addEventListener('click', e => { if (e.target === modal) closeModal(modal.id); });
     });
 
     async function handleLogout() {

@@ -61,12 +61,12 @@ router.get('/inventory', async (req, res) => {
 
 router.post('/inventory', async (req, res) => {
     try {
-        const { item_name, category, quantity, unit, status, expiry_date, notes } = req.body;
+        const { item_name, category, quantity, target_quantity, unit, expiry_date, notes } = req.body;
         if (!item_name || !category) {
             return res.status(400).json({ success: false, message: 'Item name and category are required' });
         }
         const item = await InventoryModel.create({
-            org_id: req.user.orgId, item_name, category, quantity, unit, status, expiry_date, notes
+            org_id: req.user.orgId, item_name, category, quantity, target_quantity, unit, expiry_date, notes
         });
         res.status(201).json({ success: true, data: item });
     } catch (err) {

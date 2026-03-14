@@ -38,12 +38,12 @@ function App() {
     }).catch(() => {});
   }, []);
 
-  const handleLogin = async (email: string, password: string, _remember: boolean) => {
+  const handleLogin = async (email: string, password: string, remember: boolean) => {
     setError(null);
     try {
       const res = await api('/auth/login', {
         method: 'POST',
-        body: JSON.stringify({ email, password })
+        body: JSON.stringify({ email, password, remember })
       });
       if (res.data) {
         redirectAfterLogin(res.data);
