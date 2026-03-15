@@ -59,9 +59,10 @@
                 <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg>
                 Analytics
             </a></li>
-            <li><a href="#" data-section="chats" onclick="showSection('chats', this)">
+            <li><a href="#" data-section="chats" onclick="showSection('chats', this)" id="nav-chats-link">
                 <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
                 Chats
+                <span class="nav-unread-dot" id="chat-unread-dot" style="display:none"></span>
             </a></li>
         </ul>
         <div class="sidebar-footer">
