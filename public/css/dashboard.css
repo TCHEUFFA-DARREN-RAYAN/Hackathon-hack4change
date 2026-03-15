@@ -758,13 +758,18 @@ select.form-control {
 }
 
 /* Table overrides for Other Needs */
-.on-table { table-layout: auto; width: 100%; }
-.on-th-priority  { width: 90px;  white-space: nowrap; }
-.on-th-category  { width: 110px; white-space: nowrap; }
-.on-th-progress  { width: 160px; white-space: nowrap; }
-.on-th-action    { width: 120px; white-space: nowrap; }
-.on-table td, .on-table th { overflow-wrap: break-word; word-break: break-word; }
+.on-table { table-layout: fixed; width: 100%; }
+.on-th-priority  { width: 88px;  white-space: nowrap; }
+.on-th-category  { width: 140px; white-space: nowrap; }
+.on-th-progress  { width: 180px; white-space: nowrap; }
+.on-th-action    { width: 110px; white-space: nowrap; text-align: center; }
+/* Request column gets all remaining space */
+.on-table th:nth-child(2),
+.on-table td:nth-child(2) { padding-right: 32px; }
+.on-table td, .on-table th { overflow: hidden; text-overflow: ellipsis; }
+.on-row { border-bottom: 1px solid var(--color-border-lt); }
 .on-row:hover td { background: #f8fafc; }
+.on-row td { padding-top: 14px; padding-bottom: 14px; vertical-align: middle; }
 
 /* Priority badge (pill-style) */
 .on-badge-pri {
@@ -1419,6 +1424,5 @@ select.form-control {
 .on-cat-badge.on-cat-goods     { background: #f8fafc; color: #475569; border-color: #cbd5e1; }
 .on-cat-badge.on-cat-other     { background: #f8fafc; color: #64748b; border-color: #e2e8f0; }
 
-/* Action column */
-.on-th-action { width: 110px; text-align: center; }
-.on-table .on-th-action + td { text-align: center; }
+/* Action column — centering (width set in table layout above) */
+.on-table td:last-child { text-align: center; }

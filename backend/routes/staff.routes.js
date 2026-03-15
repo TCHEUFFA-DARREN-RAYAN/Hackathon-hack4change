@@ -235,6 +235,17 @@ router.post('/donations/:id/confirm', async (req, res) => {
     }
 });
 
+router.post('/donations/:id/pending', async (req, res) => {
+    try {
+        const donation = await DonationModel.updateStatus(req.params.id, 'matched');
+        if (!donation) return res.status(404).json({ success: false, message: 'Donation not found' });
+        res.json({ success: true, data: donation });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ success: false, message: 'Failed to update donation' });
+    }
+});
+
 // --- Network surplus (org-to-org) ---
 
 router.get('/surplus', async (req, res) => {

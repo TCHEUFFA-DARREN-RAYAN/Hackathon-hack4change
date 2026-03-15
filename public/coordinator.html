@@ -822,6 +822,132 @@
             </tr>`).join('');
     }
 
+    async function loadStaff() {
+        if (!allOrgsData.length) await loadOrgs();
+        const orgFilter = document.getElementById('staff-org-filter');
+        if (orgFilter.options.length <= 1) {
+            orgFilter.innerHTML = '<option value="">All organizations</option>' + allOrgsData.map(o => `<option value="${escHtml(o.id)}">${escHtml(o.name)}</option>`).join('');
+        }
+        const orgId = orgFilter.value || undefined;
+        try {
+            const res = await coordinator.staff(orgId ? { org_id: orgId } : {});
+            allStaffData = res.data || [];
+            renderStaff();
+        } catch (err) {
+            document.getElementById('staff-tbody').innerHTML = `<tr><td colspan="6"><div class="inline-notice error">${escHtml(err.message)}</div></td></tr>`;
+        }
+    }
+
+    function renderStaff() {
+        const tbody = document.getElementById('staff-tbody');
+        if (!allStaffData.length) {
+            tbody.innerHTML = '<tr><td colspan="6"><div class="empty-state"><p>No staff members found.</p></div></td></tr>';
+            return;
+        }
+        tbody.innerHTML = allStaffData.map(s => `
+            <tr>
+                <td><strong>${escHtml(s.first_name)} ${escHtml(s.last_name)}</strong></td>
+                <td>${escHtml(s.email)}</td>
+                <td>${escHtml(s.org_name || '—')}</td>
+                <td><span class="badge badge-${escHtml(s.status)}">${escHtml(s.status)}</span></td>
+                <td class="text-sm text-muted">${formatDate(s.created_at)}</td>
+                <td>
+                    <button class="btn btn-ghost btn-sm" onclick="openEditStaff('${escHtml(s.id)}')">Edit</button>
+                    <button class="btn btn-ghost btn-sm" onclick="deleteStaff('${escHtml(s.id)}')">Delete</button>
+                </td>
+            </tr>`).join('');
+    }
+
+    function openCreateStaff() {
+        if (!allOrgsData.length) { toast('Loading organizations...', 'info'); loadOrgs().then(() => openCreateStaff()); return; }
+        document.getElementById('staff-modal-title').textContent = 'Add Staff Member';
+        document.getElementById('staff-org').innerHTML = '<option value="">Select organization</option>' + allOrgsData.map(o => `<option value="${escHtml(o.id)}">${escHtml(o.name)}</option>`).join('');
+        document.getElementById('staff-first').value = '';
+        document.getElementById('staff-last').value = '';
+        document.getElementById('staff-email').value = '';
+        document.getElementById('staff-password').value = '';
+        document.getElementById('staff-edit-id').value = '';
+        document.getElementById('staff-password-group').style.display = 'block';
+        document.getElementById('staff-status-group').style.display = 'none';
+        document.getElementById('staff-modal').style.display = 'flex';
+    }
+
+    async function openEditStaff(id) {
+        if (!allOrgsData.length) await loadOrgs();
+        const s = allStaffData.find(x => x.id === id);
+        if (!s) { toast('Staff member not found.', 'error'); return; }
+        document.getElementById('staff-modal-title').textContent = 'Edit Staff Member';
+        document.getElementById('staff-org').innerHTML = allOrgsData.map(o => `<option value="${escHtml(o.id)}" ${o.id === s.org_id ? 'selected' : ''}>${escHtml(o.name)}</option>`).join('');
+        document.getElementById('staff-first').value = s.first_name || '';
+        document.getElementById('staff-last').value = s.last_name || '';
+        document.getElementById('staff-email').value = s.email || '';
+        document.getElementById('staff-password').value = '';
+        document.getElementById('staff-edit-id').value = s.id;
+        document.getElementById('staff-status').value = s.status || 'active';
+        document.getElementById('staff-password-group').style.display = 'none';
+        document.getElementById('staff-status-group').style.display = 'block';
+        document.getElementById('staff-org').disabled = true;
+        document.getElementById('staff-modal').style.display = 'flex';
+    }
+
+    function closeStaffModal() {
+        document.getElementById('staff-modal').style.display = 'none';
+        document.getElementById('staff-org').disabled = false;
+    }
+
+    async function saveStaffMember() {
+        const orgEl = document.getElementById('staff-org');
+        const firstEl = document.getElementById('staff-first');
+        const lastEl = document.getElementById('staff-last');
+        const emailEl = document.getElementById('staff-email');
+        const passwordEl = document.getElementById('staff-password');
+        const editId = document.getElementById('staff-edit-id').value;
+        clearFormErrors(document.getElementById('staff-modal'));
+        let valid = validateRequired(orgEl, 'Please select an organization.');
+        valid = validateRequired(firstEl, 'Please enter first name.') && valid;
+        valid = validateRequired(lastEl, 'Please enter last name.') && valid;
+        valid = validateRequired(emailEl, 'Please enter a valid email.') && valid;
+        if (!editId) valid = validateRequired(passwordEl, 'Please enter a password (min 6 characters).') && valid;
+        if (!valid) return;
+        const btn = document.getElementById('staff-save-btn');
+        btn.disabled = true;
+        try {
+            if (editId) {
+                const updates = { first_name: firstEl.value.trim(), last_name: lastEl.value.trim(), email: emailEl.value.trim() };
+                const status = document.getElementById('staff-status').value;
+                if (status) updates.status = status;
+                await coordinator.updateStaff(editId, updates);
+                toast('Staff member updated.', 'success');
+            } else {
+                await coordinator.createStaff({
+                    org_id: orgEl.value,
+                    first_name: firstEl.value.trim(),
+                    last_name: lastEl.value.trim(),
+                    email: emailEl.value.trim(),
+                    password: passwordEl.value
+                });
+                toast('Staff member created.', 'success');
+            }
+            closeStaffModal();
+            loadStaff();
+        } catch (err) {
+            toast(err.message || 'Failed to save staff member.', 'error');
+        } finally {
+            btn.disabled = false;
+        }
+    }
+
+    async function deleteStaff(id) {
+        if (!confirm('Are you sure you want to delete this staff member? They will no longer be able to log in.')) return;
+        try {
+            await coordinator.deleteStaff(id);
+            toast('Staff member deleted.', 'success');
+            loadStaff();
+        } catch (err) {
+            toast(err.message || 'Failed to delete staff member.', 'error');
+        }
+    }
+
     async function loadAllNeeds() {
         const params = {
             urgency: document.getElementById('needs-urgency-filter').value,

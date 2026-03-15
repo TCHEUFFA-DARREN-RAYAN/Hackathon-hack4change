@@ -1568,8 +1568,9 @@
         tbody.innerHTML = filtered.map(({ org, need: n }) => {
             const urg = n.urgency || 'medium';
             const received = Number(n.quantity_received) || 0;
-            const needed = Number(n.quantity_needed) || 1;
-            const pct = Math.min(100, Math.round((received / needed) * 100));
+            // quantity_original is the true total (received + still needed), returned by the API
+            const original = Number(n.quantity_original) || (Number(n.quantity_needed) || 1) + received;
+            const pct = Math.min(100, Math.round((received / original) * 100));
             const catKey = (n.category || 'other').toLowerCase();
             const catLabel = catKey.replace(/_/g, ' ');
             const catDisplay = catLabel.charAt(0).toUpperCase() + catLabel.slice(1);
@@ -1586,7 +1587,7 @@
                 <td>
                     <div class="on-progress-wrap">
                         <div class="on-progress-text">
-                            <span>${received} / ${needed}</span>
+                            <span>${received} / ${original}</span>
                             <span class="on-pct">${pct}%</span>
                         </div>
                         <div class="on-progress-track"><div class="on-progress-fill" style="width:${pct}%;background:${progressColor}"></div></div>
@@ -1665,7 +1666,8 @@
             return;
         }
         tbody.innerHTML = donations.map(d => {
-            const statusVal = (d.status === 'matched' || d.status === 'pending') ? 'pending' : 'received';
+            // DB statuses: 'matched' = pending receipt, 'confirmed' = received
+            const statusVal = d.status === 'confirmed' ? 'received' : 'pending';
             return `<tr>
                 <td><strong>${escHtml(d.item_name)}</strong><div class="text-sm text-muted">${escHtml(String(d.quantity))} ${escHtml(d.unit || '')}</div></td>
                 <td>${escHtml(String(d.quantity))} ${escHtml(d.unit || '')}</td>
@@ -1686,6 +1688,8 @@
         try {
             if (newStatus === 'received') {
                 await staff.confirmDonation(id);
+            } else {
+                await staff.pendingDonation(id);
             }
             await loadDonations();
             renderDashboard();
@@ -2003,14 +2007,8 @@
 
         if (itemName) {
             const msg = `Hi! We'd like to help fulfill your need for "${itemName}". We have some available and can arrange a transfer — please let us know how to proceed.`;
-            try {
-                await staff.sendChatMessage(threadId, msg);
-                await loadChatMessages();
-            } catch (e) {
-                // Pre-fill as fallback if send fails
-                const input = document.getElementById('chat-input');
-                if (input) { input.value = msg; input.focus(); }
-            }
+            const input = document.getElementById('chat-input');
+            if (input) { input.value = msg; input.focus(); }
         }
     }
 
@@ -2021,7 +2019,7 @@
                 if (data && data.threadId === selectedThreadId) loadChatMessages();
             });
             socket.on('need:new', () => { loadNeeds(); loadOtherNeeds(); });
-            socket.on('need:fulfilled', () => { loadNeeds(); });
+            socket.on('need:fulfilled', () => { loadNeeds(); loadOtherNeeds(); });
             socket.on('donation:new', () => { loadDonations(); renderDashboard(); });
         } catch {}
     }

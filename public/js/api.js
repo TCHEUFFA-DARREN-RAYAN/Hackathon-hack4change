@@ -48,6 +48,7 @@ const staff = {
     deleteNeed:           (id)      => api(`/staff/needs/${id}`,    { method: 'DELETE' }),
     donations:            (params)  => api('/staff/donations?' + new URLSearchParams(params || {})),
     confirmDonation:      (id)      => api(`/staff/donations/${id}/confirm`, { method: 'POST' }),
+    pendingDonation:      (id)      => api(`/staff/donations/${id}/pending`, { method: 'POST' }),
     surplus:              ()        => api('/staff/surplus'),
     surplusRequests:      (params)  => api('/staff/surplus-requests?' + new URLSearchParams(params || {})),
     requestSurplus:       (data)    => api('/staff/surplus-requests', { method: 'POST', body: JSON.stringify(data) }),

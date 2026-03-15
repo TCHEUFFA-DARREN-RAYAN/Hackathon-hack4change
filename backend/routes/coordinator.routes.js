@@ -140,18 +140,16 @@ router.patch('/staff/:id', [
         if (status !== undefined) {
             const updated = await StaffModel.updateStatus(req.params.id, status);
             if (!updated) return res.status(404).json({ success: false, message: 'Staff not found' });
-            return res.json({ success: true, data: updated });
         }
         const updates = {};
         if (first_name !== undefined) updates.first_name = first_name;
         if (last_name !== undefined) updates.last_name = last_name;
         if (email !== undefined) updates.email = email;
-        if (Object.keys(updates).length === 0) {
-            const staff = await StaffModel.findById(req.params.id);
+        if (Object.keys(updates).length > 0) {
+            const staff = await StaffModel.update(req.params.id, updates);
             if (!staff) return res.status(404).json({ success: false, message: 'Staff not found' });
-            return res.json({ success: true, data: staff });
         }
-        const staff = await StaffModel.update(req.params.id, updates);
+        const staff = await StaffModel.findById(req.params.id);
         if (!staff) return res.status(404).json({ success: false, message: 'Staff not found' });
         res.json({ success: true, data: staff });
     } catch (err) {
