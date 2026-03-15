@@ -16,7 +16,7 @@
 <div id="topbar">
     <div class="topbar-brand">
         <img src="/assets/images/logo.png" alt="Common Ground">
-        <span>GMHSC Network</span>
+        <span>CommonGround</span>
     </div>
     <div class="topbar-actions">
         <span class="text-muted" id="nav-org-name"></span>
@@ -27,7 +27,7 @@
     <aside id="sidebar" aria-label="Organization navigation">
         <div class="sidebar-brand">
             <span class="brand-dot"></span>
-            <span>GMHSC Network</span>
+            <span id="sidebar-org-name">Loading...</span>
         </div>
         <ul class="nav-links">
             <li><a href="#" data-section="dashboard" class="active" onclick="showSection('dashboard', this)">
@@ -530,7 +530,7 @@
                     <div>
                         <p class="text-sm text-muted" style="margin:0">Team chat, direct messages, and cross-organization coordination.</p>
                     </div>
-                    <button class="btn btn-primary btn-sm" onclick="openCrossOrgModal()">+ New cross-org chat</button>
+                    <button class="btn btn-primary btn-sm" onclick="openCrossOrgModal()">Contact organisation</button>
                 </div>
                 <div class="chat-layout">
                     <div class="chat-threads">
@@ -745,7 +745,7 @@
 <div id="cross-org-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:1000;align-items:center;justify-content:center;padding:1rem">
     <div class="card" style="width:100%;max-width:420px">
         <div class="card-header">
-            <h3>Start cross-org conversation</h3>
+            <h3>Contact organisation</h3>
             <button class="btn btn-ghost btn-sm" onclick="closeModal('cross-org-modal')">Close</button>
         </div>
         <div class="form-group">
@@ -757,7 +757,7 @@
         </div>
         <div style="display:flex;gap:.75rem;margin-top:1rem;justify-content:flex-end">
             <button class="btn btn-ghost" onclick="closeModal('cross-org-modal')">Cancel</button>
-            <button class="btn btn-primary" onclick="startCrossOrgChat()">Start conversation</button>
+            <button class="btn btn-primary" onclick="startCrossOrgChat()">Contact organisation</button>
         </div>
     </div>
 </div>
@@ -850,6 +850,7 @@
         if (!currentUser) return;
 
         document.getElementById('nav-org-name').textContent = currentUser.orgName || '';
+        document.getElementById('sidebar-org-name').textContent = currentUser.orgName || '';
         document.getElementById('org-subtitle').textContent = currentUser.orgName || '';
         document.getElementById('dashboard-hero-org').textContent = currentUser.orgName || 'Your organization overview';
 
@@ -952,13 +953,15 @@
 
     function renderDashboardNeeds() {
         const container = document.getElementById('dashboard-needs-list');
-        if (!container) return;
+        const card = document.getElementById('dashboard-needs-card');
+        if (!container || !card) return;
 
         const needs = needsData.filter(n => !n.fulfilled);
         if (!needs.length) {
-            container.innerHTML = '<div class="empty-state"><p>No active needs.</p></div>';
+            card.style.display = 'none';
             return;
         }
+        card.style.display = '';
 
         const urgencyOrder = { critical: 0, high: 1, medium: 2, low: 3 };
         const sorted = [...needs].sort((a, b) => (urgencyOrder[a.urgency] || 4) - (urgencyOrder[b.urgency] || 4));
@@ -2058,6 +2061,7 @@
         const t = chatThreads.find(x => x.id === id);
         document.getElementById('chat-panel-title').textContent = t ? getThreadName(t) : 'Chat';
         document.getElementById('chat-input-wrap').style.display = 'flex';
+        document.getElementById('chat-input').value = '';
         await loadChatMessages();
     }
 
