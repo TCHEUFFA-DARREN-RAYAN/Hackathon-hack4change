@@ -70,6 +70,9 @@ router.post('/inventory', async (req, res) => {
         });
         res.status(201).json({ success: true, data: item });
     } catch (err) {
+        if (err.code === 'DUPLICATE_INVENTORY') {
+            return res.status(409).json({ success: false, message: err.message });
+        }
         console.error(err);
         res.status(500).json({ success: false, message: 'Failed to create inventory item' });
     }
