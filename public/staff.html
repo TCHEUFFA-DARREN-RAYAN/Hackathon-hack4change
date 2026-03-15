@@ -112,6 +112,12 @@
                         <button class="btn btn-primary btn-sm" onclick="openAddInventory()">+ Add inventory</button>
                     </div>
                     <div id="dashboard-inventory-list"></div>
+                    <div class="dash-view-more-wrap">
+                        <button class="dash-view-more-btn" onclick="showSection('inventory', document.querySelector('[data-section=inventory]'))">
+                            View all inventory
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+                        </button>
+                    </div>
                 </div>
                 <div class="card" id="dashboard-needs-card">
                     <div class="card-header" style="gap:10px">
@@ -119,6 +125,12 @@
                         <button class="btn btn-primary btn-sm" onclick="openAddNeed()">+ Post a need</button>
                     </div>
                     <div id="dashboard-needs-list"></div>
+                    <div class="dash-view-more-wrap">
+                        <button class="dash-view-more-btn" onclick="showSection('needs', document.querySelector('[data-section=needs]'))">
+                            View all needs
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -247,53 +259,30 @@
         <!-- Other Needs -->
         <div id="section-other-needs" style="display:none">
             <div class="section">
-                <div class="on-page-header">
-                    <div>
-                        <h2 class="on-page-title">Network Needs</h2>
-                        <p class="on-page-sub">Approved and open for community fulfillment — connect via Chats to help.</p>
-                    </div>
-                    <button class="btn-action-secondary" onclick="loadOtherNeeds()">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:-2px;margin-right:4px"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
-                        Refresh
-                    </button>
-                </div>
-
                 <div class="on-toolbar">
                     <div class="on-search-wrap">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
                         <input type="search" id="other-needs-search" class="on-search-input" placeholder="Search by item, org, or description..." autocomplete="off" aria-label="Search other needs">
                     </div>
-                    <div class="on-cat-pills" id="other-needs-cat-pills">
-                        <button type="button" class="on-cat-pill active" data-cat="">All</button>
-                        <button type="button" class="on-cat-pill" data-cat="housing">
-                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
-                            Housing
-                        </button>
-                        <button type="button" class="on-cat-pill" data-cat="food">
-                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>
-                            Food
-                        </button>
-                        <button type="button" class="on-cat-pill" data-cat="hygiene">
-                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-                            Hygiene
-                        </button>
-                        <button type="button" class="on-cat-pill" data-cat="clothing">Clothing</button>
-                        <button type="button" class="on-cat-pill" data-cat="bedding">Bedding</button>
-                        <button type="button" class="on-cat-pill" data-cat="baby_supplies">Baby</button>
-                        <button type="button" class="on-cat-pill" data-cat="goods">Goods</button>
-                        <button type="button" class="on-cat-pill" data-cat="other">Other</button>
-                    </div>
-                </div>
-
-                <div class="on-priority-bar">
-                    <div class="on-pri-pills" id="other-needs-pri-pills">
-                        <button type="button" class="on-pri-pill active" data-urg="">All</button>
-                        <button type="button" class="on-pri-pill" data-urg="critical"><span class="on-dot on-dot-critical"></span>Critical</button>
-                        <button type="button" class="on-pri-pill" data-urg="high"><span class="on-dot on-dot-high"></span>High</button>
-                        <button type="button" class="on-pri-pill" data-urg="medium"><span class="on-dot on-dot-medium"></span>Medium</button>
-                        <button type="button" class="on-pri-pill" data-urg="low"><span class="on-dot on-dot-low"></span>Low</button>
-                    </div>
-                    <span class="on-results-count" id="other-needs-results-count">0 results</span>
+                    <select id="other-needs-cat-select" class="on-filter-select">
+                        <option value="">All categories</option>
+                        <option value="housing">Housing</option>
+                        <option value="food">Food</option>
+                        <option value="hygiene">Hygiene</option>
+                        <option value="clothing">Clothing</option>
+                        <option value="bedding">Bedding</option>
+                        <option value="baby_supplies">Baby Supplies</option>
+                        <option value="goods">Household Goods</option>
+                        <option value="other">Other</option>
+                    </select>
+                    <select id="other-needs-pri-select" class="on-filter-select">
+                        <option value="">All priorities</option>
+                        <option value="critical">Critical</option>
+                        <option value="high">High</option>
+                        <option value="medium">Medium</option>
+                        <option value="low">Low</option>
+                    </select>
+                    <span class="on-results-count" id="other-needs-results-count"></span>
                 </div>
 
                 <div class="table-wrap">
@@ -319,10 +308,20 @@
         <!-- Donations -->
         <div id="section-donations" style="display:none">
             <div class="section">
-                <div class="section-header">
-                    <div>
-                        <p class="text-sm text-muted" style="margin:0">Donations matched to your organization. Confirm receipt when you receive them.</p>
+                <div class="don-toolbar">
+                    <div class="don-search-wrap">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+                        <input type="search" id="don-search" class="don-search-input" placeholder="Search by item or donor name..." autocomplete="off">
                     </div>
+                    <select id="don-filter-status" class="don-filter-select">
+                        <option value="">All statuses</option>
+                        <option value="pending">Pending</option>
+                        <option value="received">Received</option>
+                    </select>
+                    <button class="don-export-btn" onclick="exportDonationsExcel()">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                        Export Excel
+                    </button>
                 </div>
                 <div class="table-wrap">
                     <table class="data-table">
@@ -330,11 +329,10 @@
                             <tr>
                                 <th>Item</th>
                                 <th>Qty</th>
-                                <th>Condition</th>
                                 <th>Donor</th>
-                                <th>Contact</th>
+                                <th>Email</th>
+                                <th>Phone</th>
                                 <th>Status</th>
-                                <th>Actions</th>
                             </tr>
                         </thead>
                         <tbody id="donations-tbody"></tbody>
@@ -1519,12 +1517,10 @@
     let otherNeedsData = [];
 
     function getOtherNeedsCatFilter() {
-        const active = document.querySelector('#other-needs-cat-pills .on-cat-pill.active');
-        return active ? (active.getAttribute('data-cat') || '') : '';
+        return document.getElementById('other-needs-cat-select')?.value || '';
     }
     function getOtherNeedsUrgFilter() {
-        const active = document.querySelector('#other-needs-pri-pills .on-pri-pill.active');
-        return active ? (active.getAttribute('data-urg') || '') : '';
+        return document.getElementById('other-needs-pri-select')?.value || '';
     }
 
     function getAllOtherNeedsFlat() {
@@ -1563,28 +1559,8 @@
         const countEl = document.getElementById('other-needs-results-count');
         if (countEl) countEl.textContent = filtered.length + ' result' + (filtered.length !== 1 ? 's' : '');
 
-        // Update priority pill counts
-        const allFlat = getAllOtherNeedsFlat();
-        const urgCounts = { critical: 0, high: 0, medium: 0, low: 0 };
-        allFlat.forEach(({ need: n }) => {
-            const u = n.urgency || 'medium';
-            if (urgCounts[u] !== undefined) urgCounts[u]++;
-        });
-        document.querySelectorAll('#other-needs-pri-pills .on-pri-pill').forEach(btn => {
-            const urg = btn.getAttribute('data-urg');
-            const baseLabel = urg === 'critical' ? 'Critical' : urg === 'high' ? 'High' : urg === 'medium' ? 'Medium' : urg === 'low' ? 'Low' : 'All';
-            const count = urg ? (urgCounts[urg] || 0) : allFlat.length;
-            btn.innerHTML = '';
-            if (urg && urg !== '') {
-                const dot = document.createElement('span');
-                dot.className = 'on-dot on-dot-' + urg;
-                btn.appendChild(dot);
-            }
-            btn.appendChild(document.createTextNode(baseLabel + ' (' + count + ')'));
-        });
-
         if (!filtered.length) {
-            const totalCards = allFlat.length;
+            const totalCards = getAllOtherNeedsFlat().length;
             tbody.innerHTML = '<tr><td colspan="5"><div class="empty-state"><p>' + (totalCards ? 'No needs match your filters.' : 'No needs from other organizations at the moment.') + '</p></div></td></tr>';
             return;
         }
@@ -1600,19 +1576,11 @@
             const catIcon = catIcons[catKey] || '📋';
             const urgLabel = urg.charAt(0).toUpperCase() + urg.slice(1);
             const progressColor = pct >= 75 ? '#10b981' : pct >= 40 ? '#f59e0b' : '#ef4444';
-            const title = `${escHtml(n.item_name)} — ${escHtml(org.name)}`;
+            const safeItem = escHtml(n.item_name).replace(/'/g, "\\'");
             return `<tr class="on-row">
                 <td><span class="on-badge-pri badge-${urg}">${urgLabel}</span></td>
                 <td>
                     <div class="on-req-title">${escHtml(n.item_name)} <span class="on-req-dash">—</span> <span class="on-req-org">${escHtml(org.name)}</span></div>
-                    <div class="on-req-meta">
-                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:-1px;opacity:.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/></svg>
-                        <span>${escHtml(org.name)}</span>
-                        <span class="on-req-dot"></span>
-                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:-1px;opacity:.5"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
-                        <span>${escHtml(n.unit ? String(n.quantity_needed) + ' ' + n.unit : String(n.quantity_needed))} needed</span>
-                        ${n.notes ? `<span class="on-req-dot"></span><span class="on-note">${escHtml(n.notes)}</span>` : ''}
-                    </div>
                 </td>
                 <td><span class="on-cat-badge on-cat-${catKey}">${catIcon} ${escHtml(catDisplay)}</span></td>
                 <td>
@@ -1625,7 +1593,7 @@
                     </div>
                 </td>
                 <td>
-                    <button class="on-fulfill-btn" onclick="startCrossOrgChatWith('${escHtml(org.id)}')">
+                    <button class="on-fulfill-btn" onclick="startCrossOrgChatWith('${escHtml(org.id)}', '${safeItem}')">
                         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
                         Fulfill
                     </button>
@@ -1641,20 +1609,8 @@
     function initOtherNeedsPills() {
         if (window._otherNeedsPillsInit) return;
         window._otherNeedsPillsInit = true;
-        document.querySelectorAll('#other-needs-cat-pills .on-cat-pill').forEach(btn => {
-            btn.addEventListener('click', () => {
-                document.querySelectorAll('#other-needs-cat-pills .on-cat-pill').forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-                applyOtherNeedsFilters();
-            });
-        });
-        document.querySelectorAll('#other-needs-pri-pills .on-pri-pill').forEach(btn => {
-            btn.addEventListener('click', () => {
-                document.querySelectorAll('#other-needs-pri-pills .on-pri-pill').forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-                applyOtherNeedsFilters();
-            });
-        });
+        document.getElementById('other-needs-cat-select')?.addEventListener('change', applyOtherNeedsFilters);
+        document.getElementById('other-needs-pri-select')?.addEventListener('change', applyOtherNeedsFilters);
     }
 
     async function loadOtherNeeds() {
@@ -1675,41 +1631,82 @@
         try {
             const res = await staff.donations();
             donationsData = res.data || [];
-            renderDonations(donationsData);
+            renderDonations(getFilteredDonations());
+            initDonationFilters();
         } catch (err) {
-            document.getElementById('donations-tbody').innerHTML = `<tr><td colspan="7"><div class="inline-notice error">${escHtml(err.message)}</div></td></tr>`;
+            document.getElementById('donations-tbody').innerHTML = `<tr><td colspan="6"><div class="inline-notice error">${escHtml(err.message)}</div></td></tr>`;
         }
+    }
+
+    function getFilteredDonations() {
+        const search = (document.getElementById('don-search')?.value || '').toLowerCase().trim();
+        const statusFilter = document.getElementById('don-filter-status')?.value || '';
+        return donationsData.filter(d => {
+            if (statusFilter && d.status !== statusFilter) return false;
+            if (search) {
+                return (d.item_name || '').toLowerCase().includes(search) ||
+                       (d.donor_name || '').toLowerCase().includes(search);
+            }
+            return true;
+        });
+    }
+
+    function initDonationFilters() {
+        if (window._donFiltersInit) return;
+        window._donFiltersInit = true;
+        document.getElementById('don-search')?.addEventListener('input', () => renderDonations(getFilteredDonations()));
+        document.getElementById('don-filter-status')?.addEventListener('change', () => renderDonations(getFilteredDonations()));
     }
 
     function renderDonations(donations) {
         const tbody = document.getElementById('donations-tbody');
         if (!donations.length) {
-            tbody.innerHTML = `<tr><td colspan="7"><div class="empty-state"><span class="empty-icon">&#9723;</span><h3>No incoming donations</h3><p>Donations matched to your organization will appear here.</p></div></td></tr>`;
+            tbody.innerHTML = `<tr><td colspan="6"><div class="empty-state"><span class="empty-icon">&#9723;</span><h3>No donations found</h3><p>Donations to your organization will appear here.</p></div></td></tr>`;
             return;
         }
-        tbody.innerHTML = donations.map(d => `
-            <tr>
-                <td><strong>${escHtml(d.item_name)}</strong></td>
-                <td>${escHtml(String(d.quantity))} ${escHtml(d.unit)}</td>
-                <td>${escHtml(d.condition)}</td>
-                <td>${escHtml(d.donor_name)}</td>
-                <td><span class="text-sm">${escHtml(d.donor_email)}${d.donor_phone ? '<br>' + escHtml(d.donor_phone) : ''}</span></td>
-                <td><span class="badge badge-${escHtml(d.status)}">${escHtml(d.status)}</span></td>
+        tbody.innerHTML = donations.map(d => {
+            const statusVal = (d.status === 'matched' || d.status === 'pending') ? 'pending' : 'received';
+            return `<tr>
+                <td><strong>${escHtml(d.item_name)}</strong><div class="text-sm text-muted">${escHtml(String(d.quantity))} ${escHtml(d.unit || '')}</div></td>
+                <td>${escHtml(String(d.quantity))} ${escHtml(d.unit || '')}</td>
+                <td><span class="don-donor-name">${escHtml(d.donor_name)}</span></td>
+                <td><a class="don-contact-link" href="mailto:${escHtml(d.donor_email)}">${escHtml(d.donor_email)}</a></td>
+                <td>${d.donor_phone ? `<a class="don-contact-link" href="tel:${escHtml(d.donor_phone)}">${escHtml(d.donor_phone)}</a>` : '<span class="text-muted">—</span>'}</td>
                 <td>
-                    ${d.status === 'matched' ? `<button class="btn btn-accent btn-sm" onclick="confirmDonation('${escHtml(d.id)}')">Confirm receipt</button>` : ''}
+                    <select class="don-status-select don-status-${statusVal}" onchange="updateDonationStatus('${escHtml(d.id)}', this.value)">
+                        <option value="pending" ${statusVal === 'pending' ? 'selected' : ''}>Pending</option>
+                        <option value="received" ${statusVal === 'received' ? 'selected' : ''}>Received</option>
+                    </select>
                 </td>
-            </tr>`).join('');
+            </tr>`;
+        }).join('');
     }
 
-    async function confirmDonation(id) {
+    async function updateDonationStatus(id, newStatus) {
         try {
-            await staff.confirmDonation(id);
-            toast('Donation confirmed. The donor has been notified.', 'success');
+            if (newStatus === 'received') {
+                await staff.confirmDonation(id);
+            }
             await loadDonations();
             renderDashboard();
         } catch (err) {
-            toast(err.message || 'Failed to confirm donation.', 'error');
+            toast(err.message || 'Failed to update donation status.', 'error');
+            await loadDonations();
         }
+    }
+
+    function exportDonationsExcel() {
+        const rows = [['Item', 'Quantity', 'Unit', 'Donor', 'Email', 'Phone', 'Status']];
+        donationsData.forEach(d => {
+            const status = (d.status === 'matched' || d.status === 'pending') ? 'Pending' : 'Received';
+            rows.push([d.item_name, d.quantity, d.unit || '', d.donor_name, d.donor_email, d.donor_phone || '', status]);
+        });
+        let csv = rows.map(r => r.map(v => `"${String(v || '').replace(/"/g, '""')}"`).join(',')).join('\n');
+        const blob = new Blob([csv], { type: 'text/csv' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url; a.download = 'donations.csv'; a.click();
+        URL.revokeObjectURL(url);
     }
 
     // --- Analytics ---
@@ -1977,15 +1974,43 @@
         }
     }
 
-    async function startCrossOrgChatWith(orgId) {
-        try {
-            const res = await staff.startCrossOrgThread(orgId);
-            toast('Cross-org conversation started.', 'success');
-            showSection('chats', document.querySelector('[data-section=chats]'));
-            await loadChatThreads();
-            if (res.data && res.data.id) selectThread(res.data.id);
-        } catch (err) {
-            toast(err.message || 'Failed to start conversation.', 'error');
+    async function startCrossOrgChatWith(orgId, itemName) {
+        showSection('chats', document.querySelector('[data-section=chats]'));
+        await loadChatThreads();
+
+        // Try to find an already-existing thread first — avoids the INSERT constraint
+        let threadId = null;
+        const existing = chatThreads.find(t => t.type === 'cross_org' &&
+            (t.peer_org_id === orgId || t.org_id === orgId));
+        if (existing) {
+            threadId = existing.id;
+        } else {
+            try {
+                const res = await staff.startCrossOrgThread(orgId);
+                if (res.data && res.data.id) threadId = res.data.id;
+                await loadChatThreads();
+            } catch (err) {
+                // Retry lookup in case another session created it concurrently
+                await loadChatThreads();
+                const retry = chatThreads.find(t => t.type === 'cross_org' &&
+                    (t.peer_org_id === orgId || t.org_id === orgId));
+                if (retry) threadId = retry.id;
+            }
+        }
+
+        if (!threadId) return;
+        await selectThread(threadId);
+
+        if (itemName) {
+            const msg = `Hi! We'd like to help fulfill your need for "${itemName}". We have some available and can arrange a transfer — please let us know how to proceed.`;
+            try {
+                await staff.sendChatMessage(threadId, msg);
+                await loadChatMessages();
+            } catch (e) {
+                // Pre-fill as fallback if send fails
+                const input = document.getElementById('chat-input');
+                if (input) { input.value = msg; input.focus(); }
+            }
         }
     }
 

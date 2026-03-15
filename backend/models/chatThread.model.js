@@ -66,9 +66,10 @@ class ChatThreadModel {
         );
         if (existing.length) return this.findById(existing[0].id);
         const id = randomUUID();
+        // Use a direct INSERT with literal string to avoid any driver-side ENUM coercion issues
         await promisePool.query(
-            'INSERT INTO chat_threads (id, type, org_id, peer_org_id) VALUES (?, ?, ?, ?)',
-            [id, 'cross_org', orgId, peerOrgId]
+            "INSERT INTO chat_threads (id, type, org_id, peer_org_id) VALUES (?, 'cross_org', ?, ?)",
+            [id, orgId, peerOrgId]
         );
         return this.findById(id);
     }
