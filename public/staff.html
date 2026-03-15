@@ -2090,12 +2090,14 @@
                 const icon = getThreadIcon(t);
                 const label = getThreadLabel(t);
                 const avatarClass = t.type === 'cross_org' ? 'cross-org' : t.type === 'org_channel' ? 'org-channel' : '';
-                return `<div class="chat-thread-item ${t.id === selectedThreadId ? 'active' : ''}" id="thread-${t.id}" onclick="selectThread('${t.id}')">
+                const isUnread = _unreadThreadIds.has(t.id);
+                return `<div class="chat-thread-item ${t.id === selectedThreadId ? 'active' : ''} ${isUnread ? 'unread' : ''}" id="thread-${t.id}" onclick="selectThread('${t.id}')">
                     <div class="chat-thread-avatar ${avatarClass}">${escHtml(icon)}</div>
                     <div class="chat-thread-info">
-                        <div class="chat-thread-name">${escHtml(name)}</div>
+                        <div class="chat-thread-name" style="${isUnread ? 'font-weight:700' : ''}">${escHtml(name)}</div>
                         <div class="chat-thread-preview">${escHtml(label)}</div>
                     </div>
+                    ${isUnread ? '<span class="thread-unread-dot"></span>' : ''}
                 </div>`;
             }).join('');
         } catch (err) {
@@ -2114,6 +2116,9 @@
         document.getElementById('chat-input-wrap').style.display = 'flex';
         document.getElementById('chat-input').value = '';
         await loadChatMessages();
+        _unreadThreadIds.delete(id);
+        updateUnreadBadge();
+        loadChatThreads();
     }
 
     async function loadChatMessages() {
@@ -2235,11 +2240,22 @@
         }
     }
 
+    function updateUnreadBadge() {
+        const dot = document.getElementById('chat-unread-dot');
+        if (dot) dot.style.display = _unreadThreadIds.size > 0 ? 'inline-block' : 'none';
+    }
+
     function initSocket() {
         try {
             socket = io({ transports: ['websocket', 'polling'] });
             socket.on('chat:newMessage', (data) => {
-                if (data && data.threadId === selectedThreadId) loadChatMessages();
+                if (data && data.threadId === selectedThreadId) {
+                    loadChatMessages();
+                } else if (data && data.threadId) {
+                    _unreadThreadIds.add(data.threadId);
+                    updateUnreadBadge();
+                    loadChatThreads();
+                }
             });
             socket.on('need:new', () => { loadNeeds(); loadOtherNeeds(); });
             socket.on('need:fulfilled', () => { loadNeeds(); loadOtherNeeds(); });
