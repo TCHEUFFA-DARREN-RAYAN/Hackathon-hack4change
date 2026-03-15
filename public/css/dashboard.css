@@ -287,7 +287,8 @@ body {
 .inv-section-header .inv-org-title { font-size: 1rem; font-weight: 600; margin: 0; }
 .inv-toolbar-right { display: flex; gap: 10px; align-items: center; justify-content: flex-end; }
 .inv-toolbar-right .inv-search { flex: 1; max-width: 380px; }
-.inv-filters-row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-bottom: 12px; }
+.inv-filters-row { display: flex; gap: 10px; align-items: flex-end; flex-wrap: wrap; margin-bottom: 12px; }
+.inv-filters-row .inv-dropdown-wrap .inv-search { flex: 1; max-width: none; min-width: 0; }
 .inv-table tbody tr.inv-row-alt { background: var(--color-bg); }
 .inv-table tbody tr.inv-row-alt:hover { background: var(--color-bg-secondary); }
 .badge-status-low { background: #FEF3C7; color: #92400E; }
