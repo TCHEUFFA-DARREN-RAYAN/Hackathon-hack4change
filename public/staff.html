@@ -313,26 +313,26 @@
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
                         <input type="search" id="don-search" class="don-search-input" placeholder="Search by item or donor name..." autocomplete="off">
                     </div>
-                    <select id="don-filter-status" class="don-filter-select">
-                        <option value="">All statuses</option>
-                        <option value="pending">Pending</option>
-                        <option value="received">Received</option>
-                    </select>
+                    <div class="don-pills" id="don-status-pills">
+                        <button class="don-pill active" data-status="">All</button>
+                        <button class="don-pill" data-status="pending">Pending</button>
+                        <button class="don-pill" data-status="received">Received</button>
+                    </div>
                     <button class="don-export-btn" onclick="exportDonationsExcel()">
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                        Export Excel
+                        Export
                     </button>
                 </div>
                 <div class="table-wrap">
                     <table class="data-table">
                         <thead>
                             <tr>
-                                <th>Item</th>
-                                <th>Qty</th>
+                                <th class="don-sortable" onclick="sortDonations('item_name')">Item <span class="sort-chevron" id="don-sort-item_name">&#9662;</span></th>
+                                <th class="don-sortable" onclick="sortDonations('quantity')">Qty <span class="sort-chevron" id="don-sort-quantity">&#9662;</span></th>
                                 <th>Donor</th>
                                 <th>Email</th>
                                 <th>Phone</th>
-                                <th>Status</th>
+                                <th class="don-sortable" onclick="sortDonations('status')">Status <span class="sort-chevron" id="don-sort-status">&#9662;</span></th>
                             </tr>
                         </thead>
                         <tbody id="donations-tbody"></tbody>
@@ -407,10 +407,22 @@
         <!-- Analytics -->
         <div id="section-analytics" style="display:none">
             <div class="section">
+                <!-- Section header with export button -->
+                <div class="an-section-header">
+                    <div>
+                        <h2 class="an-section-title">Analytics Overview</h2>
+                        <p class="an-section-sub">Your organization's data at a glance</p>
+                    </div>
+                    <button class="don-export-btn" onclick="exportAnalyticsExcel()">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                        Export All Data
+                    </button>
+                </div>
+
                 <!-- KPI stat row -->
                 <div class="an-kpi-row" id="an-kpi-row">
                     <div class="an-kpi-card">
-                        <div class="an-kpi-label">Total inventory items</div>
+                        <div class="an-kpi-label">Total inventory</div>
                         <div class="an-kpi-value" id="an-kpi-total">—</div>
                         <div class="an-kpi-sub">Across all categories</div>
                     </div>
@@ -430,13 +442,23 @@
                         <div class="an-kpi-sub">% fully received</div>
                     </div>
                     <div class="an-kpi-card">
+                        <div class="an-kpi-label">Total donations</div>
+                        <div class="an-kpi-value" id="an-kpi-donations-total">—</div>
+                        <div class="an-kpi-sub">All time</div>
+                    </div>
+                    <div class="an-kpi-card">
                         <div class="an-kpi-label">Pending donations</div>
-                        <div class="an-kpi-value" id="an-kpi-donations">—</div>
-                        <div class="an-kpi-sub">Awaiting confirmation</div>
+                        <div class="an-kpi-value an-kpi-warn" id="an-kpi-donations">—</div>
+                        <div class="an-kpi-sub">Awaiting receipt</div>
+                    </div>
+                    <div class="an-kpi-card">
+                        <div class="an-kpi-label">Donations received</div>
+                        <div class="an-kpi-value an-kpi-success" id="an-kpi-donations-received">—</div>
+                        <div class="an-kpi-sub">Confirmed</div>
                     </div>
                 </div>
 
-                <!-- Row 1: donut + bar charts -->
+                <!-- Row 1: inventory status donut + category bar -->
                 <div class="an-row-2">
                     <div class="analytics-card">
                         <h4>
@@ -451,13 +473,13 @@
                     <div class="analytics-card">
                         <h4>
                             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:-2px;margin-right:5px"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg>
-                            Category breakdown
+                            Inventory by category
                         </h4>
                         <canvas id="chart-bar-category" height="200"></canvas>
                     </div>
                 </div>
 
-                <!-- Row 2: needs urgency donut + fulfillment bar -->
+                <!-- Row 2: needs urgency donut + fulfillment bars -->
                 <div class="an-row-2" style="margin-top:16px">
                     <div class="analytics-card">
                         <h4>
@@ -475,6 +497,27 @@
                             Need fulfillment progress
                         </h4>
                         <div id="chart-fulfillment-bars"></div>
+                    </div>
+                </div>
+
+                <!-- Row 3: donations donut + donations by item bar -->
+                <div class="an-row-2" style="margin-top:16px">
+                    <div class="analytics-card">
+                        <h4>
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:-2px;margin-right:5px"><path d="M20 12v10H4V12"/><rect x="2" y="7" width="20" height="5"/><path d="M12 22V7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/></svg>
+                            Donations by status
+                        </h4>
+                        <div class="an-donut-wrap">
+                            <canvas id="chart-donut-donations" width="200" height="200"></canvas>
+                            <div class="an-donut-legend" id="an-legend-donations"></div>
+                        </div>
+                    </div>
+                    <div class="analytics-card">
+                        <h4>
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:-2px;margin-right:5px"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg>
+                            Top donated items
+                        </h4>
+                        <div id="chart-donation-items"></div>
                     </div>
                 </div>
             </div>
@@ -774,6 +817,8 @@
     let transfersData = [];
     let invSortField = '';
     let invSortDir = 'asc';
+    let donSortField = '';
+    let donSortDir = 'asc';
 
     function showConfirm(message) {
         return new Promise((resolve) => {
@@ -1632,18 +1677,36 @@
         try {
             const res = await staff.donations();
             donationsData = res.data || [];
-            renderDonations(getFilteredDonations());
             initDonationFilters();
+            updateDonationPillCounts();
+            renderDonations(getFilteredDonations());
         } catch (err) {
             document.getElementById('donations-tbody').innerHTML = `<tr><td colspan="6"><div class="inline-notice error">${escHtml(err.message)}</div></td></tr>`;
         }
     }
 
+    function updateDonationPillCounts() {
+        const pending = donationsData.filter(d => d.status !== 'confirmed').length;
+        const received = donationsData.filter(d => d.status === 'confirmed').length;
+        const counts = { '': donationsData.length, 'pending': pending, 'received': received };
+        const labels = { '': 'All', 'pending': 'Pending', 'received': 'Received' };
+        document.querySelectorAll('#don-status-pills .don-pill').forEach(btn => {
+            const s = btn.getAttribute('data-status');
+            btn.textContent = `${labels[s]} (${counts[s] ?? 0})`;
+        });
+    }
+
+    function getDonStatusFilter() {
+        return document.querySelector('#don-status-pills .don-pill.active')?.getAttribute('data-status') || '';
+    }
+
     function getFilteredDonations() {
         const search = (document.getElementById('don-search')?.value || '').toLowerCase().trim();
-        const statusFilter = document.getElementById('don-filter-status')?.value || '';
+        const statusFilter = getDonStatusFilter();
         return donationsData.filter(d => {
-            if (statusFilter && d.status !== statusFilter) return false;
+            // Map UI filter values to DB values
+            if (statusFilter === 'pending' && d.status === 'confirmed') return false;
+            if (statusFilter === 'received' && d.status !== 'confirmed') return false;
             if (search) {
                 return (d.item_name || '').toLowerCase().includes(search) ||
                        (d.donor_name || '').toLowerCase().includes(search);
@@ -1656,11 +1719,41 @@
         if (window._donFiltersInit) return;
         window._donFiltersInit = true;
         document.getElementById('don-search')?.addEventListener('input', () => renderDonations(getFilteredDonations()));
-        document.getElementById('don-filter-status')?.addEventListener('change', () => renderDonations(getFilteredDonations()));
+        document.querySelectorAll('#don-status-pills .don-pill').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('#don-status-pills .don-pill').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                renderDonations(getFilteredDonations());
+            });
+        });
+    }
+
+    function sortDonations(field) {
+        if (donSortField === field) { donSortDir = donSortDir === 'asc' ? 'desc' : 'asc'; }
+        else { donSortField = field; donSortDir = 'asc'; }
+        // Update chevrons
+        ['item_name','quantity','status'].forEach(f => {
+            const el = document.getElementById('don-sort-' + f);
+            if (el) el.textContent = donSortField === f ? (donSortDir === 'asc' ? '▲' : '▼') : '▾';
+        });
+        renderDonations(getFilteredDonations());
+    }
+
+    function getSortedDonations(donations) {
+        if (!donSortField) return donations;
+        return [...donations].sort((a, b) => {
+            let va = a[donSortField] ?? '', vb = b[donSortField] ?? '';
+            if (donSortField === 'quantity') { va = Number(va); vb = Number(vb); }
+            else { va = String(va).toLowerCase(); vb = String(vb).toLowerCase(); }
+            if (va < vb) return donSortDir === 'asc' ? -1 : 1;
+            if (va > vb) return donSortDir === 'asc' ? 1 : -1;
+            return 0;
+        });
     }
 
     function renderDonations(donations) {
         const tbody = document.getElementById('donations-tbody');
+        donations = getSortedDonations(donations);
         if (!donations.length) {
             tbody.innerHTML = `<tr><td colspan="6"><div class="empty-state"><span class="empty-icon">&#9723;</span><h3>No donations found</h3><p>Donations to your organization will appear here.</p></div></td></tr>`;
             return;
@@ -1669,7 +1762,7 @@
             // DB statuses: 'matched' = pending receipt, 'confirmed' = received
             const statusVal = d.status === 'confirmed' ? 'received' : 'pending';
             return `<tr>
-                <td><strong>${escHtml(d.item_name)}</strong><div class="text-sm text-muted">${escHtml(String(d.quantity))} ${escHtml(d.unit || '')}</div></td>
+                <td><strong>${escHtml(d.item_name)}</strong></td>
                 <td>${escHtml(String(d.quantity))} ${escHtml(d.unit || '')}</td>
                 <td><span class="don-donor-name">${escHtml(d.donor_name)}</span></td>
                 <td><a class="don-contact-link" href="mailto:${escHtml(d.donor_email)}">${escHtml(d.donor_email)}</a></td>
@@ -1734,11 +1827,15 @@
             : 0;
         const pendingDonations = donationsData.filter(d => d.status === 'matched' || d.status === 'pending').length;
 
+        const receivedDonations = donationsData.filter(d => d.status === 'confirmed').length;
+
         document.getElementById('an-kpi-total').textContent = total;
         document.getElementById('an-kpi-critical').textContent = criticalLow;
         document.getElementById('an-kpi-needs').textContent = openNeeds;
         document.getElementById('an-kpi-fulfilled').textContent = fulfilledPct + '%';
+        document.getElementById('an-kpi-donations-total').textContent = donationsData.length;
         document.getElementById('an-kpi-donations').textContent = pendingDonations;
+        document.getElementById('an-kpi-donations-received').textContent = receivedDonations;
 
         // --- Status donut ---
         const statusColors = { available: '#10b981', low: '#f59e0b', critical: '#ef4444', surplus: '#0ea5e9', other: '#8b5cf6' };
@@ -1830,6 +1927,77 @@
                 }).join('');
             }
         }
+
+        // --- Donations donut ---
+        const donStatusColors = { pending: '#f59e0b', received: '#10b981' };
+        const donPending = donationsData.filter(d => d.status !== 'confirmed').length;
+        const donReceived = donationsData.filter(d => d.status === 'confirmed').length;
+        const donDonutLabels = ['Pending', 'Received'];
+        const donDonutVals = [donPending, donReceived];
+        const donDonutBg = ['#f59e0b', '#10b981'];
+
+        destroyChart('donutDonations');
+        const ctxDd = document.getElementById('chart-donut-donations');
+        if (ctxDd) {
+            if (donationsData.length) {
+                _anCharts.donutDonations = new Chart(ctxDd, {
+                    type: 'doughnut',
+                    data: { labels: donDonutLabels, datasets: [{ data: donDonutVals, backgroundColor: donDonutBg, borderWidth: 2, borderColor: '#fff', hoverOffset: 6 }] },
+                    options: { cutout: '62%', plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => ` ${ctx.label}: ${ctx.parsed}` } } }, animation: { animateRotate: true } }
+                });
+                document.getElementById('an-legend-donations').innerHTML = donDonutLabels.map((l, i) =>
+                    `<div class="an-legend-item"><span class="an-legend-dot" style="background:${donDonutBg[i]}"></span><span>${escHtml(l)}</span><span class="an-legend-val">${donDonutVals[i]}</span></div>`
+                ).join('');
+            } else {
+                ctxDd.parentElement.innerHTML = '<p class="analytics-empty">No donations yet.</p>';
+            }
+        }
+
+        // --- Top donated items bar ---
+        const donItemEl = document.getElementById('chart-donation-items');
+        if (donItemEl) {
+            if (!donationsData.length) {
+                donItemEl.innerHTML = '<p class="analytics-empty">No donations yet.</p>';
+            } else {
+                const itemTotals = {};
+                donationsData.forEach(d => { itemTotals[d.item_name] = (itemTotals[d.item_name] || 0) + (Number(d.quantity) || 1); });
+                const sorted = Object.entries(itemTotals).sort((a, b) => b[1] - a[1]).slice(0, 8);
+                const maxVal = sorted[0]?.[1] || 1;
+                donItemEl.innerHTML = sorted.map(([name, qty], i) => {
+                    const pct = Math.round((qty / maxVal) * 100);
+                    return `<div class="chart-bar" style="margin-bottom:10px">
+                        <span class="chart-bar-label" style="flex:0 0 130px;font-size:.8rem" title="${escHtml(name)}">${escHtml(name.length > 18 ? name.slice(0,17)+'…' : name)}</span>
+                        <div class="chart-bar-track" style="flex:1"><div class="chart-bar-fill" style="width:${pct}%;background:#0ea5e9"></div></div>
+                        <span class="chart-bar-value" style="flex:0 0 36px;font-size:.8rem;color:#64748b;text-align:right">${qty}</span>
+                    </div>`;
+                }).join('');
+            }
+        }
+    }
+
+    function exportAnalyticsExcel() {
+        const rows = [];
+        // Inventory sheet
+        rows.push(['=== INVENTORY ===']);
+        rows.push(['Item', 'Category', 'Quantity', 'Unit', 'Status']);
+        inventoryData.forEach(i => rows.push([i.item_name, i.category, i.quantity, i.unit || '', i.status]));
+        rows.push([]);
+        // Needs sheet
+        rows.push(['=== NEEDS ===']);
+        rows.push(['Item', 'Category', 'Urgency', 'Qty Needed', 'Qty Received', 'Unit', 'Fulfilled']);
+        needsData.forEach(n => rows.push([n.item_name, n.category, n.urgency, n.quantity_needed, n.quantity_received || 0, n.unit || '', n.fulfilled ? 'Yes' : 'No']));
+        rows.push([]);
+        // Donations sheet
+        rows.push(['=== DONATIONS ===']);
+        rows.push(['Item', 'Quantity', 'Unit', 'Donor', 'Email', 'Phone', 'Status']);
+        donationsData.forEach(d => rows.push([d.item_name, d.quantity, d.unit || '', d.donor_name, d.donor_email, d.donor_phone || '', d.status === 'confirmed' ? 'Received' : 'Pending']));
+
+        const csv = rows.map(r => r.map(v => `"${String(v ?? '').replace(/"/g, '""')}"`).join(',')).join('\n');
+        const blob = new Blob([csv], { type: 'text/csv' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url; a.download = 'analytics-export.csv'; a.click();
+        URL.revokeObjectURL(url);
     }
 
     // --- Chats ---

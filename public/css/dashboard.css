@@ -1272,6 +1272,14 @@ select.form-control {
 }
 .dash-view-more-btn:hover { opacity: .75; }
 
+/* ── Analytics section header ────────────────────────────── */
+.an-section-header {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 16px; margin-bottom: 20px; flex-wrap: wrap;
+}
+.an-section-title { font-size: 1.125rem; font-weight: 700; color: var(--color-text); margin: 0 0 2px; }
+.an-section-sub   { font-size: .875rem; color: var(--color-text-muted); margin: 0; }
+
 /* ── Donations toolbar ───────────────────────────────────── */
 .don-toolbar {
   display: flex; align-items: center; gap: 10px;
@@ -1291,13 +1299,16 @@ select.form-control {
   font-size: .8125rem; color: var(--color-text); width: 100%;
   font-family: var(--font-sans);
 }
-.don-filter-select {
-  height: 36px; padding: 0 10px; border: 1px solid var(--color-border);
-  border-radius: 8px; background: var(--color-surface); color: var(--color-text);
-  font-size: .8125rem; font-family: var(--font-sans); cursor: pointer;
-  min-width: 140px;
+/* Donation status pills (like "Your Needs" quick filters) */
+.don-pills { display: flex; gap: 4px; }
+.don-pill {
+  padding: 5px 14px; border-radius: 20px; font-size: .8125rem; font-weight: 500;
+  border: 1px solid var(--color-border); background: var(--color-surface);
+  color: var(--color-text-muted); cursor: pointer; white-space: nowrap;
+  font-family: var(--font-sans); transition: all .13s;
 }
-.don-filter-select:focus { outline: none; border-color: var(--color-primary); }
+.don-pill:hover { border-color: var(--color-primary); color: var(--color-primary); }
+.don-pill.active { background: var(--color-primary); color: #fff; border-color: var(--color-primary); font-weight: 600; }
 .don-export-btn {
   display: inline-flex; align-items: center; gap: 6px; height: 36px;
   padding: 0 14px; border-radius: 8px;
@@ -1307,6 +1318,8 @@ select.form-control {
   transition: background .13s, border-color .13s;
 }
 .don-export-btn:hover { background: var(--color-bg-secondary); border-color: var(--color-primary); color: var(--color-primary); }
+.don-sortable { cursor: pointer; user-select: none; white-space: nowrap; }
+.don-sortable:hover { color: var(--color-primary); }
 .don-donor-name { font-weight: 600; color: var(--color-text); }
 .don-contact-link { color: var(--color-primary); text-decoration: none; font-size: .8125rem; }
 .don-contact-link:hover { text-decoration: underline; }
@@ -1330,7 +1343,7 @@ select.form-control {
 /* ── Analytics v2 — KPI cards + Chart.js ─────────────────── */
 .an-kpi-row {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(148px, 1fr));
   gap: 12px;
   margin-bottom: 20px;
 }
