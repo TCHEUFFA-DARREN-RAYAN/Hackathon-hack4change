@@ -108,10 +108,7 @@
                 <div class="section-header">
                     <h2>Quick actions</h2>
                 </div>
-                <div style="display:flex;gap:.75rem;flex-wrap:wrap">
-                    <button class="btn btn-primary btn-sm" onclick="showSection('inventory', document.querySelector('[data-section=inventory]')); openAddInventory();">Add inventory item</button>
-                    <button class="btn-action-primary" onclick="showSection('needs', document.querySelector('[data-section=needs]')); openAddNeed();">Post a need</button>
-                </div>
+                <p class="text-sm text-muted" style="margin:0">Use the tabs below to quickly view inventory and your needs; the action buttons above each tab let you add new items.</p>
             </div>
             <div class="section">
                 <div class="section-header">
@@ -128,15 +125,27 @@
                 </div>
             </div>
             <div class="dashboard-row">
-                <div class="card">
+                <div class="card" id="dashboard-quick-view-card">
                     <div class="card-header">
-                        <h3>Recent bookings</h3>
-                        <button class="btn btn-ghost btn-sm" onclick="showSection('donations', document.querySelector('[data-section=donations]'))">View all</button>
+                        <h3>Urgent requests</h3>
+                        <button class="btn btn-ghost btn-sm" onclick="showSection('other-needs', document.querySelector('[data-section=other-needs]'))">View all</button>
                     </div>
-                    <div class="card-body" id="recent-bookings">
-                        <div class="empty-state"><p>No recent bookings.</p></div>
+                    <div id="dashboard-quick-actions" style="display:flex;gap:.5rem;margin-bottom:12px;flex-wrap:wrap">
+                        <button id="dashboard-inventory-action" class="btn-action-primary btn-sm" onclick="openAddInventory()">+ Add inventory</button>
+                        <button id="dashboard-needs-action" class="btn-action-primary btn-sm" onclick="openAddNeed()" style="display:none">Post a need</button>
+                    </div>
+                    <div class="analytics-tabs-bar" id="dashboard-tabs-bar">
+                        <button class="analytics-tab-btn active" data-tab="inventory" onclick="switchDashboardTab('inventory')">Inventory</button>
+                        <button class="analytics-tab-btn" data-tab="needs" onclick="switchDashboardTab('needs')">Your needs</button>
+                    </div>
+                    <div class="analytics-tab-panel active" id="dashboard-tab-inventory">
+                        <div id="dashboard-inventory-list"></div>
+                    </div>
+                    <div class="analytics-tab-panel" id="dashboard-tab-needs">
+                        <div id="dashboard-needs-list"></div>
                     </div>
                 </div>
+
                 <div class="card" id="dashboard-activity">
                     <div class="card-header">
                         <h3>Recent activity</h3>
@@ -811,6 +820,8 @@
         if (name === 'chats') { loadChatThreads(); startChatPolling(); } else { stopChatPolling(); }
     }
 
+    let dashboardActiveTab = 'inventory';
+
     function renderDashboard() {
         const totalDonors = new Set(donationsData.map(d => (d.donor_email || d.donor_name || '').toString().trim().toLowerCase()).filter(Boolean)).size;
         const openNeeds = needsData.filter(n => !n.fulfilled).length;
@@ -840,9 +851,104 @@
             </div>`;
 
         renderTrendChart();
-        renderRecentBookings();
+        renderDashboardTabs();
         loadActionItems();
         loadRecentActivity();
+    }
+
+    function switchDashboardTab(tab) {
+        dashboardActiveTab = tab;
+        document.querySelectorAll('#dashboard-tabs-bar .analytics-tab-btn').forEach(btn => {
+            const isActive = btn.dataset.tab === tab;
+            btn.classList.toggle('active', isActive);
+        });
+        document.getElementById('dashboard-tab-inventory').classList.toggle('active', tab === 'inventory');
+        document.getElementById('dashboard-tab-needs').classList.toggle('active', tab === 'needs');
+
+        document.getElementById('dashboard-inventory-action').style.display = tab === 'inventory' ? 'inline-flex' : 'none';
+        document.getElementById('dashboard-needs-action').style.display = tab === 'needs' ? 'inline-flex' : 'none';
+
+        if (tab === 'inventory') {
+            renderDashboardInventory();
+        } else {
+            renderDashboardNeeds();
+        }
+    }
+
+    function renderDashboardTabs() {
+        // Ensure the right tab is shown when the dashboard renders
+        switchDashboardTab(dashboardActiveTab);
+    }
+
+    function renderDashboardInventory() {
+        const container = document.getElementById('dashboard-inventory-list');
+        if (!container) return;
+
+        if (!inventoryData.length) {
+            container.innerHTML = '<div class="empty-state"><p>No inventory items.</p></div>';
+            return;
+        }
+
+        const sorted = [...inventoryData].sort((a, b) => {
+            const order = { low: 0, available: 1, surplus: 2 };
+            const oa = order[a.status] ?? 3;
+            const ob = order[b.status] ?? 3;
+            if (oa !== ob) return oa - ob;
+            return (Number(a.quantity) || 0) - (Number(b.quantity) || 0);
+        });
+
+        const items = sorted.slice(0, 5).map(i => `
+            <div class="dashboard-item" style="display:flex;justify-content:space-between;align-items:center;padding:.6rem .75rem;border:1px solid var(--color-border-lt);border-radius:8px;margin-bottom:.5rem">
+                <div>
+                    <div style="font-weight:600">${escHtml(i.item_name)}</div>
+                    <div class="text-sm text-muted">${escHtml(String(i.quantity))} ${escHtml(i.unit)} &middot; ${escHtml(i.status)}</div>
+                </div>
+                <span class="badge badge-${escHtml(i.status)}">${escHtml(i.status)}</span>
+            </div>`);
+
+        container.innerHTML = items.join('');
+    }
+
+    function renderDashboardNeeds() {
+        const container = document.getElementById('dashboard-needs-list');
+        if (!container) return;
+
+        const needs = needsData.filter(n => !n.fulfilled);
+        if (!needs.length) {
+            container.innerHTML = '<div class="empty-state"><p>No active needs.</p></div>';
+            return;
+        }
+
+        const urgencyOrder = { critical: 0, high: 1, medium: 2, low: 3 };
+        const sorted = [...needs].sort((a, b) => (urgencyOrder[a.urgency] || 4) - (urgencyOrder[b.urgency] || 4));
+
+        const items = sorted.slice(0, 5).map(n => {
+            const received = Number(n.quantity_received) || 0;
+            const needed = Number(n.quantity_needed) || 0;
+            const total = received + needed;
+            const pct = total ? Math.round((received / total) * 100) : 0;
+            const pctLabel = `${received}/${total}`;
+            const color = n.urgency === 'critical' ? 'var(--color-critical)' : n.urgency === 'high' ? 'var(--color-high)' : n.urgency === 'medium' ? 'var(--color-medium)' : 'var(--color-low)';
+            return `
+                <div class="needs-card" style="border:1px solid var(--color-border-lt);border-radius:10px;padding:.85rem;margin-bottom:.6rem">
+                    <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:.75rem">
+                        <div>
+                            <div style="font-weight:600">${escHtml(n.item_name)}</div>
+                            <div class="text-sm text-muted">${escHtml(n.category)} &#8226; ${escHtml(n.unit)}</div>
+                        </div>
+                        <span class="badge badge-${escHtml(n.urgency)}">${escHtml(n.urgency)}</span>
+                    </div>
+                    <div class="needs-progress-wrap" style="margin-top:.7rem">
+                        <div class="needs-progress-text"><span>${escHtml(pctLabel)}</span><span class="needs-pct">${pct}%</span></div>
+                        <div class="needs-progress-track"><div class="needs-progress-fill" style="width:${pct}%;background:${color}"></div></div>
+                    </div>
+                    <div style="margin-top:.8rem;display:flex;justify-content:flex-end">
+                        <button class="btn-receive-supply btn-sm" onclick="openFulfillAmountModal('${escHtml(n.id)}', ${escHtml(String(n.quantity_needed))}, '${escHtml(n.item_name).replace(/'/g, "\\'")}')">Update</button>
+                    </div>
+                </div>`;
+        });
+
+        container.innerHTML = items.join('');
     }
 
     function renderTrendChart() {
