@@ -28,22 +28,35 @@
             <span class="sidebar-label">Dashboard</span>
             <a href="#" data-section="overview" class="active" onclick="showSection('overview', this)">Overview</a>
             <a href="#" data-section="organizations" onclick="showSection('organizations', this)">Organizations</a>
+            <a href="#" data-section="staff" onclick="showSection('staff', this)">Staff</a>
         </div>
         <div class="sidebar-section">
             <span class="sidebar-label">Coordination</span>
             <a href="#" data-section="needs" onclick="showSection('needs', this)">All Needs</a>
             <a href="#" data-section="donations" onclick="showSection('donations', this)">Donations Pipeline</a>
+            <a href="#" data-section="inventory" onclick="showSection('inventory', this)">Network Inventory</a>
             <a href="#" data-section="surplus-requests" onclick="showSection('surplus-requests', this)">Surplus Requests</a>
             <a href="#" data-section="transfers" onclick="showSection('transfers', this)">Surplus Transfers</a>
         </div>
         <div class="sidebar-section">
+            <span class="sidebar-label">Communication</span>
+            <a href="#" data-section="chat" onclick="showSection('chat', this)">Chat</a>
+        </div>
+        <div class="sidebar-section">
             <span class="sidebar-label">Intelligence</span>
+            <a href="#" data-section="analytics" onclick="showSection('analytics', this)">Analytics</a>
             <a href="#" data-section="insights" onclick="showSection('insights', this)">Network Insights</a>
         </div>
         <div class="sidebar-section" style="margin-top:auto;border-top:1px solid var(--color-border-lt);padding-top:1rem">
             <span class="sidebar-label">Exports</span>
-            <a href="#" onclick="coordinator.exportNeeds(); return false;">Download Needs CSV</a>
-            <a href="#" onclick="coordinator.exportInventory(); return false;">Download Inventory CSV</a>
+            <a href="#" onclick="coordinator.exportNeeds(); return false;">Needs CSV</a>
+            <a href="#" onclick="coordinator.exportInventory(); return false;">Inventory CSV</a>
+            <a href="#" onclick="coordinator.exportDonations(); return false;">Donations CSV</a>
+            <a href="#" onclick="coordinator.exportOrganizations(); return false;">Organizations CSV</a>
+            <a href="#" onclick="coordinator.exportStaff(); return false;">Staff CSV</a>
+            <a href="#" onclick="coordinator.exportSurplusRequests(); return false;">Surplus Requests CSV</a>
+            <a href="#" onclick="coordinator.exportTransfers(); return false;">Transfers CSV</a>
+            <a href="#" onclick="coordinator.exportMeetingReport(); return false;">Meeting Report</a>
         </div>
     </nav>
 
@@ -119,6 +132,7 @@
         <div id="section-organizations" style="display:none">
             <div class="portal-header">
                 <h1>Organizations</h1>
+                <button class="btn btn-primary btn-sm" onclick="openCreateOrg()">Add Organization</button>
             </div>
             <div class="table-wrap">
                 <table class="data-table">
@@ -130,12 +144,13 @@
                             <th>Total Needs</th>
                             <th>Surplus Items</th>
                             <th>Last Updated</th>
+                            <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody id="orgs-tbody">
-                        <tr><td colspan="6"><div class="skeleton skeleton-text wide"></div></td></tr>
-                        <tr><td colspan="6"><div class="skeleton skeleton-text" style="width:70%"></div></td></tr>
-                        <tr><td colspan="6"><div class="skeleton skeleton-text" style="width:55%"></div></td></tr>
+                        <tr><td colspan="7"><div class="skeleton skeleton-text wide"></div></td></tr>
+                        <tr><td colspan="7"><div class="skeleton skeleton-text" style="width:70%"></div></td></tr>
+                        <tr><td colspan="7"><div class="skeleton skeleton-text" style="width:55%"></div></td></tr>
                     </tbody>
                 </table>
             </div>
@@ -326,7 +341,246 @@
             </div>
         </div>
 
+        <!-- Staff Management section -->
+        <div id="section-staff" style="display:none">
+            <div class="portal-header">
+                <h1>Staff Members</h1>
+                <button class="btn btn-primary btn-sm" onclick="openCreateStaff()">Add Staff</button>
+            </div>
+            <div style="display:flex;gap:.6rem;flex-wrap:wrap;margin-bottom:1rem">
+                <select id="staff-org-filter" class="form-control" style="max-width:240px" onchange="loadStaff()">
+                    <option value="">All organizations</option>
+                </select>
+            </div>
+            <div class="table-wrap">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Organization</th>
+                            <th>Status</th>
+                            <th>Created</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="staff-tbody">
+                        <tr><td colspan="6"><div class="skeleton skeleton-text wide"></div></td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Network Inventory section -->
+        <div id="section-inventory" style="display:none">
+            <div class="portal-header">
+                <h1>Network Inventory</h1>
+                <button class="btn btn-outline btn-sm" onclick="coordinator.exportInventory()">Export CSV</button>
+            </div>
+            <div style="display:flex;gap:.6rem;flex-wrap:wrap;margin-bottom:1rem">
+                <select id="inv-org-filter" class="form-control" style="max-width:220px" onchange="loadNetworkInventory()">
+                    <option value="">All organizations</option>
+                </select>
+                <select id="inv-status-filter" class="form-control" style="max-width:160px" onchange="loadNetworkInventory()">
+                    <option value="">All statuses</option>
+                    <option value="available">Available</option>
+                    <option value="low">Low</option>
+                    <option value="surplus">Surplus</option>
+                </select>
+                <select id="inv-category-filter" class="form-control" style="max-width:180px" onchange="loadNetworkInventory()">
+                    <option value="">All categories</option>
+                    <option value="food">Food</option>
+                    <option value="hygiene">Hygiene</option>
+                    <option value="clothing">Clothing</option>
+                    <option value="bedding">Bedding</option>
+                    <option value="housing">Housing</option>
+                    <option value="baby_supplies">Baby Supplies</option>
+                    <option value="other">Other</option>
+                </select>
+                <input type="search" id="inv-search-input" class="form-control" placeholder="Search items..." style="max-width:220px" oninput="debounce(loadNetworkInventory, 400)()">
+            </div>
+            <div class="table-wrap">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Organization</th>
+                            <th>Item</th>
+                            <th>Category</th>
+                            <th>Qty</th>
+                            <th>Unit</th>
+                            <th>Status</th>
+                            <th>Expiry</th>
+                            <th>Last Updated</th>
+                        </tr>
+                    </thead>
+                    <tbody id="inventory-tbody">
+                        <tr><td colspan="8"><div class="skeleton skeleton-text wide"></div></td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Chat section -->
+        <div id="section-chat" style="display:none">
+            <div class="portal-header">
+                <h1>Chat</h1>
+            </div>
+            <div class="coord-chat-layout">
+                <div class="coord-chat-threads">
+                    <div class="coord-chat-threads-header">
+                        <span>Conversations</span>
+                        <button class="btn btn-primary btn-sm" style="padding:4px 10px;font-size:.75rem" onclick="openStaffPicker()">+ Message Staff</button>
+                    </div>
+                    <div id="coord-threads-list" style="overflow-y:auto;flex:1"></div>
+                </div>
+                <div class="coord-chat-panel">
+                    <div class="coord-chat-panel-header" id="coord-chat-title">Select a conversation</div>
+                    <div class="coord-chat-messages" id="coord-chat-messages">
+                        <div class="coord-chat-empty">Select a conversation to view messages</div>
+                    </div>
+                    <div class="coord-chat-input-wrap" id="coord-chat-input-wrap" style="display:none">
+                        <input type="text" id="coord-chat-input" placeholder="Type a message..." onkeydown="if(event.key==='Enter')sendCoordMessage()">
+                        <button class="btn btn-primary btn-sm" onclick="sendCoordMessage()">Send</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Analytics section -->
+        <div id="section-analytics" style="display:none">
+            <div class="portal-header">
+                <h1>Network Analytics</h1>
+            </div>
+            <div class="coord-date-range">
+                <label for="coord-a-from">From</label>
+                <input type="date" id="coord-a-from">
+                <label for="coord-a-to">To</label>
+                <input type="date" id="coord-a-to">
+                <button class="btn btn-primary btn-sm" onclick="loadCoordAnalytics()">Apply</button>
+                <button class="btn btn-outline btn-sm" onclick="setCoordPreset(30)">Last 30 days</button>
+                <button class="btn btn-outline btn-sm" onclick="setCoordPreset(7)">Last 7 days</button>
+            </div>
+            <div class="coord-kpi-grid" id="coord-kpi-grid">
+                <div class="coord-kpi-card accent-green">
+                    <div class="coord-kpi-label">Needs fulfilled</div>
+                    <div class="coord-kpi-value color-green" id="coord-kpi-fulfilled">-</div>
+                    <div class="coord-kpi-sub">In selected period</div>
+                </div>
+                <div class="coord-kpi-card accent-blue">
+                    <div class="coord-kpi-label">Donations delivered</div>
+                    <div class="coord-kpi-value color-blue" id="coord-kpi-delivered">-</div>
+                    <div class="coord-kpi-sub">In selected period</div>
+                </div>
+                <div class="coord-kpi-card accent-amber">
+                    <div class="coord-kpi-label">Transfers completed</div>
+                    <div class="coord-kpi-value color-amber" id="coord-kpi-transfers">-</div>
+                    <div class="coord-kpi-sub">In selected period</div>
+                </div>
+                <div class="coord-kpi-card accent-red">
+                    <div class="coord-kpi-label">Pending donations</div>
+                    <div class="coord-kpi-value color-red" id="coord-kpi-pending">-</div>
+                    <div class="coord-kpi-sub">In pipeline now</div>
+                </div>
+            </div>
+            <div class="coord-analytics-card">
+                <h4>Donations received &mdash; daily</h4>
+                <div class="coord-col-chart" id="coord-chart-daily">
+                    <div class="coord-chart-empty">Select a date range and click Apply</div>
+                </div>
+            </div>
+            <div class="coord-analytics-grid" style="margin-top:.75rem">
+                <div class="coord-analytics-card">
+                    <h4>Donation pipeline breakdown</h4>
+                    <div id="coord-chart-pipeline">
+                        <div class="coord-chart-empty">Loading...</div>
+                    </div>
+                </div>
+                <div class="coord-analytics-card">
+                    <h4>Period summary</h4>
+                    <div id="coord-period-summary">
+                        <div class="coord-chart-empty">Loading...</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </main>
+</div>
+
+<!-- Organization Modal -->
+<div id="org-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:1000;align-items:center;justify-content:center;padding:1rem">
+    <div class="card" style="width:100%;max-width:480px">
+        <div class="card-header">
+            <h3 id="org-modal-title">Add Organization</h3>
+            <button class="btn btn-ghost btn-sm" onclick="closeOrgModal()">Close</button>
+        </div>
+        <div class="card-body" style="padding:0 0 12px">
+            <div class="form-group"><label class="form-label">Name <span class="req">*</span></label><input type="text" id="org-name" class="form-control"></div>
+            <div class="form-group"><label class="form-label">Category <span class="req">*</span></label>
+                <select id="org-category" class="form-control">
+                    <option value="">Select category</option>
+                    <option value="shelter_housing">Shelter & Housing</option>
+                    <option value="food_nutrition">Food & Nutrition</option>
+                    <option value="goods_essentials">Goods & Essentials</option>
+                    <option value="mental_health">Mental Health</option>
+                    <option value="outreach">Outreach</option>
+                </select>
+            </div>
+            <div class="form-group"><label class="form-label">Address</label><input type="text" id="org-address" class="form-control"></div>
+            <div class="form-group"><label class="form-label">Contact email</label><input type="email" id="org-email" class="form-control"></div>
+            <div class="form-group"><label class="form-label">Phone</label><input type="text" id="org-phone" class="form-control"></div>
+            <div class="form-group"><label class="form-label">Website</label><input type="text" id="org-website" class="form-control"></div>
+            <input type="hidden" id="org-edit-id">
+            <div style="display:flex;gap:.75rem;margin-top:1rem;justify-content:flex-end">
+                <button class="btn btn-ghost" onclick="closeOrgModal()">Cancel</button>
+                <button class="btn btn-primary" id="org-save-btn" onclick="saveOrg()">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Staff Modal -->
+<div id="staff-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:1000;align-items:center;justify-content:center;padding:1rem">
+    <div class="card" style="width:100%;max-width:480px">
+        <div class="card-header">
+            <h3 id="staff-modal-title">Add Staff Member</h3>
+            <button class="btn btn-ghost btn-sm" onclick="closeStaffModal()">Close</button>
+        </div>
+        <div class="card-body" style="padding:0 0 12px">
+            <div class="form-group"><label class="form-label">Organization <span class="req">*</span></label>
+                <select id="staff-org" class="form-control"></select>
+            </div>
+            <div class="form-group"><label class="form-label">First name <span class="req">*</span></label><input type="text" id="staff-first" class="form-control"></div>
+            <div class="form-group"><label class="form-label">Last name <span class="req">*</span></label><input type="text" id="staff-last" class="form-control"></div>
+            <div class="form-group"><label class="form-label">Email <span class="req">*</span></label><input type="email" id="staff-email" class="form-control"></div>
+            <div class="form-group" id="staff-password-group"><label class="form-label">Password <span class="req">*</span></label><input type="password" id="staff-password" class="form-control" minlength="6"></div>
+            <div class="form-group" id="staff-status-group" style="display:none"><label class="form-label">Status</label>
+                <select id="staff-status" class="form-control"><option value="active">Active</option><option value="inactive">Inactive</option></select>
+            </div>
+            <input type="hidden" id="staff-edit-id">
+            <div style="display:flex;gap:.75rem;margin-top:1rem;justify-content:flex-end">
+                <button class="btn btn-ghost" onclick="closeStaffModal()">Cancel</button>
+                <button class="btn btn-primary" id="staff-save-btn" onclick="saveStaffMember()">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Staff Picker Modal (for Chat) -->
+<div id="staff-picker-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:1100;align-items:flex-start;justify-content:center;padding-top:80px">
+    <div class="card" style="width:100%;max-width:400px;max-height:520px;display:flex;flex-direction:column">
+        <div class="card-header">
+            <div>
+                <h3 style="margin:0;font-size:.9375rem;font-weight:600">Message a Staff Member</h3>
+                <p style="margin:2px 0 0;font-size:.8125rem;color:var(--color-text-muted)">Select a staff member to start a direct conversation</p>
+            </div>
+            <button class="btn btn-ghost btn-sm" onclick="closeStaffPicker()">Close</button>
+        </div>
+        <div style="padding:10px 16px;border-bottom:1px solid var(--color-border-lt)">
+            <input id="staff-picker-search" class="form-control" placeholder="Search staff..." oninput="filterStaffPickerList()" autocomplete="off">
+        </div>
+        <div id="staff-picker-list" style="overflow-y:auto;flex:1;padding:6px 0"></div>
+    </div>
 </div>
 
 <!-- Create Transfer Modal -->
@@ -377,16 +631,24 @@
         outreach: 'Outreach'
     };
 
+    let currentUser = null;
     let overviewData = null;
     let allNeedsData = [];
     let allDonationsData = [];
     let allOrgsData = [];
+    let allStaffData = [];
+    let allInventoryData = [];
+    let coordChatThreads = [];
+    let selectedCoordThread = null;
+    let staffPickerData = [];
 
     async function init() {
         const user = await requireAuth('coordinator');
         if (!user) return;
+        currentUser = user;
         await loadOverview();
         loadOverviewInsights();
+        initAnalyticsDateRange();
     }
 
     async function loadOverviewInsights() {
@@ -413,8 +675,10 @@
         }
     }
 
+    const ALL_SECTIONS = ['overview', 'organizations', 'staff', 'needs', 'donations', 'inventory', 'surplus-requests', 'transfers', 'chat', 'analytics', 'insights'];
+
     function showSection(name, linkEl) {
-        ['overview', 'organizations', 'needs', 'donations', 'surplus-requests', 'transfers', 'insights'].forEach(s => {
+        ALL_SECTIONS.forEach(s => {
             const el = document.getElementById(`section-${s}`);
             if (el) el.style.display = s === name ? 'block' : 'none';
         });
@@ -422,10 +686,14 @@
         if (linkEl) linkEl.classList.add('active');
 
         if (name === 'organizations' && !allOrgsData.length) loadOrgs();
+        if (name === 'staff') loadStaff();
         if (name === 'needs' && !allNeedsData.length) loadAllNeeds();
         if (name === 'donations' && !allDonationsData.length) loadDonations();
+        if (name === 'inventory') loadNetworkInventory();
         if (name === 'surplus-requests') loadSurplusRequests();
         if (name === 'transfers') loadTransfers();
+        if (name === 'chat') loadCoordChatThreads();
+        if (name === 'analytics') loadCoordAnalytics();
         return false;
     }
 
@@ -531,7 +799,7 @@
     function renderOrgs() {
         const tbody = document.getElementById('orgs-tbody');
         if (!allOrgsData.length) {
-            tbody.innerHTML = '<tr><td colspan="6"><div class="empty-state"><p>No organizations found.</p></div></td></tr>';
+            tbody.innerHTML = '<tr><td colspan="7"><div class="empty-state"><p>No organizations found.</p></div></td></tr>';
             return;
         }
         tbody.innerHTML = allOrgsData.map(o => `
@@ -544,6 +812,7 @@
                 <td>${escHtml(String(o.total_needs))}</td>
                 <td>${escHtml(String(o.surplus_items || 0))}</td>
                 <td class="text-sm text-muted">${o.last_inventory_update ? timeAgo(o.last_inventory_update) : '<span style="color:var(--color-critical)">Never</span>'}</td>
+                <td><button class="btn btn-ghost btn-sm" onclick="openEditOrg('${escHtml(o.id)}')">Edit</button></td>
             </tr>`).join('');
     }
 

@@ -26,6 +26,36 @@ class InventoryModel {
         return rows[0] || null;
     }
 
+    static async findByOrgAndItem(orgId, itemName, category) {
+        const [rows] = await promisePool.query(
+            `SELECT * FROM inventory_items WHERE org_id = ? AND LOWER(item_name) = LOWER(?) AND LOWER(category) = LOWER(?) LIMIT 1`,
+            [orgId, itemName, category]
+        );
+        return rows[0] || null;
+    }
+
+    static async addQuantityForNeed(orgId, itemName, category, unit, amount) {
+        const existing = await this.findByOrgAndItem(orgId, itemName, category);
+        if (existing) {
+            const newQty = (Number(existing.quantity) || 0) + amount;
+            await promisePool.query(
+                `UPDATE inventory_items SET quantity = ?, status = ? WHERE id = ? AND org_id = ?`,
+                [newQty, computeStatus(newQty, existing.target_quantity ?? 0), existing.id, orgId]
+            );
+            return this.findById(existing.id);
+        }
+        return this.create({
+            org_id: orgId,
+            item_name: itemName,
+            category: category,
+            quantity: amount,
+            target_quantity: 0,
+            unit: unit || 'items',
+            expiry_date: null,
+            notes: null
+        });
+    }
+
     static async create(data) {
         const id = randomUUID();
         const { org_id, item_name, category, quantity, target_quantity, unit, expiry_date, notes } = data;

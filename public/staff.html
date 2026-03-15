@@ -8,6 +8,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
 </head>
 <body>
 
@@ -18,7 +19,6 @@
     </div>
     <div class="topbar-actions">
         <span class="text-muted" id="nav-org-name"></span>
-        <button class="btn btn-outline btn-sm" onclick="handleLogout()">Sign out</button>
     </div>
 </div>
 
@@ -26,7 +26,7 @@
     <aside id="sidebar" aria-label="Organization navigation">
         <div class="sidebar-brand">
             <span class="brand-dot"></span>
-            <span>Resource Hub</span>
+            <span>GMHSC Network</span>
         </div>
         <ul class="nav-links">
             <li><a href="#" data-section="dashboard" class="active" onclick="showSection('dashboard', this)">
@@ -59,7 +59,10 @@
             </a></li>
         </ul>
         <div class="sidebar-footer">
-            <a href="/">View Public Board</a>
+            <button class="sidebar-signout-btn" onclick="handleLogout()">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+                Sign out
+            </button>
         </div>
     </aside>
 
@@ -108,7 +111,6 @@
                 <div style="display:flex;gap:.75rem;flex-wrap:wrap">
                     <button class="btn btn-primary btn-sm" onclick="showSection('inventory', document.querySelector('[data-section=inventory]')); openAddInventory();">Add inventory item</button>
                     <button class="btn btn-outline btn-sm" onclick="showSection('needs', document.querySelector('[data-section=needs]')); openAddNeed();">Post a need</button>
-                    <a href="/" class="btn btn-ghost btn-sm">View public board</a>
                 </div>
             </div>
             <div class="section">
@@ -209,13 +211,12 @@
                     <table class="data-table inv-table">
                         <thead>
                             <tr>
-                                <th>Item</th>
-                                <th>Qty</th>
-                                <th>Unit</th>
-                                <th>Status</th>
-                                <th>Threshold</th>
-                                <th>Expiry</th>
-                                <th>Updated</th>
+                                <th class="sortable-th" data-sort="item_name" onclick="toggleInvSort('item_name')">Item <span class="sort-chevron" id="sort-icon-item_name">&#9662;</span></th>
+                                <th class="sortable-th" data-sort="quantity" onclick="toggleInvSort('quantity')">Qty <span class="sort-chevron" id="sort-icon-quantity">&#9662;</span></th>
+                                <th class="sortable-th" data-sort="unit" onclick="toggleInvSort('unit')">Unit <span class="sort-chevron" id="sort-icon-unit">&#9662;</span></th>
+                                <th class="sortable-th" data-sort="status" onclick="toggleInvSort('status')">Status <span class="sort-chevron" id="sort-icon-status">&#9662;</span></th>
+                                <th class="sortable-th" data-sort="expiry_date" onclick="toggleInvSort('expiry_date')">Expiry <span class="sort-chevron" id="sort-icon-expiry_date">&#9662;</span></th>
+                                <th class="sortable-th" data-sort="updated_at" onclick="toggleInvSort('updated_at')">Updated <span class="sort-chevron" id="sort-icon-updated_at">&#9662;</span></th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
@@ -232,7 +233,10 @@
                     <div>
                         <p class="text-sm text-muted" style="margin:0">Add or update your organization's needs.</p>
                     </div>
-                    <button class="btn btn-primary btn-sm" onclick="openAddNeed()">Post a need</button>
+                    <div style="display:flex;gap:.5rem">
+                        <button class="btn btn-ghost btn-sm" onclick="showFacebookPostPreview()">Post to Facebook</button>
+                        <button class="btn btn-primary btn-sm" onclick="openAddNeed()">Post a need</button>
+                    </div>
                 </div>
                 <div class="table-wrap">
                     <table class="data-table">
@@ -242,8 +246,6 @@
                                 <th>Category</th>
                                 <th>Qty needed</th>
                                 <th>Urgency</th>
-                                <th>Status</th>
-                                <th>Notes</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
@@ -296,6 +298,69 @@
             </div>
         </div>
 
+        <!-- Network Surplus -->
+        <div id="section-surplus" style="display:none">
+            <div class="section">
+                <div class="section-header">
+                    <div>
+                        <p class="text-sm text-muted" style="margin:0">Browse surplus items across the network. Request what your organization needs.</p>
+                    </div>
+                    <button class="btn btn-ghost btn-sm" onclick="loadSurplus()">Refresh</button>
+                </div>
+                <div id="surplus-list">
+                    <div class="skeleton skeleton-block" style="height:80px;margin-bottom:.5rem"></div>
+                    <div class="skeleton skeleton-block" style="height:80px;margin-bottom:.5rem"></div>
+                </div>
+            </div>
+            <div class="section" style="margin-top:1.5rem">
+                <div class="section-header">
+                    <h2>Your surplus requests</h2>
+                    <button class="btn btn-ghost btn-sm" onclick="loadSurplusRequests()">Refresh</button>
+                </div>
+                <div class="table-wrap">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Item</th>
+                                <th>Qty requested</th>
+                                <th>From org</th>
+                                <th>Status</th>
+                                <th>Requested</th>
+                            </tr>
+                        </thead>
+                        <tbody id="surplus-requests-tbody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Transfers -->
+        <div id="section-transfers" style="display:none">
+            <div class="section">
+                <div class="section-header">
+                    <div>
+                        <p class="text-sm text-muted" style="margin:0">Incoming transfers from other organizations. Mark as completed when received.</p>
+                    </div>
+                    <button class="btn btn-ghost btn-sm" onclick="loadTransfers()">Refresh</button>
+                </div>
+                <div class="table-wrap">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Item</th>
+                                <th>Qty</th>
+                                <th>From</th>
+                                <th>Status</th>
+                                <th>Date</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="transfers-tbody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
         <!-- Analytics -->
         <div id="section-analytics" style="display:none">
             <div class="section">
@@ -322,8 +387,9 @@
             <div class="section">
                 <div class="section-header">
                     <div>
-                        <p class="text-sm text-muted" style="margin:0">Team chat and coordination.</p>
+                        <p class="text-sm text-muted" style="margin:0">Team chat, direct messages, and cross-organization coordination.</p>
                     </div>
+                    <button class="btn btn-primary btn-sm" onclick="openCrossOrgModal()">+ New cross-org chat</button>
                 </div>
                 <div class="chat-layout">
                     <div class="chat-threads">
@@ -368,15 +434,9 @@
                     <option value="other">Other</option>
                 </select>
             </div>
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:.85rem">
-                <div class="form-group">
-                    <label class="form-label" for="inv-quantity">Quantity <span class="req">*</span></label>
-                    <input type="number" id="inv-quantity" class="form-control" min="0" value="0">
-                </div>
-                <div class="form-group">
-                    <label class="form-label" for="inv-threshold">Threshold</label>
-                    <input type="number" id="inv-threshold" class="form-control" min="0" placeholder="Min before low">
-                </div>
+            <div class="form-group">
+                <label class="form-label" for="inv-quantity">Quantity <span class="req">*</span></label>
+                <input type="number" id="inv-quantity" class="form-control" min="0" value="0">
             </div>
             <div class="form-group">
                 <label class="form-label" for="inv-unit">Unit</label>
@@ -392,9 +452,14 @@
                 <input type="date" id="inv-expiry" class="form-control">
             </div>
             <input type="hidden" id="inv-edit-id">
-            <div style="display:flex;gap:.75rem;margin-top:1rem;justify-content:flex-end">
-                <button class="btn btn-ghost" onclick="closeModal('inventory-modal')">Cancel</button>
-                <button class="btn btn-primary" id="inv-save-btn" onclick="saveInventoryItem()">Save item</button>
+            <div style="display:flex;gap:.75rem;margin-top:1rem;justify-content:space-between;align-items:center">
+                <div id="inv-delete-wrap" style="display:none">
+                    <button class="btn btn-danger btn-sm" id="inv-delete-btn" onclick="deleteFromModal()">Delete item</button>
+                </div>
+                <div style="display:flex;gap:.75rem;margin-left:auto">
+                    <button class="btn btn-ghost" onclick="closeModal('inventory-modal')">Cancel</button>
+                    <button class="btn btn-primary" id="inv-save-btn" onclick="saveInventoryItem()">Save item</button>
+                </div>
             </div>
         </div>
     </div>
@@ -454,14 +519,71 @@
                 </select>
             </div>
         </div>
-        <div class="form-group">
-            <label class="form-label" for="need-notes">Notes</label>
-            <textarea id="need-notes" class="form-control" rows="2" placeholder="Context for donors — why it's needed, sizes, brand preferences, etc."></textarea>
-        </div>
         <input type="hidden" id="need-edit-id">
+        <div style="display:flex;gap:.75rem;margin-top:1rem;justify-content:space-between;align-items:center">
+            <div id="need-delete-wrap" style="display:none">
+                <button class="btn btn-danger btn-sm" onclick="deleteNeedFromModal()">Delete</button>
+            </div>
+            <div style="display:flex;gap:.75rem;margin-left:auto">
+                <button class="btn btn-ghost" onclick="closeModal('need-modal')">Cancel</button>
+                <button class="btn btn-primary" id="need-save-btn" onclick="saveNeed()">Post need</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Cross-org chat modal -->
+<div id="cross-org-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:1000;align-items:center;justify-content:center;padding:1rem">
+    <div class="card" style="width:100%;max-width:420px">
+        <div class="card-header">
+            <h3>Start cross-org conversation</h3>
+            <button class="btn btn-ghost btn-sm" onclick="closeModal('cross-org-modal')">Close</button>
+        </div>
+        <div class="form-group">
+            <label class="form-label">Select organization</label>
+            <select id="cross-org-select" class="form-control">
+                <option value="">Loading organizations...</option>
+            </select>
+        </div>
         <div style="display:flex;gap:.75rem;margin-top:1rem;justify-content:flex-end">
-            <button class="btn btn-ghost" onclick="closeModal('need-modal')">Cancel</button>
-            <button class="btn btn-primary" id="need-save-btn" onclick="saveNeed()">Post need</button>
+            <button class="btn btn-ghost" onclick="closeModal('cross-org-modal')">Cancel</button>
+            <button class="btn btn-primary" onclick="startCrossOrgChat()">Start conversation</button>
+        </div>
+    </div>
+</div>
+
+<!-- Surplus request modal -->
+<div id="surplus-request-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:1000;align-items:center;justify-content:center;padding:1rem">
+    <div class="card" style="width:100%;max-width:420px">
+        <div class="card-header">
+            <h3>Request surplus item</h3>
+            <button class="btn btn-ghost btn-sm" onclick="closeModal('surplus-request-modal')">Close</button>
+        </div>
+        <div id="surplus-request-details"></div>
+        <div class="form-group">
+            <label class="form-label">Quantity to request</label>
+            <input type="number" id="surplus-request-qty" class="form-control" min="1" value="1">
+        </div>
+        <div class="form-group">
+            <label class="form-label">Notes (optional)</label>
+            <textarea id="surplus-request-notes" class="form-control" rows="2" placeholder="Why do you need this?"></textarea>
+        </div>
+        <input type="hidden" id="surplus-request-item-id">
+        <input type="hidden" id="surplus-request-from-org-id">
+        <div style="display:flex;gap:.75rem;margin-top:1rem;justify-content:flex-end">
+            <button class="btn btn-ghost" onclick="closeModal('surplus-request-modal')">Cancel</button>
+            <button class="btn btn-primary" id="surplus-request-btn" onclick="submitSurplusRequest()">Send request</button>
+        </div>
+    </div>
+</div>
+
+<!-- Confirmation dialog -->
+<div id="confirm-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:1100;align-items:center;justify-content:center;padding:1rem">
+    <div class="confirm-box">
+        <p class="confirm-message" id="confirm-message"></p>
+        <div class="confirm-actions">
+            <button class="btn btn-ghost btn-sm" id="confirm-cancel-btn">Cancel</button>
+            <button class="btn btn-danger btn-sm" id="confirm-ok-btn">Confirm</button>
         </div>
     </div>
 </div>
@@ -477,6 +599,37 @@
     let chatThreads = [];
     let selectedThreadId = null;
     const SECTIONS = ['dashboard', 'inventory', 'needs', 'other-needs', 'donations', 'analytics', 'chats'];
+    let chatPollInterval = null;
+    let socket = null;
+    let surplusData = [];
+    let transfersData = [];
+    let invSortField = '';
+    let invSortDir = 'asc';
+
+    function showConfirm(message) {
+        return new Promise((resolve) => {
+            const modal = document.getElementById('confirm-modal');
+            const msgEl = document.getElementById('confirm-message');
+            const okBtn = document.getElementById('confirm-ok-btn');
+            const cancelBtn = document.getElementById('confirm-cancel-btn');
+            msgEl.textContent = message;
+            modal.style.display = 'flex';
+
+            function cleanup() {
+                modal.style.display = 'none';
+                okBtn.removeEventListener('click', onOk);
+                cancelBtn.removeEventListener('click', onCancel);
+                modal.removeEventListener('click', onBackdrop);
+            }
+            function onOk() { cleanup(); resolve(true); }
+            function onCancel() { cleanup(); resolve(false); }
+            function onBackdrop(e) { if (e.target === modal) { cleanup(); resolve(false); } }
+
+            okBtn.addEventListener('click', onOk);
+            cancelBtn.addEventListener('click', onCancel);
+            modal.addEventListener('click', onBackdrop);
+        });
+    }
 
     async function init() {
         currentUser = await requireAuth('staff');
@@ -491,6 +644,7 @@
 
         await Promise.all([loadInventory(), loadNeeds(), loadDonations(), loadExpiring()]);
         renderDashboard();
+        initSocket();
     }
 
     function showSection(name, linkEl) {
@@ -514,7 +668,7 @@
 
         if (name === 'other-needs') loadOtherNeeds();
         if (name === 'analytics') renderAnalytics();
-        if (name === 'chats') loadChatThreads();
+        if (name === 'chats') { loadChatThreads(); startChatPolling(); } else { stopChatPolling(); }
     }
 
     function renderDashboard() {
@@ -652,7 +806,7 @@
             renderInventory();
             renderLowAlert();
         } catch (err) {
-            document.getElementById('inventory-tbody').innerHTML = `<tr><td colspan="8"><div class="inline-notice error">${escHtml(err.message)}</div></td></tr>`;
+            document.getElementById('inventory-tbody').innerHTML = `<tr><td colspan="7"><div class="inline-notice error">${escHtml(err.message)}</div></td></tr>`;
         }
     }
 
@@ -714,14 +868,64 @@
         });
     }
 
+    function toggleInvSort(field) {
+        if (invSortField === field) {
+            invSortDir = invSortDir === 'asc' ? 'desc' : 'asc';
+        } else {
+            invSortField = field;
+            invSortDir = 'asc';
+        }
+        renderInventory();
+    }
+
+    function updateSortIndicators() {
+        document.querySelectorAll('.inv-table .sortable-th').forEach(th => {
+            const field = th.dataset.sort;
+            const icon = document.getElementById('sort-icon-' + field);
+            if (!icon) return;
+            if (field === invSortField) {
+                th.classList.add('sortable-th--active');
+                icon.classList.add('sort-chevron--active');
+                icon.classList.toggle('sort-chevron--asc', invSortDir === 'asc');
+                icon.classList.toggle('sort-chevron--desc', invSortDir === 'desc');
+            } else {
+                th.classList.remove('sortable-th--active');
+                icon.classList.remove('sort-chevron--active', 'sort-chevron--asc', 'sort-chevron--desc');
+            }
+        });
+    }
+
+    function getSortedInventory(items) {
+        if (!invSortField) return items;
+        const sorted = [...items];
+        const dir = invSortDir === 'asc' ? 1 : -1;
+        sorted.sort((a, b) => {
+            let va = a[invSortField], vb = b[invSortField];
+            if (invSortField === 'quantity') {
+                return ((Number(va) || 0) - (Number(vb) || 0)) * dir;
+            }
+            if (invSortField === 'expiry_date' || invSortField === 'updated_at') {
+                const da = va ? new Date(va).getTime() : 0;
+                const db = vb ? new Date(vb).getTime() : 0;
+                return (da - db) * dir;
+            }
+            va = (va || '').toString().toLowerCase();
+            vb = (vb || '').toString().toLowerCase();
+            return va.localeCompare(vb) * dir;
+        });
+        return sorted;
+    }
+
     function renderInventory() {
-        const filtered = getFilteredInventory();
+        const filtered = getSortedInventory(getFilteredInventory());
         const tbody = document.getElementById('inventory-tbody');
         const countEl = document.getElementById('inv-results-count');
         if (countEl) countEl.textContent = filtered.length + ' result' + (filtered.length !== 1 ? 's' : '');
 
+        updateSortIndicators();
+
         if (!filtered.length) {
-            tbody.innerHTML = `<tr><td colspan="8"><div class="empty-state"><span class="empty-icon">&#9723;</span><h3>No inventory items</h3><p>${inventoryData.length ? 'No items match your filters.' : 'Add your first item to get started.'}</p></div></td></tr>`;
+            tbody.innerHTML = `<tr><td colspan="7"><div class="empty-state"><span class="empty-icon">&#9723;</span><h3>No inventory items</h3><p>${inventoryData.length ? 'No items match your filters.' : 'Add your first item to get started.'}</p></div></td></tr>`;
             return;
         }
         const UNIT_DISPLAY = { items: 'items', boxes: 'boxes', kg: 'kg', packs: 'packs' };
@@ -729,7 +933,6 @@
         const statusBadgeClass = s => s === 'low' ? 'badge-status-low' : 'badge-status-available';
         tbody.innerHTML = filtered.map((item, idx) => {
             const unit = UNIT_DISPLAY[item.unit] || item.unit || 'items';
-            const threshold = item.target_quantity != null ? Number(item.target_quantity) : 0;
             const current = Number(item.quantity) || 0;
             const rowClass = idx % 2 === 1 ? 'inv-row-alt' : '';
             return `<tr class="${rowClass}">
@@ -737,19 +940,10 @@
                 <td><strong>${escHtml(String(current))}</strong></td>
                 <td>${escHtml(unit)}</td>
                 <td><span class="badge ${statusBadgeClass(item.status)}">${escHtml(statusLabel(item.status))}</span></td>
-                <td>${threshold}</td>
                 <td>${item.expiry_date ? formatDate(item.expiry_date) : '<span class="text-muted">—</span>'}</td>
                 <td>${item.updated_at ? formatDate(item.updated_at) : '<span class="text-muted">—</span>'}</td>
                 <td>
-                    <div class="gap-row inv-actions-row">
-                        <div class="inv-qty-controls">
-                            <button class="btn btn-ghost btn-sm inv-qty-btn" onclick="adjustQty('${escHtml(item.id)}', -1)" title="Decrease">−</button>
-                            <span class="inv-qty-display">${current}</span>
-                            <button class="btn btn-ghost btn-sm inv-qty-btn" onclick="adjustQty('${escHtml(item.id)}', 1)" title="Increase">+</button>
-                        </div>
-                        <button class="btn btn-ghost btn-sm" onclick="openEditInventory('${escHtml(item.id)}')">Manage</button>
-                        <button class="btn btn-danger btn-sm" onclick="deleteInventoryItem('${escHtml(item.id)}', '${escHtml(item.item_name).replace(/'/g, "\\'")}')">Delete</button>
-                    </div>
+                    <button class="btn btn-outline-sm" onclick="openEditInventory('${escHtml(item.id)}')">Manage</button>
                 </td>
             </tr>`;
         }).join('');
@@ -783,11 +977,11 @@
         document.getElementById('inv-item-name').value = '';
         document.getElementById('inv-category').value = '';
         document.getElementById('inv-quantity').value = 0;
-        document.getElementById('inv-threshold').value = '';
         document.getElementById('inv-unit').value = 'items';
         document.getElementById('inv-expiry').value = '';
         document.getElementById('inv-edit-id').value = '';
         document.getElementById('inv-save-btn').textContent = 'Save item';
+        document.getElementById('inv-delete-wrap').style.display = 'none';
         openModal('inventory-modal');
     }
 
@@ -798,11 +992,11 @@
         document.getElementById('inv-item-name').value = item.item_name;
         document.getElementById('inv-category').value = item.category;
         document.getElementById('inv-quantity').value = item.quantity;
-        document.getElementById('inv-threshold').value = item.target_quantity != null ? item.target_quantity : '';
         document.getElementById('inv-unit').value = INV_UNITS.includes(item.unit) ? item.unit : 'items';
         document.getElementById('inv-expiry').value = item.expiry_date ? item.expiry_date.substring(0, 10) : '';
         document.getElementById('inv-edit-id').value = item.id;
         document.getElementById('inv-save-btn').textContent = 'Save changes';
+        document.getElementById('inv-delete-wrap').style.display = 'block';
         openModal('inventory-modal');
     }
 
@@ -812,12 +1006,11 @@
         const category = document.getElementById('inv-category').value;
         if (!itemName || !category) { toast('Item name and category are required.', 'error'); return; }
 
-        const thresholdVal = document.getElementById('inv-threshold').value.trim();
         const data = {
             item_name: itemName,
             category: category,
             quantity: parseInt(document.getElementById('inv-quantity').value) || 0,
-            target_quantity: thresholdVal ? parseInt(thresholdVal, 10) : 0,
+            target_quantity: 0,
             unit: document.getElementById('inv-unit').value,
             expiry_date: document.getElementById('inv-expiry').value || null,
             notes: null
@@ -840,9 +1033,28 @@
     }
 
     async function deleteInventoryItem(id, name) {
-        if (!confirm(`Remove "${name}" from inventory?`)) return;
+        const ok = await showConfirm(`Remove "${name}" from inventory?`);
+        if (!ok) return;
         try {
             await staff.deleteInventory(id);
+            toast('Item removed.', 'success');
+            await loadInventory();
+            renderDashboard();
+        } catch (err) {
+            toast(err.message || 'Failed to delete item.', 'error');
+        }
+    }
+
+    async function deleteFromModal() {
+        const editId = document.getElementById('inv-edit-id').value;
+        if (!editId) return;
+        const item = inventoryData.find(i => i.id === editId);
+        const name = item ? item.item_name : 'this item';
+        const ok = await showConfirm(`Remove "${name}" from inventory?`);
+        if (!ok) return;
+        try {
+            await staff.deleteInventory(editId);
+            closeModal('inventory-modal');
             toast('Item removed.', 'success');
             await loadInventory();
             renderDashboard();
@@ -948,7 +1160,8 @@
     }
 
     async function fulfillNeed(id, name) {
-        if (!confirm(`Mark "${name}" as fulfilled?`)) return;
+        const ok = await showConfirm(`Mark "${name}" as fulfilled?`);
+        if (!ok) return;
         try {
             await staff.fulfillNeed(id);
             toast('Need marked as fulfilled.', 'success');
@@ -960,7 +1173,8 @@
     }
 
     async function deleteNeed(id) {
-        if (!confirm('Delete this need?')) return;
+        const ok = await showConfirm('Delete this need?');
+        if (!ok) return;
         try {
             await staff.deleteNeed(id);
             toast('Need removed.', 'success');
@@ -994,6 +1208,9 @@
                         <span class="badge badge-${escHtml(urg)}">${escHtml(urg)}</span>
                         ${n.notes ? `<span class="ms-1">${escHtml(n.notes)}</span>` : ''}
                         <span class="ms-1">${timeAgo(n.created_at)}</span>
+                    </div>
+                    <div style="margin-top:.6rem;display:flex;gap:.5rem">
+                        <button class="btn btn-primary btn-sm" onclick="startCrossOrgChatWith('${escHtml(org.id)}')">Offer to help</button>
                     </div>
                 </div>`;
             })).join('');
@@ -1073,6 +1290,27 @@
     }
 
     // --- Chats ---
+    function getThreadName(t) {
+        if (t.type === 'org_channel') return t.org_name || 'Org channel';
+        if (t.type === 'cross_org') {
+            const peerName = t.org_id === currentUser.orgId ? (t.peer_org_name || 'Partner org') : (t.org_name || 'Partner org');
+            return peerName;
+        }
+        return t.staff_first_name ? `${t.staff_first_name} ${t.staff_last_name}` : 'Direct';
+    }
+
+    function getThreadLabel(t) {
+        if (t.type === 'org_channel') return 'Team channel';
+        if (t.type === 'cross_org') return 'Cross-org';
+        return 'Direct message';
+    }
+
+    function getThreadIcon(t) {
+        if (t.type === 'org_channel') return '#';
+        if (t.type === 'cross_org') return '\u21C4';
+        return (t.staff_first_name || 'D').charAt(0);
+    }
+
     async function loadChatThreads() {
         try {
             const res = await staff.chatThreads();
@@ -1083,13 +1321,15 @@
                 return;
             }
             listEl.innerHTML = chatThreads.map(t => {
-                const name = t.type === 'org_channel' ? (t.org_name || 'Org channel') : (t.staff_first_name ? `${t.staff_first_name} ${t.staff_last_name}` : 'Direct');
-                const initial = t.type === 'org_channel' ? (t.org_name || 'O').charAt(0) : (t.staff_first_name || 'D').charAt(0);
+                const name = getThreadName(t);
+                const icon = getThreadIcon(t);
+                const label = getThreadLabel(t);
+                const avatarClass = t.type === 'cross_org' ? 'cross-org' : t.type === 'org_channel' ? 'org-channel' : '';
                 return `<div class="chat-thread-item ${t.id === selectedThreadId ? 'active' : ''}" id="thread-${t.id}" onclick="selectThread('${t.id}')">
-                    <div class="chat-thread-avatar">${escHtml(initial)}</div>
+                    <div class="chat-thread-avatar ${avatarClass}">${escHtml(icon)}</div>
                     <div class="chat-thread-info">
                         <div class="chat-thread-name">${escHtml(name)}</div>
-                        <div class="chat-thread-preview">${t.type === 'org_channel' ? 'Internal channel' : 'Direct message'}</div>
+                        <div class="chat-thread-preview">${escHtml(label)}</div>
                     </div>
                 </div>`;
             }).join('');
@@ -1105,8 +1345,7 @@
         if (el) el.classList.add('active');
 
         const t = chatThreads.find(x => x.id === id);
-        const name = t ? (t.type === 'org_channel' ? (t.org_name || 'Org channel') : (t.staff_first_name ? `${t.staff_first_name} ${t.staff_last_name}` : 'Direct')) : 'Chat';
-        document.getElementById('chat-panel-title').textContent = name;
+        document.getElementById('chat-panel-title').textContent = t ? getThreadName(t) : 'Chat';
         document.getElementById('chat-input-wrap').style.display = 'flex';
         await loadChatMessages();
     }
@@ -1121,14 +1360,15 @@
                 msgEl.innerHTML = '<div class="chat-empty">No messages yet. Start the conversation.</div>';
                 return;
             }
+            const wasAtBottom = msgEl.scrollHeight - msgEl.scrollTop - msgEl.clientHeight < 60;
             msgEl.innerHTML = messages.map(m => {
                 const isOwn = m.sender_type === 'staff' && m.sender_id === currentUser.id;
                 return `<div class="chat-msg ${isOwn ? 'own' : ''}">
                     <div class="chat-msg-bubble">${escHtml(m.content)}</div>
-                    <div class="chat-msg-meta">${escHtml(m.sender_name || 'Unknown')} · ${timeAgo(m.created_at)}</div>
+                    <div class="chat-msg-meta">${escHtml(m.sender_name || 'Unknown')} \u00B7 ${timeAgo(m.created_at)}</div>
                 </div>`;
             }).join('');
-            msgEl.scrollTop = msgEl.scrollHeight;
+            if (wasAtBottom) msgEl.scrollTop = msgEl.scrollHeight;
         } catch (err) {
             document.getElementById('chat-messages').innerHTML = `<div class="chat-empty">${escHtml(err.message)}</div>`;
         }
@@ -1138,12 +1378,203 @@
         const input = document.getElementById('chat-input');
         const content = input.value.trim();
         if (!content || !selectedThreadId) return;
+        input.disabled = true;
         try {
             await staff.sendChatMessage(selectedThreadId, content);
             input.value = '';
             await loadChatMessages();
+            if (socket) socket.emit('chat:message', { threadId: selectedThreadId });
         } catch (err) {
             toast(err.message || 'Failed to send.', 'error');
+        } finally {
+            input.disabled = false;
+            input.focus();
+        }
+    }
+
+    function startChatPolling() {
+        stopChatPolling();
+        chatPollInterval = setInterval(() => {
+            if (selectedThreadId) loadChatMessages();
+        }, 5000);
+    }
+    function stopChatPolling() {
+        if (chatPollInterval) { clearInterval(chatPollInterval); chatPollInterval = null; }
+    }
+
+    async function openCrossOrgModal() {
+        try {
+            const res = await pub.organizations();
+            const orgs = (res.data || []).filter(o => o.id !== currentUser.orgId);
+            const select = document.getElementById('cross-org-select');
+            if (!orgs.length) {
+                select.innerHTML = '<option value="">No other organizations available</option>';
+            } else {
+                select.innerHTML = '<option value="">Select an organization...</option>' +
+                    orgs.map(o => `<option value="${escHtml(o.id)}">${escHtml(o.name)}</option>`).join('');
+            }
+            openModal('cross-org-modal');
+        } catch (err) {
+            toast(err.message || 'Failed to load organizations.', 'error');
+        }
+    }
+
+    async function startCrossOrgChat() {
+        const orgId = document.getElementById('cross-org-select').value;
+        if (!orgId) { toast('Please select an organization.', 'error'); return; }
+        try {
+            const res = await staff.startCrossOrgThread(orgId);
+            closeModal('cross-org-modal');
+            toast('Cross-org conversation started.', 'success');
+            await loadChatThreads();
+            if (res.data && res.data.id) selectThread(res.data.id);
+        } catch (err) {
+            toast(err.message || 'Failed to start conversation.', 'error');
+        }
+    }
+
+    async function startCrossOrgChatWith(orgId) {
+        try {
+            const res = await staff.startCrossOrgThread(orgId);
+            toast('Cross-org conversation started.', 'success');
+            showSection('chats', document.querySelector('[data-section=chats]'));
+            await loadChatThreads();
+            if (res.data && res.data.id) selectThread(res.data.id);
+        } catch (err) {
+            toast(err.message || 'Failed to start conversation.', 'error');
+        }
+    }
+
+    function initSocket() {
+        try {
+            socket = io({ transports: ['websocket', 'polling'] });
+            socket.on('chat:newMessage', (data) => {
+                if (data && data.threadId === selectedThreadId) loadChatMessages();
+            });
+            socket.on('need:new', () => { loadNeeds(); loadOtherNeeds(); });
+            socket.on('need:fulfilled', () => { loadNeeds(); });
+            socket.on('donation:new', () => { loadDonations(); renderDashboard(); });
+        } catch {}
+    }
+
+    // --- Surplus ---
+    async function loadSurplus() {
+        const listEl = document.getElementById('surplus-list');
+        try {
+            const res = await staff.surplus();
+            surplusData = res.data || [];
+            if (!surplusData.length) {
+                listEl.innerHTML = '<div class="empty-state"><p>No surplus items available in the network right now.</p></div>';
+                return;
+            }
+            listEl.innerHTML = surplusData.map(item => `
+                <div class="other-need-card">
+                    <div class="other-need-org">${escHtml(item.org_name || 'Unknown org')}</div>
+                    <div class="other-need-item"><strong>${escHtml(String(item.quantity))} ${escHtml(item.unit)}</strong> of <strong>${escHtml(item.item_name)}</strong> available</div>
+                    <div class="other-need-meta">
+                        <span class="badge badge-status-available">Surplus</span>
+                        <span class="ms-1">${escHtml(item.category)}</span>
+                        ${item.expiry_date ? `<span class="ms-1">Expires ${formatDate(item.expiry_date)}</span>` : ''}
+                    </div>
+                    <div style="margin-top:.6rem">
+                        <button class="btn btn-primary btn-sm" onclick="openSurplusRequestModal('${escHtml(item.id)}', '${escHtml(item.org_id)}', '${escHtml(item.item_name).replace(/'/g, "\\'")}', ${item.quantity})">Request this item</button>
+                    </div>
+                </div>
+            `).join('');
+        } catch (err) {
+            listEl.innerHTML = `<div class="inline-notice error">${escHtml(err.message)}</div>`;
+        }
+    }
+
+    function openSurplusRequestModal(itemId, fromOrgId, itemName, maxQty) {
+        document.getElementById('surplus-request-item-id').value = itemId;
+        document.getElementById('surplus-request-from-org-id').value = fromOrgId;
+        document.getElementById('surplus-request-qty').value = 1;
+        document.getElementById('surplus-request-qty').max = maxQty;
+        document.getElementById('surplus-request-notes').value = '';
+        document.getElementById('surplus-request-details').innerHTML = `<p class="text-sm" style="margin-bottom:.75rem">Requesting: <strong>${escHtml(itemName)}</strong> (max ${maxQty} available)</p>`;
+        openModal('surplus-request-modal');
+    }
+
+    async function submitSurplusRequest() {
+        const btn = document.getElementById('surplus-request-btn');
+        btn.disabled = true;
+        try {
+            await staff.requestSurplus({
+                from_org_id: document.getElementById('surplus-request-from-org-id').value,
+                inventory_item_id: document.getElementById('surplus-request-item-id').value,
+                quantity_requested: parseInt(document.getElementById('surplus-request-qty').value) || 1,
+                notes: document.getElementById('surplus-request-notes').value.trim() || null
+            });
+            closeModal('surplus-request-modal');
+            toast('Surplus request sent!', 'success');
+            loadSurplusRequests();
+        } catch (err) {
+            toast(err.message || 'Failed to send request.', 'error');
+        } finally {
+            btn.disabled = false;
+        }
+    }
+
+    async function loadSurplusRequests() {
+        const tbody = document.getElementById('surplus-requests-tbody');
+        if (!tbody) return;
+        try {
+            const res = await staff.surplusRequests();
+            const requests = res.data || [];
+            if (!requests.length) {
+                tbody.innerHTML = '<tr><td colspan="5"><div class="empty-state"><p>You haven\'t made any surplus requests yet.</p></div></td></tr>';
+                return;
+            }
+            tbody.innerHTML = requests.map(r => `
+                <tr>
+                    <td><strong>${escHtml(r.item_name)}</strong></td>
+                    <td>${escHtml(String(r.quantity_requested))} ${escHtml(r.unit || 'items')}</td>
+                    <td>${escHtml(r.from_org_name || 'Unknown')}</td>
+                    <td><span class="badge badge-${escHtml(r.status)}">${escHtml(r.status)}</span></td>
+                    <td>${timeAgo(r.created_at)}</td>
+                </tr>`).join('');
+        } catch (err) {
+            tbody.innerHTML = `<tr><td colspan="5"><div class="inline-notice error">${escHtml(err.message)}</div></td></tr>`;
+        }
+    }
+
+    // --- Transfers ---
+    async function loadTransfers() {
+        const tbody = document.getElementById('transfers-tbody');
+        if (!tbody) return;
+        try {
+            const res = await staff.transfers();
+            transfersData = res.data || [];
+            if (!transfersData.length) {
+                tbody.innerHTML = '<tr><td colspan="6"><div class="empty-state"><p>No incoming transfers at the moment.</p></div></td></tr>';
+                return;
+            }
+            tbody.innerHTML = transfersData.map(t => `
+                <tr>
+                    <td><strong>${escHtml(t.item_name)}</strong></td>
+                    <td>${escHtml(String(t.quantity))} ${escHtml(t.unit || 'items')}</td>
+                    <td>${escHtml(t.from_org_name || 'Unknown')}</td>
+                    <td><span class="badge badge-${escHtml(t.status)}">${escHtml(t.status)}</span></td>
+                    <td>${timeAgo(t.created_at)}</td>
+                    <td>
+                        ${t.status === 'in_transit' ? `<button class="btn btn-accent btn-sm" onclick="completeTransfer('${escHtml(t.id)}')">Mark received</button>` : '<span class="text-muted">-</span>'}
+                    </td>
+                </tr>`).join('');
+        } catch (err) {
+            tbody.innerHTML = `<tr><td colspan="6"><div class="inline-notice error">${escHtml(err.message)}</div></td></tr>`;
+        }
+    }
+
+    async function completeTransfer(id) {
+        const ok = await showConfirm('Mark this transfer as received?');
+        if (!ok) return;
+        try {
+            await staff.completeTransfer(id);
+            toast('Transfer marked as completed.', 'success');
+            loadTransfers();
+        } catch (err) {
+            toast(err.message || 'Failed to complete transfer.', 'error');
         }
     }
 
@@ -1151,7 +1582,7 @@
     async function loadActionItems() {
         try {
             const [shortages, donations, transfers, requests] = await Promise.all([
-                staff.needs({ urgency: 'critical' }).catch(() => ({ data: [] })),
+                staff.needs({ urgency: 'critical', fulfilled: 'false' }).catch(() => ({ data: [] })),
                 staff.donations({ status: 'matched' }).catch(() => ({ data: [] })),
                 staff.transfers({ status: 'in_transit' }).catch(() => ({ data: [] })),
                 staff.surplusRequests({ status: 'pending' }).catch(() => ({ data: [] }))

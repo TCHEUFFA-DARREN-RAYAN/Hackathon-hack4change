@@ -1,7 +1,36 @@
 // CommonGround — shared UI utilities
 
-// ---- Toast notifications (disabled for now) ----
-window.toast = function () { /* no-op */ };
+// ---- Toast notifications ----
+window.toast = function (message, type = 'info', duration = 3500) {
+    let container = document.getElementById('toast-container');
+    if (!container) {
+        container = document.createElement('div');
+        container.id = 'toast-container';
+        Object.assign(container.style, {
+            position: 'fixed', bottom: '1.5rem', right: '1.5rem',
+            zIndex: '9999', display: 'flex', flexDirection: 'column',
+            gap: '.5rem', pointerEvents: 'none', maxWidth: '380px'
+        });
+        document.body.appendChild(container);
+    }
+    const icons = { success: '\u2713', error: '\u2717', info: '\u2139', warning: '\u26A0' };
+    const bg = { success: '#059669', error: '#dc2626', info: '#2563eb', warning: '#d97706' };
+    const el = document.createElement('div');
+    Object.assign(el.style, {
+        background: bg[type] || bg.info, color: '#fff', padding: '.75rem 1.15rem',
+        borderRadius: '10px', fontSize: '.92rem', fontWeight: '500',
+        boxShadow: '0 4px 16px rgba(0,0,0,.18)', display: 'flex', alignItems: 'center',
+        gap: '.6rem', pointerEvents: 'auto', opacity: '0',
+        transform: 'translateY(12px)', transition: 'all .25s ease'
+    });
+    el.innerHTML = `<span style="font-size:1.1rem">${icons[type] || icons.info}</span><span>${window.escHtml(message)}</span>`;
+    container.appendChild(el);
+    requestAnimationFrame(() => { el.style.opacity = '1'; el.style.transform = 'translateY(0)'; });
+    setTimeout(() => {
+        el.style.opacity = '0'; el.style.transform = 'translateY(12px)';
+        setTimeout(() => el.remove(), 300);
+    }, duration);
+};
 
 // ---- Badge helpers ----
 window.urgencyBadge = function (urgency) {

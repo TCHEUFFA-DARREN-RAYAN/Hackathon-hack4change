@@ -101,7 +101,10 @@ router.delete('/inventory/:id', async (req, res) => {
 
 router.get('/needs', async (req, res) => {
     try {
-        const needs = await NeedsModel.findByOrg(req.user.orgId);
+        let needs = await NeedsModel.findByOrg(req.user.orgId);
+        if (req.query.urgency) needs = needs.filter(n => n.urgency === req.query.urgency);
+        if (req.query.fulfilled === 'false') needs = needs.filter(n => !n.fulfilled);
+        if (req.query.fulfilled === 'true') needs = needs.filter(n => !!n.fulfilled);
         res.json({ success: true, data: needs });
     } catch (err) {
         console.error(err);
@@ -151,7 +154,7 @@ router.post('/needs/:id/fulfill', async (req, res) => {
     }
 });
 
-// Log receipt: increment quantity_received, reduce quantity_needed
+// Log receipt: increment quantity_received, reduce quantity_needed, add to inventory
 router.post('/needs/:id/receive', async (req, res) => {
     try {
         const amount = parseInt(req.body.amount, 10);
@@ -160,6 +163,13 @@ router.post('/needs/:id/receive', async (req, res) => {
         }
         const need = await NeedsModel.recordReceipt(req.params.id, req.user.orgId, amount);
         if (!need) return res.status(404).json({ success: false, message: 'Need not found' });
+        await InventoryModel.addQuantityForNeed(
+            req.user.orgId,
+            need.item_name,
+            need.category,
+            need.unit,
+            amount
+        );
         const io = req.app.get('io');
         if (io && need.fulfilled) io.emit('need:fulfilled', { org_name: req.user.orgName });
         res.json({ success: true, data: need });
@@ -205,7 +215,8 @@ router.delete('/needs/:id', async (req, res) => {
 
 router.get('/donations', async (req, res) => {
     try {
-        const donations = await DonationModel.findByMatchedOrg(req.user.orgId);
+        let donations = await DonationModel.findByMatchedOrg(req.user.orgId);
+        if (req.query.status) donations = donations.filter(d => d.status === req.query.status);
         res.json({ success: true, data: donations });
     } catch (err) {
         console.error(err);
@@ -239,7 +250,8 @@ router.get('/surplus', async (req, res) => {
 
 router.get('/surplus-requests', async (req, res) => {
     try {
-        const requests = await SurplusRequestModel.findByRequestingOrg(req.user.orgId);
+        let requests = await SurplusRequestModel.findByRequestingOrg(req.user.orgId);
+        if (req.query.status) requests = requests.filter(r => r.status === req.query.status);
         res.json({ success: true, data: requests });
     } catch (err) {
         console.error(err);
@@ -277,7 +289,8 @@ router.post('/surplus-requests', async (req, res) => {
 
 router.get('/transfers', async (req, res) => {
     try {
-        const incoming = await SurplusTransferModel.findByToOrg(req.user.orgId);
+        let incoming = await SurplusTransferModel.findByToOrg(req.user.orgId);
+        if (req.query.status) incoming = incoming.filter(t => t.status === req.query.status);
         res.json({ success: true, data: incoming });
     } catch (err) {
         console.error(err);
@@ -324,6 +337,23 @@ router.get('/chat/threads', async (req, res) => {
     }
 });
 
+router.post('/chat/cross-org', async (req, res) => {
+    try {
+        const { peer_org_id } = req.body;
+        if (!peer_org_id || typeof peer_org_id !== 'string') {
+            return res.status(400).json({ success: false, message: 'peer_org_id is required' });
+        }
+        if (peer_org_id === req.user.orgId) {
+            return res.status(400).json({ success: false, message: 'Cannot start a cross-org thread with your own organisation' });
+        }
+        const thread = await ChatThreadModel.findOrCreateCrossOrgThread(req.user.orgId, peer_org_id);
+        res.status(201).json({ success: true, data: thread });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ success: false, message: 'Failed to create cross-org thread' });
+    }
+});
+
 router.get('/chat/threads/:id/messages', async (req, res) => {
     try {
         const threads = await ChatThreadModel.findForStaff(req.user.orgId, req.user.id);
@@ -352,6 +382,8 @@ router.post('/chat/threads/:id/messages', async (req, res) => {
             sender_id: req.user.id,
             content: String(content).trim()
         });
+        const io = req.app.get('io');
+        if (io) io.emit('chat:newMessage', { threadId: req.params.id, senderId: req.user.id });
         res.status(201).json({ success: true, data: msg });
     } catch (err) {
         console.error(err);

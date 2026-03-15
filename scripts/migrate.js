@@ -152,15 +152,18 @@ const run = async () => {
         await conn.query(`
             CREATE TABLE chat_threads (
                 id CHAR(36) PRIMARY KEY,
-                type ENUM('org_channel', 'direct') NOT NULL,
+                type ENUM('org_channel', 'direct', 'cross_org') NOT NULL,
                 org_id CHAR(36) NULL,
+                peer_org_id CHAR(36) NULL,
                 staff_id CHAR(36) NULL,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 FOREIGN KEY (org_id) REFERENCES organizations(id) ON DELETE CASCADE,
+                FOREIGN KEY (peer_org_id) REFERENCES organizations(id) ON DELETE CASCADE,
                 FOREIGN KEY (staff_id) REFERENCES staff_members(id) ON DELETE CASCADE,
                 CONSTRAINT chk_thread_type CHECK (
-                    (type = 'org_channel' AND org_id IS NOT NULL AND staff_id IS NULL) OR
-                    (type = 'direct' AND staff_id IS NOT NULL AND org_id IS NULL)
+                    (type = 'org_channel' AND org_id IS NOT NULL AND staff_id IS NULL AND peer_org_id IS NULL) OR
+                    (type = 'direct' AND staff_id IS NOT NULL AND org_id IS NULL AND peer_org_id IS NULL) OR
+                    (type = 'cross_org' AND org_id IS NOT NULL AND peer_org_id IS NOT NULL AND staff_id IS NULL)
                 )
             )
         `);
