@@ -8,6 +8,7 @@ const { authenticateToken } = require('../middleware/auth.middleware');
 const InventoryModel = require('../models/inventory.model');
 const NeedsModel = require('../models/needs.model');
 const DonationModel = require('../models/donation.model');
+const { sendDonationThankYou } = require('../utils/email');
 const OrganizationModel = require('../models/organization.model');
 const SurplusRequestModel = require('../models/surplusRequest.model');
 const SurplusTransferModel = require('../models/surplusTransfer.model');
@@ -241,6 +242,7 @@ router.post('/donations/:id/confirm', async (req, res) => {
             donation.unit || 'items',
             Number(donation.quantity) || 1
         );
+        sendDonationThankYou(donation).catch(() => {});
         res.json({ success: true, data: donation });
     } catch (err) {
         console.error(err);

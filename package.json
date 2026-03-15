@@ -8,6 +8,7 @@
     "dev:backend": "nodemon --delay 500ms backend/server.js",
     "start": "node backend/server.js",
     "migrate": "node scripts/migrate.js",
+    "seed:demo": "node scripts/run-seed-demo.js",
     "backup": "node scripts/backup.js",
     "test": "jest --forceExit --detectOpenHandles",
     "test:verbose": "jest --forceExit --detectOpenHandles --verbose",
@@ -35,6 +36,7 @@
     "helmet": "^7.1.0",
     "jsonwebtoken": "^9.0.2",
     "mysql2": "^3.15.3",
+    "nodemailer": "^8.0.2",
     "socket.io": "^4.8.3",
     "uuid": "^13.0.0"
   },

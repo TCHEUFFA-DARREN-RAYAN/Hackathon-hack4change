@@ -7,6 +7,7 @@ const router = express.Router();
 const OrganizationModel = require('../models/organization.model');
 const NeedsModel = require('../models/needs.model');
 const DonationModel = require('../models/donation.model');
+const { sendDonationConfirmation } = require('../utils/email');
 const { promisePool } = require('../config/database');
 const { randomUUID } = require('crypto');
 
@@ -78,6 +79,7 @@ router.patch('/donations/:id/match', async (req, res) => {
         if (!org_id) return res.status(400).json({ success: false, message: 'org_id required' });
         const donation = await DonationModel.applyMatch(req.params.id, org_id, reasoning || null);
         if (!donation) return res.status(404).json({ success: false, message: 'Donation not found' });
+        sendDonationConfirmation(donation).catch(() => {});
         res.json({ success: true, data: donation });
     } catch (err) {
         console.error(err);

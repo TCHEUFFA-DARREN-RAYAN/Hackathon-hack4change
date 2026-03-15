@@ -14,13 +14,13 @@
 
 **Hack4Change 2026 — Hackathon submission**
 
-CommonGround is a real-time donation coordination platform built for the Greater Moncton Homelessness Steering Committee (GMHSC) network of 28 homeless-serving organizations. It replaces informal texts and emails with a shared system where donors can see exactly what is needed, organizations can manage their inventory and post shortages, and coordinators get a live network-wide picture.
+CommonGround is a real-time donation coordination platform built for the Greater Moncton Homelessness Steering Committee (GMHSC) network of homeless-serving organizations in Moncton, NB. It replaces informal texts and emails with a shared system where donors can see exactly what is needed, organizations can manage their inventory and post shortages, and coordinators get a live network-wide picture.
 
 ---
 
 ## The Problem
 
-28 shelters and support organizations in Moncton coordinate donated goods informally — through text messages, phone calls, and emails. Some organizations are overstocked with items other organizations critically need. There is no shared system, and donations often go to the wrong place or expire unmatched.
+Shelters and support organizations in Moncton coordinate donated goods informally — through text messages, phone calls, and emails. Some organizations are overstocked with items other organizations critically need. There is no shared system, and donations often go to the wrong place or expire unmatched.
 
 ## The Solution
 
@@ -28,7 +28,7 @@ CommonGround connects three groups in one web application:
 
 - **Donors** — Browse the live needs board and submit donations through a simple form. A smart matching engine compares your items against all active needs across the network and recommends the top 3 organizations, with plain-language reasoning.
 - **Shelter staff** — Log in to manage their organization's inventory, flag shortages, post needs with urgency levels, and confirm incoming donations.
-- **Network coordinators** — See a live dashboard of all 28 organizations: critical shortage heatmap, full donations pipeline, rule-based insights on redistribution opportunities, and CSV exports.
+- **Network coordinators** — See a live dashboard of all organizations: critical shortage heatmap, full donations pipeline, rule-based insights on redistribution opportunities, and CSV exports.
 
 ---
 
@@ -86,11 +86,18 @@ The only values you must change to run locally are the database credentials (whi
 
 ### 3. Create the database and seed data
 
+**Option A — Fresh schema (empty tables):**
 ```bash
 npm run migrate
 ```
 
-This drops and recreates all tables, inserts all 28 GMHSC organizations, sample inventory, needs, and donations.
+**Option B — Demo data (10 real Moncton NB orgs, inventory, needs, donations):**
+```bash
+npm run migrate
+npm run seed:demo
+```
+
+This loads `seed-demo.sql`: 10 real organizations (House of Nazareth, Harvest House, Crossroads for Women, YWCA, John Howard Society, Peter McKee Food Centre, Second Mile Food Bank, Salvation Army, St. Vincent de Paul, The Humanity Project), staff accounts, inventory, needs, donations, and surplus transfers — ready for demo.
 
 ### 4. Start the development server
 
@@ -108,22 +115,22 @@ Visit `http://localhost:3000`
 |---|---|---|
 | `PORT` | Server port | `3000` |
 | `DB_HOST` | MySQL host | `localhost` |
-| `DB_USER` | MySQL username | `hackaton` |
+| `DB_USER` | MySQL username | `hackathon` |
 | `DB_PASSWORD` | MySQL password | `Hackathon123` |
-| `DB_NAME` | Database name | `hackaton_test` |
+| `DB_NAME` | Database name | `CommonGround` |
 | `DB_PORT` | MySQL port | `3306` |
 | `JWT_SECRET` | Secret for signing JWT tokens | *(long random string)* |
 | `JWT_EXPIRES_IN` | Access token expiry | `24h` |
 | `JWT_REFRESH_EXPIRES_IN` | Refresh token expiry | `7d` |
-| `ADMIN_DEFAULT_EMAIL` | Coordinator login email | `coordinator@gmhsc.ca` |
-| `ADMIN_DEFAULT_PASSWORD` | Coordinator login password | `Admin123456` |
+| `ADMIN_DEFAULT_EMAIL` | Coordinator login email | `coordinator@commonground.ca` |
+| `ADMIN_DEFAULT_PASSWORD` | Coordinator login password | `password123` |
 | `CORS_ORIGINS` | Allowed CORS origins (comma-separated) | `http://localhost:3000` |
 
 ---
 
 ## Default Login Credentials
 
-After running `npm run migrate`:
+After running `npm run migrate` and `npm run seed:demo`:
 ### 🔑 Test Accounts
 
 | Role | Email | Password |
@@ -146,14 +153,14 @@ After running `npm run migrate`:
 
 ## Roles
 
-- **Coordinator** = Network admin. Logs in with coordinator credentials and has full visibility across all 28 organizations. The coordinator dashboard at `/coordinator` is the main admin interface for donation coordination.
+- **Coordinator** = Network admin. Logs in with coordinator credentials and has full visibility across all organizations. The coordinator dashboard at `/coordinator` is the main admin interface for donation coordination.
 - **Staff** = Organization-scoped. Manages one organization's inventory, needs, and donations. Can request surplus from other orgs and confirm incoming transfers.
 
 ## Pages
 
 | URL | Access | Description |
 |---|---|---|
-| `/` | Public | Live needs board — all 28 orgs with top needs, filterable |
+| `/` | Public | Live needs board — all orgs with top needs, filterable |
 | `/give` | Public | Donation landing — choose to give items or financial donation |
 | `/donate` | Public | 4-step donation form with automatic matching |
 | `/all-needs` | Public | Paginated list of all active needs across the network |
@@ -268,7 +275,8 @@ Hackaton-hack4change/
 │       ├── api.js                # API client
 │       └── utils.js              # Toast, badge helpers, auth guard
 ├── scripts/
-│   └── migrate.js               # Schema creation + seed data
+│   ├── migrate.js               # Schema creation
+│   └── run-seed-demo.js         # Load demo data (10 real orgs, inventory, needs, donations)
 ├── .env                          # Environment configuration
 ├── package.json
 └── README.md

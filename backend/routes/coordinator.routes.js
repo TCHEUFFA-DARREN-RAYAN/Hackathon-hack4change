@@ -21,6 +21,7 @@ const StaffModel = require('../models/staff.model');
 const NeedsModel = require('../models/needs.model');
 const InventoryModel = require('../models/inventory.model');
 const DonationModel = require('../models/donation.model');
+const { sendDonationThankYou } = require('../utils/email');
 const SurplusRequestModel = require('../models/surplusRequest.model');
 const SurplusTransferModel = require('../models/surplusTransfer.model');
 const ChatThreadModel = require('../models/chatThread.model');
@@ -215,6 +216,7 @@ router.patch('/donations/:id/status', async (req, res) => {
             } catch (invErr) {
                 logger.error('Failed to auto-add donation to inventory', { error: invErr.message });
             }
+            sendDonationThankYou(donation).catch(() => {});
         }
 
         res.json({ success: true, data: donation });

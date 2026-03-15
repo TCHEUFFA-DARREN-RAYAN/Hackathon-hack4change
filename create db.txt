@@ -1,10 +1,10 @@
-run this on work bench 
+Run this in MySQL Workbench to create the database and user.
 
 -- Drop the existing user first
-DROP USER IF EXISTS 'hackaton'@'localhost';
+DROP USER IF EXISTS 'hackathon'@'localhost';
 
--- Now recreate everything cleanly
-CREATE USER 'hackaton'@'localhost' IDENTIFIED BY 'Hackathon123';
-CREATE DATABASE IF NOT EXISTS hackaton_test;
-GRANT ALL PRIVILEGES ON hackaton_test.* TO 'hackaton'@'localhost';
+-- Recreate user and database
+CREATE USER 'hackathon'@'localhost' IDENTIFIED BY 'Hackathon123';
+CREATE DATABASE IF NOT EXISTS CommonGround;
+GRANT ALL PRIVILEGES ON CommonGround.* TO 'hackathon'@'localhost';
 FLUSH PRIVILEGES;
