@@ -1,5 +1,15 @@
-Presented By Team "sudo -rm -rf"
-Members : Faizan Malek, Darren Rayan Tcheuffa, Uday Shishodia 
+#  **Presented by Team `sudo -rm -rf`**
+
+### 👥 Contributors  
+| Name |  |
+|------|------|
+| **Faizan Malek** |
+| **Darren Rayan Tcheuffa** |
+| **Uday Shishodia** |
+
+---
+
+
 
 # CommonGround
 
