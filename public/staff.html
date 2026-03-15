@@ -831,6 +831,7 @@
     let selectedThreadId = null;
     const SECTIONS = ['dashboard', 'inventory', 'needs', 'other-needs', 'donations', 'analytics', 'chats'];
     let chatPollInterval = null;
+    let _unreadThreadIds = new Set();
     let socket = null;
     let surplusData = [];
     let transfersData = [];
@@ -871,8 +872,6 @@
         document.getElementById('nav-org-name').textContent = currentUser.orgName || '';
         document.getElementById('sidebar-org-name').textContent = currentUser.orgName || '';
         document.getElementById('org-subtitle').textContent = currentUser.orgName || '';
-        document.getElementById('dashboard-hero-org').textContent = currentUser.orgName || 'Your organization overview';
-
         const invSearch = document.getElementById('inv-search');
         if (invSearch) invSearch.addEventListener('input', () => { invSearchQuery = invSearch.value.trim().toLowerCase(); applyInventoryFilters(); });
         const needsSearch = document.getElementById('needs-search');
@@ -904,6 +903,13 @@
         };
         document.getElementById('page-title').textContent = titles[name] || name;
 
+        if (name === 'donations') {
+            const pendingPill = document.querySelector('#don-status-pills .don-pill[data-status="pending"]');
+            if (pendingPill && !window._donFiltersInit) {
+                document.querySelectorAll('#don-status-pills .don-pill').forEach(b => b.classList.remove('active'));
+                pendingPill.classList.add('active');
+            }
+        }
         if (name === 'other-needs') loadOtherNeeds();
         if (name === 'analytics') renderAnalytics();
         if (name === 'chats') { loadChatThreads(); startChatPolling(); } else { stopChatPolling(); }
@@ -1213,6 +1219,16 @@
     }
 
     const INV_UNITS = ['items', 'boxes', 'kg', 'packs'];
+
+    function navigateAndOpenInventory() {
+        showSection('inventory', document.querySelector('[data-section=inventory]'));
+        setTimeout(() => openAddInventory(), 100);
+    }
+
+    function navigateAndOpenNeed() {
+        showSection('needs', document.querySelector('[data-section=needs]'));
+        setTimeout(() => openAddNeed(), 100);
+    }
 
     function openAddInventory() {
         document.getElementById('inventory-modal-title').textContent = 'Add inventory item';
