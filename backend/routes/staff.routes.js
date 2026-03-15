@@ -234,6 +234,13 @@ router.post('/donations/:id/confirm', async (req, res) => {
     try {
         const donation = await DonationModel.updateStatus(req.params.id, 'confirmed');
         if (!donation) return res.status(404).json({ success: false, message: 'Donation not found' });
+        await InventoryModel.addQuantityForNeed(
+            req.user.orgId,
+            donation.item_name,
+            donation.category || 'other',
+            donation.unit || 'items',
+            Number(donation.quantity) || 1
+        );
         res.json({ success: true, data: donation });
     } catch (err) {
         console.error(err);
