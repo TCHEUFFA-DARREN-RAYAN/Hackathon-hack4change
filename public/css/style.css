@@ -1263,6 +1263,10 @@ textarea.form-control { resize: vertical; min-height: 80px; }
 .coord-funnel-count { font-size: 1.25rem; font-weight: 700; color: #fff; position: relative; z-index: 1; }
 .coord-analytics-grid { display: grid; grid-template-columns: 1fr 1fr; gap: .75rem; }
 
+/* Coordinator modals - hidden by default, only show when .modal-open */
+#org-chat-picker-modal { display: none !important; }
+#org-chat-picker-modal.modal-open { display: flex !important; }
+
 /* Staff picker modal */
 .coord-staff-picker-item {
     padding: 10px 16px; display: flex; align-items: center; gap: 10px;

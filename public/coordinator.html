@@ -536,23 +536,6 @@
             </div>
         </div>
 
-        <!-- Org Picker Modal for Chat -->
-        <div id="org-chat-picker-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:1100;align-items:flex-start;justify-content:center;padding-top:80px">
-            <div class="card" style="width:100%;max-width:420px;max-height:520px;display:flex;flex-direction:column">
-                <div class="card-header">
-                    <div>
-                        <h3 style="margin:0;font-size:.9375rem;font-weight:600">Start a Conversation</h3>
-                        <p style="margin:2px 0 0;font-size:.8125rem;color:var(--color-text-muted)">Select a staff member to message</p>
-                    </div>
-                    <button class="btn btn-ghost btn-sm" onclick="closeOrgChatPicker()">Close</button>
-                </div>
-                <div style="padding:10px 16px;border-bottom:1px solid var(--color-border-lt)">
-                    <input id="org-chat-picker-search" type="search" class="form-control" placeholder="Search staff or organization..." oninput="filterOrgChatList()" autocomplete="new-password" name="chat-picker-search-x">
-                </div>
-                <div id="org-chat-picker-list" style="overflow-y:auto;flex:1;padding:6px 0"></div>
-            </div>
-        </div>
-
         <!-- Chat section -->
         <div id="section-chat" style="display:none">
             <div class="portal-header">
@@ -737,7 +720,22 @@
     </div>
 </div>
 
-<!-- Staff Picker Modal (for Chat) -->
+<!-- Org Chat Picker Modal - Start a Conversation (only in Chat tab) -->
+<div id="org-chat-picker-modal" class="coord-modal-overlay" style="position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:1100;align-items:flex-start;justify-content:center;padding-top:80px" aria-hidden="true">
+    <div class="card" style="width:100%;max-width:420px;max-height:520px;display:flex;flex-direction:column">
+        <div class="card-header">
+            <div>
+                <h3 style="margin:0;font-size:.9375rem;font-weight:600">Start a Conversation</h3>
+                <p style="margin:2px 0 0;font-size:.8125rem;color:var(--color-text-muted)">Select a staff member to message</p>
+            </div>
+            <button class="btn btn-ghost btn-sm" onclick="closeOrgChatPicker()">Close</button>
+        </div>
+        <div style="padding:10px 16px;border-bottom:1px solid var(--color-border-lt)">
+            <input id="org-chat-picker-search" type="text" class="form-control" placeholder="Search staff or organization..." oninput="filterOrgChatList()" autocomplete="off" readonly>
+        </div>
+        <div id="org-chat-picker-list" style="overflow-y:auto;flex:1;padding:6px 0"></div>
+    </div>
+</div>
 
 <!-- Create Transfer Modal -->
 <div id="transfer-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:1000;align-items:center;justify-content:center;padding:1rem">
@@ -780,14 +778,22 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-<script src="/socket.io/socket.io.js"></script>
+<script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
 <script src="/js/api.js"></script>
 <script src="/js/utils.js"></script>
 <script>
-    (function hideModals() {
-        const modals = ['org-modal', 'staff-modal', 'transfer-modal', 'org-chat-picker-modal'];
-        modals.forEach(id => { const el = document.getElementById(id); if (el) el.style.display = 'none'; });
-    })();
+    function hideAllModals() {
+        ['org-modal', 'staff-modal', 'transfer-modal', 'staff-picker-modal'].forEach(id => {
+            const el = document.getElementById(id);
+            if (el) { el.style.display = 'none'; el.setAttribute('aria-hidden', 'true'); }
+        });
+        const chatPicker = document.getElementById('org-chat-picker-modal');
+        if (chatPicker) { chatPicker.classList.remove('modal-open'); chatPicker.setAttribute('aria-hidden', 'true'); }
+    }
+    hideAllModals();
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', hideAllModals);
+    }
     const CAT_LABELS = {
         shelter_housing: 'Shelter & Housing',
         food_nutrition: 'Food & Nutrition',
@@ -810,9 +816,11 @@
         const user = await requireAuth('coordinator');
         if (!user) return;
         currentUser = user;
+        hideAllModals();
         initAnalyticsDateRange();
         await loadOverview();
         loadOverviewInsights();
+        hideAllModals();
     }
 
     async function loadOverviewInsights() {
@@ -1287,18 +1295,21 @@
             // Exclude coordinators — only show staff members
             _orgChatPickerData = (res.data || []).filter(s => s.role === 'staff');
             const searchEl = document.getElementById('org-chat-picker-search');
+            searchEl.removeAttribute('readonly');
             searchEl.value = '';
             filterOrgChatList();
-            document.getElementById('org-chat-picker-modal').style.display = 'flex';
-            // Defeat browser autofill which fires after display
-            setTimeout(() => { searchEl.value = ''; filterOrgChatList(); }, 100);
+            document.getElementById('org-chat-picker-modal').classList.add('modal-open');
+            setTimeout(() => searchEl.focus(), 50);
         } catch (err) {
             toast('Failed to load staff members.', 'error');
         }
     }
 
     function closeOrgChatPicker() {
-        document.getElementById('org-chat-picker-modal').style.display = 'none';
+        document.getElementById('org-chat-picker-modal').classList.remove('modal-open');
+        const searchEl = document.getElementById('org-chat-picker-search');
+        searchEl.setAttribute('readonly', '');
+        searchEl.value = '';
     }
 
     function filterOrgChatList() {
@@ -2005,18 +2016,20 @@
     init();
 
     if (typeof io !== 'undefined') {
-        const socket = io();
-        socket.on('donation:new', function (data) {
-            toast('New donation received: ' + (data.item_name || 'Unknown'), 'info');
-            loadOverview();
-        });
-        socket.on('need:new', function (data) {
-            toast((data.org_name || 'An organization') + ' posted a new need', 'info');
-            loadOverview();
-        });
-        socket.on('need:fulfilled', function () {
-            loadOverview();
-        });
+        try {
+            const socket = io({ reconnection: false, timeout: 3000 });
+            socket.on('donation:new', function (data) {
+                toast('New donation received: ' + (data.item_name || 'Unknown'), 'info');
+                if (typeof loadOverview === 'function') loadOverview();
+            });
+            socket.on('need:new', function (data) {
+                toast((data.org_name || 'An organization') + ' posted a new need', 'info');
+                if (typeof loadOverview === 'function') loadOverview();
+            });
+            socket.on('need:fulfilled', function () {
+                if (typeof loadOverview === 'function') loadOverview();
+            });
+        } catch (e) { /* Socket.IO optional - app works without real-time updates */ }
     }
 </script>
 
