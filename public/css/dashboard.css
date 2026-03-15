@@ -1328,8 +1328,11 @@ select.form-control {
   padding: 4px 8px; font-size: .8125rem; font-family: var(--font-sans);
   background: var(--color-surface); cursor: pointer;
 }
-.don-status-select.don-status-pending { border-color: #f59e0b; color: #92400e; background: #fffbeb; }
-.don-status-select.don-status-received { border-color: #10b981; color: #065f46; background: #ecfdf5; }
+.don-status-select.don-status-pending   { border-color: #f59e0b; color: #92400e; background: #fffbeb; }
+.don-status-select.don-status-received  { border-color: #10b981; color: #065f46; background: #ecfdf5; }
+.don-status-select.don-status-matched   { border-color: #6366f1; color: #3730a3; background: #eef2ff; }
+.don-status-select.don-status-confirmed { border-color: #10b981; color: #065f46; background: #ecfdf5; }
+.don-status-select.don-status-delivered { border-color: #64748b; color: #1e293b; background: #f8fafc; }
 
 /* ── Other Needs filter dropdowns ───────────────────────── */
 .on-filter-select {
@@ -1439,3 +1442,41 @@ select.form-control {
 
 /* Action column — centering (width set in table layout above) */
 .on-table td:last-child { text-align: center; }
+
+/* ── Dashboard hero banner ──────────────────────────────── */
+.dashboard-hero {
+  background: linear-gradient(135deg, var(--color-primary) 0%, #1d4ed8 100%);
+  border-radius: var(--dash-radius);
+  padding: 20px 24px;
+  margin-bottom: 20px;
+  color: #fff;
+}
+.dashboard-hero h2 {
+  font-size: 1.25rem; font-weight: 700; margin: 0 0 2px;
+  letter-spacing: -.01em; color: #fff;
+}
+.dashboard-hero p {
+  font-size: .8125rem; opacity: .85; margin: 0; color: #fff;
+}
+
+/* ── Metric card accent variants ────────────────────────── */
+.metric-icon { margin-right: 5px; font-size: .875rem; }
+.metric-card.accent-primary { border-left: 3px solid var(--color-primary); }
+.metric-card.accent-primary .metric-value { color: var(--color-primary); }
+.metric-card.accent-accent  { border-left: 3px solid var(--color-accent); }
+.metric-card.accent-accent  .metric-value { color: var(--color-accent); }
+.metric-card.accent-high    { border-left: 3px solid var(--color-critical); }
+.metric-card.accent-high    .metric-value { color: var(--color-critical); }
+
+/* ── 5-column metrics row override ─────────────────────── */
+.metrics-row-5 {
+  grid-template-columns: repeat(5, 1fr);
+}
+
+/* ── Coordinator pipeline inside card ──────────────────── */
+.pipeline { margin-bottom: 0; }
+
+/* ── Dashboard two-column row ───────────────────────────── */
+.dashboard-row { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-top: 0; }
+@media (max-width: 768px) { .dashboard-row { grid-template-columns: 1fr; } }
+@media (max-width: 1100px) { .metrics-row-5 { grid-template-columns: repeat(3, 1fr); } }

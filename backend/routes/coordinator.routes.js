@@ -393,9 +393,26 @@ router.get('/analytics', async (req, res) => {
              GROUP BY DATE(created_at) ORDER BY day`,
             org_id ? [fromDate, toDate, org_id, org_id] : [fromDate, toDate]
         );
+        const [needsByUrgency] = await promisePool.query(
+            `SELECT urgency, COUNT(*) AS count FROM needs
+             WHERE 1=1 ${orgFilter}
+             GROUP BY urgency`,
+            orgParams
+        );
+        const [needsByCategory] = await promisePool.query(
+            `SELECT category, COUNT(*) AS count FROM needs
+             WHERE 1=1 ${orgFilter}
+             GROUP BY category ORDER BY count DESC LIMIT 10`,
+            orgParams
+        );
 
         const pipeline = { pending: 0, matched: 0, confirmed: 0, delivered: 0 };
         donationsByStatus.forEach(r => { pipeline[r.status] = r.count; });
+
+        const urgencyMap = {};
+        needsByUrgency.forEach(r => { urgencyMap[r.urgency] = r.count; });
+        const categoryMap = {};
+        needsByCategory.forEach(r => { categoryMap[r.category] = r.count; });
 
         res.json({
             success: true,
@@ -405,7 +422,9 @@ router.get('/analytics', async (req, res) => {
                 donations_delivered: donationsDelivered[0].count,
                 needs_fulfilled: needsFulfilled[0].count,
                 transfers_completed: transfersCompleted[0].count,
-                donations_by_day: donationsByDay
+                donations_by_day: donationsByDay,
+                needs_by_urgency: urgencyMap,
+                needs_by_category: categoryMap
             }
         });
     } catch (err) {

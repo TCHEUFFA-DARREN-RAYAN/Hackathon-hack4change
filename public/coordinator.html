@@ -32,7 +32,7 @@
         <ul class="nav-links">
             <li><a href="#" data-section="overview" class="active" onclick="showSection('overview', this)">
                 <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
-                Overview
+                Dashboard
             </a></li>
             <li><a href="#" data-section="organizations" onclick="showSection('organizations', this)">
                 <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
@@ -53,10 +53,6 @@
             <li><a href="#" data-section="inventory" onclick="showSection('inventory', this)">
                 <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 7V4a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v3"/><rect x="2" y="9" width="20" height="12" rx="2"/><path d="M12 14v4"/></svg>
                 Inventory
-            </a></li>
-            <li><a href="#" data-section="surplus-requests" onclick="showSection('surplus-requests', this)">
-                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                Surplus Requests
             </a></li>
             <li><a href="#" data-section="transfers" onclick="showSection('transfers', this)">
                 <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17V7m0 10l-4-4m4 4l4-4"/><path d="M17 7v10m0-10l4 4m-4-4l-4 4"/></svg>
@@ -86,26 +82,47 @@
     <main id="main">
         <div id="page-content">
 
-        <!-- Overview section -->
+        <!-- Dashboard section -->
         <div id="section-overview">
-            <div class="portal-header">
-                <div>
-                    <h1>Network Overview</h1>
-                    <div class="text-muted text-sm" id="overview-updated">Loading...</div>
+            <div class="dashboard-hero">
+                <h2>Network Dashboard</h2>
+                <p id="overview-updated">Loading...</p>
+            </div>
+
+            <div class="metrics-row metrics-row-5" id="overview-metrics">
+                <div class="metric-card">
+                    <div class="metric-label"><span class="metric-icon">🏢</span>Organizations</div>
+                    <div class="metric-value skeleton" style="height:2rem;width:50px;display:inline-block"></div>
+                    <div class="metric-sub">GMHSC Network</div>
                 </div>
-                <button class="btn btn-outline btn-sm" onclick="loadOverview()">Refresh</button>
+                <div class="metric-card accent-primary">
+                    <div class="metric-label"><span class="metric-icon">📌</span>Active Needs</div>
+                    <div class="metric-value skeleton" style="height:2rem;width:50px;display:inline-block"></div>
+                    <div class="metric-sub">Unfulfilled across network</div>
+                </div>
+                <div class="metric-card accent-high">
+                    <div class="metric-label"><span class="metric-icon">🚨</span>Critical</div>
+                    <div class="metric-value skeleton" style="height:2rem;width:50px;display:inline-block"></div>
+                    <div class="metric-sub">Require immediate action</div>
+                </div>
+                <div class="metric-card accent-accent">
+                    <div class="metric-label"><span class="metric-icon">💝</span>Pending Donations</div>
+                    <div class="metric-value skeleton" style="height:2rem;width:50px;display:inline-block"></div>
+                    <div class="metric-sub">Awaiting matching</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label"><span class="metric-icon">⏰</span>Expiring Soon</div>
+                    <div class="metric-value skeleton" style="height:2rem;width:50px;display:inline-block"></div>
+                    <div class="metric-sub">Within 30 days</div>
+                </div>
             </div>
 
-            <div class="metrics-row" id="overview-metrics">
-                <div class="metric-card"><div class="metric-label">Organizations</div><div class="skeleton" style="height:2rem;width:50px;margin:.2rem 0"></div></div>
-                <div class="metric-card"><div class="metric-label">Active Needs</div><div class="skeleton" style="height:2rem;width:50px;margin:.2rem 0"></div></div>
-                <div class="metric-card"><div class="metric-label">Critical</div><div class="skeleton" style="height:2rem;width:50px;margin:.2rem 0"></div></div>
-                <div class="metric-card"><div class="metric-label">Pending Donations</div><div class="skeleton" style="height:2rem;width:50px;margin:.2rem 0"></div></div>
-                <div class="metric-card"><div class="metric-label">Expiring Soon</div><div class="skeleton" style="height:2rem;width:50px;margin:.2rem 0"></div></div>
-            </div>
-
-            <div class="section">
-                <div class="section-header"><h2>Donations pipeline</h2></div>
+            <!-- Donations pipeline -->
+            <div class="card" style="margin-bottom:16px">
+                <div class="card-header">
+                    <h3>Donations Pipeline</h3>
+                    <a href="#" onclick="showSection('donations', document.querySelector('[data-section=donations]'));return false" class="btn btn-ghost btn-sm">View all donations</a>
+                </div>
                 <div class="pipeline" id="pipeline-stages">
                     <div class="pipeline-stage"><div class="stage-count skeleton" style="height:1.7rem;width:40px;margin:0 auto"></div><div class="stage-label">Pending</div></div>
                     <div class="pipeline-stage"><div class="stage-count skeleton" style="height:1.7rem;width:40px;margin:0 auto"></div><div class="stage-label">Matched</div></div>
@@ -114,40 +131,38 @@
                 </div>
             </div>
 
-            <div class="section">
-                <div class="section-header">
-                    <h2>Critical shortages — act now</h2>
-                    <a href="#" onclick="showSection('needs', document.querySelector('[data-section=needs]'))" class="btn btn-ghost btn-sm">View all needs</a>
+            <!-- Two-column cards row -->
+            <div class="dashboard-row">
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Critical shortages — act now</h3>
+                        <a href="#" onclick="showSection('needs', document.querySelector('[data-section=needs]'));return false" class="btn btn-ghost btn-sm">View all needs</a>
+                    </div>
+                    <div id="critical-needs-list">
+                        <div class="skeleton skeleton-block" style="height:52px;margin-bottom:.4rem"></div>
+                        <div class="skeleton skeleton-block" style="height:52px;margin-bottom:.4rem"></div>
+                    </div>
                 </div>
-                <div id="critical-needs-list">
-                    <div class="skeleton skeleton-block" style="height:60px;margin-bottom:.5rem"></div>
-                    <div class="skeleton skeleton-block" style="height:60px;margin-bottom:.5rem"></div>
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Expiring soon (next 30 days)</h3>
+                        <a href="#" onclick="loadExpiring();return false" class="btn btn-ghost btn-sm">Refresh</a>
+                    </div>
+                    <div id="expiring-list">
+                        <div class="skeleton skeleton-block" style="height:40px;margin-bottom:.4rem"></div>
+                        <div class="skeleton skeleton-block" style="height:40px;margin-bottom:.4rem"></div>
+                    </div>
                 </div>
             </div>
 
-            <div class="section">
-                <div class="section-header">
-                    <h2>Expiring soon (next 30 days)</h2>
-                    <a href="#" onclick="loadExpiring(); return false" class="btn btn-ghost btn-sm">Refresh</a>
+            <!-- AI Insights -->
+            <div class="card" style="margin-top:16px">
+                <div class="card-header">
+                    <h3>AI Network Intelligence</h3>
+                    <a href="#" onclick="showSection('insights', document.querySelector('[data-section=insights]'));return false" class="btn btn-ghost btn-sm">Full analysis</a>
                 </div>
-                <div id="expiring-list">
-                    <div class="skeleton skeleton-block" style="height:50px;margin-bottom:.4rem"></div>
-                </div>
-            </div>
-
-            <div class="section">
-                <div class="section-header">
-                    <h2>AI Network Intelligence</h2>
-                    <a href="#" onclick="showSection('insights', document.querySelector('[data-section=insights]'))" class="btn btn-ghost btn-sm">Full analysis</a>
-                </div>
-                <div id="overview-insights-card" class="insights-panel">
-                    <div class="insights-header">
-                        <h3>Redistribution Suggestions</h3>
-                        <span class="text-xs text-muted">Auto-analyzed</span>
-                    </div>
-                    <div class="insights-body" id="overview-insights-body">
-                        <div class="skeleton skeleton-block" style="height:60px;margin-bottom:.5rem"></div>
-                    </div>
+                <div id="overview-insights-body">
+                    <div class="skeleton skeleton-block" style="height:60px;margin-bottom:.5rem"></div>
                 </div>
             </div>
         </div>
@@ -195,31 +210,56 @@
                     Export CSV
                 </button>
             </div>
-            <div style="display:flex;gap:.6rem;flex-wrap:wrap;margin-bottom:1rem">
-                <input type="search" id="needs-search" class="form-control" placeholder="Search..." style="max-width:240px">
-                <select id="needs-urgency-filter" class="form-control" style="max-width:180px">
-                    <option value="">All urgency levels</option>
-                    <option value="critical">Critical</option>
-                    <option value="high">High</option>
-                    <option value="medium">Medium</option>
-                    <option value="low">Low</option>
-                </select>
+            <div class="inv-filters-row">
+                <div class="inv-search">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+                    <input type="search" id="needs-search" placeholder="Search by item or organization..." autocomplete="off">
+                </div>
+                <div class="inv-dropdown-wrap">
+                    <label class="inv-dropdown-label">Organization</label>
+                    <select id="needs-org-filter" class="form-control inv-dropdown" onchange="applyNeedsFilters()">
+                        <option value="">All organizations</option>
+                    </select>
+                </div>
+                <div class="inv-dropdown-wrap">
+                    <label class="inv-dropdown-label">Category</label>
+                    <select id="needs-category-filter" class="form-control inv-dropdown" onchange="applyNeedsFilters()">
+                        <option value="">All categories</option>
+                        <option value="clothing">Clothing</option>
+                        <option value="bedding">Bedding</option>
+                        <option value="food">Food</option>
+                        <option value="hygiene">Hygiene</option>
+                        <option value="baby_supplies">Baby Supplies</option>
+                        <option value="goods">Household Goods</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+                <div class="inv-dropdown-wrap">
+                    <label class="inv-dropdown-label">Urgency</label>
+                    <select id="needs-urgency-filter" class="form-control inv-dropdown" onchange="applyNeedsFilters()">
+                        <option value="">All urgency levels</option>
+                        <option value="critical">Critical</option>
+                        <option value="high">High</option>
+                        <option value="medium">Medium</option>
+                        <option value="low">Low</option>
+                    </select>
+                </div>
+                <span class="inv-results" id="needs-results-count">0 results</span>
             </div>
             <div class="table-wrap">
-                <table class="data-table">
+                <table class="data-table inv-table">
                     <thead>
                         <tr>
-                            <th>Organization</th>
-                            <th>Item needed</th>
-                            <th>Category</th>
-                            <th>Qty</th>
-                            <th>Urgency</th>
-                            <th>Notes</th>
-                            <th>Posted</th>
+                            <th class="sortable-th" onclick="toggleNeedsSort('org_name')">Organization <span class="sort-chevron" id="cn-sort-org_name">&#9662;</span></th>
+                            <th class="sortable-th" onclick="toggleNeedsSort('item_name')">Item Needed <span class="sort-chevron" id="cn-sort-item_name">&#9662;</span></th>
+                            <th class="sortable-th" onclick="toggleNeedsSort('category')">Category <span class="sort-chevron" id="cn-sort-category">&#9662;</span></th>
+                            <th class="sortable-th" onclick="toggleNeedsSort('quantity_needed')">Qty <span class="sort-chevron" id="cn-sort-quantity_needed">&#9662;</span></th>
+                            <th class="sortable-th" onclick="toggleNeedsSort('urgency')">Urgency <span class="sort-chevron" id="cn-sort-urgency">&#9662;</span></th>
+                            <th class="sortable-th" onclick="toggleNeedsSort('created_at')">Posted <span class="sort-chevron" id="cn-sort-created_at">&#9662;</span></th>
                         </tr>
                     </thead>
                     <tbody id="all-needs-tbody">
-                        <tr><td colspan="7"><div class="skeleton skeleton-text wide"></div></td></tr>
+                        <tr><td colspan="6"><div class="skeleton skeleton-text wide"></div></td></tr>
                     </tbody>
                 </table>
             </div>
@@ -227,78 +267,46 @@
 
         <!-- Donations Pipeline section -->
         <div id="section-donations" style="display:none">
-            <div class="portal-header">
-                <h1>Donations Pipeline</h1>
-                <button class="btn btn-outline btn-sm don-export-btn" onclick="downloadCsv('donations')">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                    Export CSV
-                </button>
-            </div>
-            <div style="display:flex;gap:.6rem;flex-wrap:wrap;margin-bottom:1rem">
-                <select id="donation-status-filter" class="form-control" style="max-width:200px">
-                    <option value="">All statuses</option>
-                    <option value="pending">Pending</option>
-                    <option value="matched">Matched</option>
-                    <option value="confirmed">Confirmed</option>
-                    <option value="delivered">Delivered</option>
-                </select>
-            </div>
-            <div class="table-wrap">
-                <table class="data-table">
-                    <thead>
-                        <tr>
-                            <th>Item</th>
-                            <th>Qty</th>
-                            <th>Donor</th>
-                            <th>Matched to</th>
-                            <th>Status</th>
-                            <th>Date</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody id="donations-tbody">
-                        <tr><td colspan="7"><div class="skeleton skeleton-text wide"></div></td></tr>
-                    </tbody>
-                </table>
+            <div class="section">
+                <div class="don-toolbar">
+                    <div class="don-search-wrap">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+                        <input type="search" id="coord-don-search" class="don-search-input" placeholder="Search by item, donor or organization..." autocomplete="off">
+                    </div>
+                    <div class="don-pills" id="coord-don-status-pills">
+                        <button class="don-pill active" data-status="">All</button>
+                        <button class="don-pill" data-status="pending">Pending</button>
+                        <button class="don-pill" data-status="matched">Matched</button>
+                        <button class="don-pill" data-status="confirmed">Confirmed</button>
+                        <button class="don-pill" data-status="delivered">Delivered</button>
+                    </div>
+                    <button class="don-export-btn" onclick="exportCoordDonationsExcel()">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                        Export
+                    </button>
+                </div>
+                <div class="table-wrap">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th class="don-sortable" onclick="sortCoordDonations('item_name')">Item <span class="sort-chevron" id="cd-sort-item_name">&#9662;</span></th>
+                                <th class="don-sortable" onclick="sortCoordDonations('quantity')">Qty <span class="sort-chevron" id="cd-sort-quantity">&#9662;</span></th>
+                                <th>Donor</th>
+                                <th>Email</th>
+                                <th>Phone</th>
+                                <th>Matched To</th>
+                                <th class="don-sortable" onclick="sortCoordDonations('status')">Status <span class="sort-chevron" id="cd-sort-status">&#9662;</span></th>
+                            </tr>
+                        </thead>
+                        <tbody id="donations-tbody">
+                            <tr><td colspan="7"><div class="skeleton skeleton-text wide"></div></td></tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
 
         <!-- Surplus Requests section -->
-        <div id="section-surplus-requests" style="display:none">
-            <div class="portal-header">
-                <h1>Surplus Requests</h1>
-                <button class="btn btn-outline btn-sm don-export-btn" onclick="downloadCsv('surplus-requests')">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                    Export CSV
-                </button>
-            </div>
-            <div class="inline-notice info">Staff can request surplus items from other organizations. Approve or reject requests to facilitate coordination.</div>
-            <div style="margin-top:1rem">
-                <select id="surplus-request-status" class="form-control" style="max-width:180px;margin-bottom:1rem" onchange="loadSurplusRequests()">
-                    <option value="pending">Pending</option>
-                    <option value="approved">Approved</option>
-                    <option value="rejected">Rejected</option>
-                </select>
-            </div>
-            <div class="table-wrap">
-                <table class="data-table">
-                    <thead>
-                        <tr>
-                            <th>Requesting Org</th>
-                            <th>From Org</th>
-                            <th>Item</th>
-                            <th>Qty</th>
-                            <th>Status</th>
-                            <th>Date</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody id="surplus-requests-tbody">
-                        <tr><td colspan="7"><div class="skeleton skeleton-text wide"></div></td></tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
 
         <!-- Surplus Transfers section -->
         <div id="section-transfers" style="display:none">
@@ -312,31 +320,40 @@
                     <button class="btn btn-primary btn-sm" onclick="openCreateTransfer()">Initiate Transfer</button>
                 </div>
             </div>
-            <div class="inline-notice info">Initiate transfers of surplus items from one organization to another. Staff at the receiving org can confirm receipt.</div>
-            <div style="margin-top:1rem">
-                <select id="transfer-status-filter" class="form-control" style="max-width:180px;margin-bottom:1rem" onchange="loadTransfers()">
-                    <option value="">All statuses</option>
-                    <option value="pending">Pending</option>
-                    <option value="in_transit">In Transit</option>
-                    <option value="completed">Completed</option>
-                    <option value="cancelled">Cancelled</option>
-                </select>
+            <div class="inv-filters-row" style="margin-bottom:1rem">
+                <div class="inv-search">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+                    <input type="search" id="transfer-search" placeholder="Search item or organization..." autocomplete="off" oninput="renderTransfers()">
+                </div>
+                <div class="inv-dropdown-wrap">
+                    <label class="inv-dropdown-label">Status</label>
+                    <select id="transfer-status-filter" class="form-control inv-dropdown" onchange="renderTransfers()">
+                        <option value="">All statuses</option>
+                        <option value="pending">Pending</option>
+                        <option value="in_transit">In Transit</option>
+                        <option value="completed">Completed</option>
+                        <option value="cancelled">Cancelled</option>
+                    </select>
+                </div>
+                <span class="inv-results" id="transfer-results-count">0 results</span>
             </div>
             <div class="table-wrap">
-                <table class="data-table">
+                <table class="data-table inv-table">
                     <thead>
                         <tr>
-                            <th>From</th>
-                            <th>To</th>
+                            <th>From Organization</th>
+                            <th>To Organization</th>
                             <th>Item</th>
+                            <th>Category</th>
                             <th>Qty</th>
                             <th>Status</th>
+                            <th>Notes</th>
                             <th>Date</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody id="transfers-tbody">
-                        <tr><td colspan="7"><div class="skeleton skeleton-text wide"></div></td></tr>
+                        <tr><td colspan="9"><div class="skeleton skeleton-text wide"></div></td></tr>
                     </tbody>
                 </table>
             </div>
@@ -344,46 +361,76 @@
 
         <!-- AI Insights section -->
         <div id="section-insights" style="display:none">
-            <div class="portal-header">
-                <h1>Network Insights</h1>
-                <button class="btn btn-primary btn-sm" id="insights-btn" onclick="loadInsights()">Generate Insights</button>
+            <div class="an-section-header">
+                <div>
+                    <h1 style="font-size:1.25rem;font-weight:700;margin:0">AI Network Intelligence</h1>
+                    <p class="an-section-sub">Real-time analysis of needs, surplus, and redistribution opportunities</p>
+                </div>
+                <button class="btn btn-primary btn-sm" id="insights-btn" onclick="loadInsights()" style="gap:.4rem;display:flex;align-items:center">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+                    Generate Insights
+                </button>
             </div>
 
-            <div id="insights-placeholder" class="card" style="text-align:center;padding:2.5rem">
-                <p class="text-muted">Click "Generate Insights" to analyze the current network state.</p>
-                <p class="text-sm text-muted mt-1">Summarizes needs, surplus, redistribution opportunities, and action alerts.</p>
+            <div id="insights-placeholder" class="dashboard-hero" style="text-align:center;padding:2.5rem 1rem">
+                <div style="font-size:2.5rem;margin-bottom:.75rem">🧠</div>
+                <h3 style="color:#fff;margin:0 0 .5rem;font-size:1.1rem">Network Intelligence Ready</h3>
+                <p style="color:rgba(255,255,255,.8);font-size:.875rem;margin:0">Click "Generate Insights" to analyze the current state of all organizations — needs, surplus, redistribution opportunities, and action alerts.</p>
             </div>
 
             <div id="insights-loading" style="display:none">
                 <div class="skeleton skeleton-block" style="height:80px;margin-bottom:.75rem"></div>
+                <div class="skeleton skeleton-block" style="height:140px;margin-bottom:.75rem"></div>
                 <div class="skeleton skeleton-block" style="height:120px;margin-bottom:.75rem"></div>
                 <div class="skeleton skeleton-block" style="height:100px"></div>
             </div>
 
             <div id="insights-panel" style="display:none">
-                <div class="insights-panel">
-                    <div class="insights-header">
-                        <h3>Network Health Summary</h3>
-                        <span class="text-xs" id="insights-timestamp" style="opacity:.75"></span>
+                <!-- Summary card -->
+                <div class="card" style="margin-bottom:12px;border-left:4px solid var(--color-primary)">
+                    <div class="card-header">
+                        <h3 style="display:flex;align-items:center;gap:.5rem">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary)" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                            Network Health Summary
+                        </h3>
+                        <span class="text-xs text-muted" id="insights-timestamp"></span>
                     </div>
-                    <div class="insights-body">
-                        <div class="insight-summary" id="insights-summary"></div>
-
-                        <div class="insight-section" id="alerts-section">
-                            <h4>Immediate Alerts</h4>
-                            <div id="insights-alerts"></div>
-                        </div>
-
-                        <div class="insight-section" id="redistribution-section">
-                            <h4>Redistribution Opportunities</h4>
-                            <div id="insights-redistribution"></div>
-                        </div>
-
-                        <div class="insight-section" id="followup-section">
-                            <h4>Organizations needing follow-up</h4>
-                            <div id="insights-followup"></div>
-                        </div>
+                    <div style="padding:0 16px 16px">
+                        <div id="insights-summary" style="font-size:.875rem;line-height:1.7;color:var(--color-text)"></div>
                     </div>
+                </div>
+
+                <!-- Alerts card -->
+                <div class="card" id="alerts-section" style="margin-bottom:12px;border-left:4px solid var(--color-critical)">
+                    <div class="card-header">
+                        <h3 style="display:flex;align-items:center;gap:.5rem">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--color-critical)" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                            Immediate Alerts
+                        </h3>
+                    </div>
+                    <div style="padding:0 16px 16px" id="insights-alerts"></div>
+                </div>
+
+                <!-- Redistribution card -->
+                <div class="card" id="redistribution-section" style="margin-bottom:12px;border-left:4px solid var(--color-accent)">
+                    <div class="card-header">
+                        <h3 style="display:flex;align-items:center;gap:.5rem">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--color-accent)" stroke-width="2"><path d="M7 17V7m0 10l-4-4m4 4l4-4"/><path d="M17 7v10m0-10l4 4m-4-4l-4 4"/></svg>
+                            Redistribution Opportunities
+                        </h3>
+                    </div>
+                    <div style="padding:0 16px 16px" id="insights-redistribution"></div>
+                </div>
+
+                <!-- Follow-up card -->
+                <div class="card" id="followup-section" style="border-left:4px solid #d97706">
+                    <div class="card-header">
+                        <h3 style="display:flex;align-items:center;gap:.5rem">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#d97706" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                            Organizations Needing Follow-up
+                        </h3>
+                    </div>
+                    <div style="padding:0 16px 16px" id="insights-followup"></div>
                 </div>
             </div>
         </div>
@@ -433,46 +480,76 @@
                     Export CSV
                 </button>
             </div>
-            <div style="display:flex;gap:.6rem;flex-wrap:wrap;margin-bottom:1rem">
-                <select id="inv-org-filter" class="form-control" style="max-width:220px" onchange="loadNetworkInventory()">
-                    <option value="">All organizations</option>
-                </select>
-                <select id="inv-status-filter" class="form-control" style="max-width:160px" onchange="loadNetworkInventory()">
-                    <option value="">All statuses</option>
-                    <option value="available">Available</option>
-                    <option value="low">Low</option>
-                    <option value="surplus">Surplus</option>
-                </select>
-                <select id="inv-category-filter" class="form-control" style="max-width:180px" onchange="loadNetworkInventory()">
-                    <option value="">All categories</option>
-                    <option value="food">Food</option>
-                    <option value="hygiene">Hygiene</option>
-                    <option value="clothing">Clothing</option>
-                    <option value="bedding">Bedding</option>
-                    <option value="housing">Housing</option>
-                    <option value="baby_supplies">Baby Supplies</option>
-                    <option value="other">Other</option>
-                </select>
-                <input type="search" id="inv-search-input" class="form-control" placeholder="Search items..." style="max-width:220px" oninput="debounce(loadNetworkInventory, 400)()">
+            <div class="inv-filters-row">
+                <div class="inv-search">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+                    <input type="search" id="inv-search-input" placeholder="Search items..." autocomplete="off">
+                </div>
+                <div class="inv-dropdown-wrap">
+                    <label class="inv-dropdown-label">Organization</label>
+                    <select id="inv-org-filter" class="form-control inv-dropdown" onchange="renderNetworkInventory()">
+                        <option value="">All organizations</option>
+                    </select>
+                </div>
+                <div class="inv-dropdown-wrap">
+                    <label class="inv-dropdown-label">Status</label>
+                    <select id="inv-status-filter" class="form-control inv-dropdown" onchange="renderNetworkInventory()">
+                        <option value="">All statuses</option>
+                        <option value="available">Available</option>
+                        <option value="low">Low</option>
+                        <option value="surplus">Surplus</option>
+                    </select>
+                </div>
+                <div class="inv-dropdown-wrap">
+                    <label class="inv-dropdown-label">Category</label>
+                    <select id="inv-category-filter" class="form-control inv-dropdown" onchange="renderNetworkInventory()">
+                        <option value="">All categories</option>
+                        <option value="food">Food</option>
+                        <option value="hygiene">Hygiene</option>
+                        <option value="clothing">Clothing</option>
+                        <option value="bedding">Bedding</option>
+                        <option value="housing">Housing</option>
+                        <option value="baby_supplies">Baby Supplies</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+                <span class="inv-results" id="inv-results-count">0 results</span>
             </div>
             <div class="table-wrap">
-                <table class="data-table">
+                <table class="data-table inv-table">
                     <thead>
                         <tr>
-                            <th>Organization</th>
-                            <th>Item</th>
-                            <th>Category</th>
-                            <th>Qty</th>
+                            <th class="sortable-th" onclick="toggleInvNetSort('org_name')">Organization <span class="sort-chevron" id="ni-sort-org_name">&#9662;</span></th>
+                            <th class="sortable-th" onclick="toggleInvNetSort('item_name')">Item <span class="sort-chevron" id="ni-sort-item_name">&#9662;</span></th>
+                            <th class="sortable-th" onclick="toggleInvNetSort('category')">Category <span class="sort-chevron" id="ni-sort-category">&#9662;</span></th>
+                            <th class="sortable-th" onclick="toggleInvNetSort('quantity')">Qty <span class="sort-chevron" id="ni-sort-quantity">&#9662;</span></th>
                             <th>Unit</th>
-                            <th>Status</th>
-                            <th>Expiry</th>
-                            <th>Last Updated</th>
+                            <th class="sortable-th" onclick="toggleInvNetSort('status')">Status <span class="sort-chevron" id="ni-sort-status">&#9662;</span></th>
+                            <th class="sortable-th" onclick="toggleInvNetSort('expiry_date')">Expiry <span class="sort-chevron" id="ni-sort-expiry_date">&#9662;</span></th>
+                            <th class="sortable-th" onclick="toggleInvNetSort('updated_at')">Last Updated <span class="sort-chevron" id="ni-sort-updated_at">&#9662;</span></th>
                         </tr>
                     </thead>
                     <tbody id="inventory-tbody">
                         <tr><td colspan="8"><div class="skeleton skeleton-text wide"></div></td></tr>
                     </tbody>
                 </table>
+            </div>
+        </div>
+
+        <!-- Org Picker Modal for Chat -->
+        <div id="org-chat-picker-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:1100;align-items:flex-start;justify-content:center;padding-top:80px">
+            <div class="card" style="width:100%;max-width:420px;max-height:520px;display:flex;flex-direction:column">
+                <div class="card-header">
+                    <div>
+                        <h3 style="margin:0;font-size:.9375rem;font-weight:600">Start a Conversation</h3>
+                        <p style="margin:2px 0 0;font-size:.8125rem;color:var(--color-text-muted)">Select a staff member to message</p>
+                    </div>
+                    <button class="btn btn-ghost btn-sm" onclick="closeOrgChatPicker()">Close</button>
+                </div>
+                <div style="padding:10px 16px;border-bottom:1px solid var(--color-border-lt)">
+                    <input id="org-chat-picker-search" type="search" class="form-control" placeholder="Search staff or organization..." oninput="filterOrgChatList()" autocomplete="new-password" name="chat-picker-search-x">
+                </div>
+                <div id="org-chat-picker-list" style="overflow-y:auto;flex:1;padding:6px 0"></div>
             </div>
         </div>
 
@@ -485,6 +562,7 @@
                 <div class="coord-chat-threads">
                     <div class="coord-chat-threads-header">
                         <span>Conversations</span>
+                        <button class="btn btn-primary btn-sm" style="padding:4px 10px;font-size:.75rem" onclick="openOrgChatPicker()">+ New Chat</button>
                     </div>
                     <div id="coord-threads-list" style="overflow-y:auto;flex:1"></div>
                 </div>
@@ -503,61 +581,92 @@
 
         <!-- Analytics section -->
         <div id="section-analytics" style="display:none">
-            <div class="portal-header">
-                <h1>Network Analytics</h1>
-                <button class="btn btn-outline btn-sm don-export-btn" onclick="downloadCsv('meeting-report')">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                    Meeting Report
-                </button>
-            </div>
-            <div class="coord-date-range">
-                <label for="coord-a-from">From</label>
-                <input type="date" id="coord-a-from">
-                <label for="coord-a-to">To</label>
-                <input type="date" id="coord-a-to">
-                <button class="btn btn-primary btn-sm" onclick="loadCoordAnalytics()">Apply</button>
-                <button class="btn btn-outline btn-sm" onclick="setCoordPreset(30)">Last 30 days</button>
-                <button class="btn btn-outline btn-sm" onclick="setCoordPreset(7)">Last 7 days</button>
-            </div>
-            <div class="coord-kpi-grid" id="coord-kpi-grid">
-                <div class="coord-kpi-card accent-green">
-                    <div class="coord-kpi-label">Needs fulfilled</div>
-                    <div class="coord-kpi-value color-green" id="coord-kpi-fulfilled">-</div>
-                    <div class="coord-kpi-sub">In selected period</div>
+            <div class="an-section-header">
+                <div>
+                    <h1 style="font-size:1.25rem;font-weight:700;margin:0">Network Analytics</h1>
+                    <p class="an-section-sub">Track donations, needs, and transfers across all organizations</p>
                 </div>
-                <div class="coord-kpi-card accent-blue">
-                    <div class="coord-kpi-label">Donations delivered</div>
-                    <div class="coord-kpi-value color-blue" id="coord-kpi-delivered">-</div>
-                    <div class="coord-kpi-sub">In selected period</div>
-                </div>
-                <div class="coord-kpi-card accent-amber">
-                    <div class="coord-kpi-label">Transfers completed</div>
-                    <div class="coord-kpi-value color-amber" id="coord-kpi-transfers">-</div>
-                    <div class="coord-kpi-sub">In selected period</div>
-                </div>
-                <div class="coord-kpi-card accent-red">
-                    <div class="coord-kpi-label">Pending donations</div>
-                    <div class="coord-kpi-value color-red" id="coord-kpi-pending">-</div>
-                    <div class="coord-kpi-sub">In pipeline now</div>
+                <div style="display:flex;gap:.5rem;align-items:center;flex-wrap:wrap">
+                    <select id="coord-an-org-filter" class="form-control" style="min-width:200px;font-size:.8125rem">
+                        <option value="">All Organizations</option>
+                    </select>
+                    <input type="date" id="coord-a-from" class="form-control" style="width:140px;font-size:.8125rem">
+                    <span style="color:var(--color-text-muted);font-size:.8125rem">to</span>
+                    <input type="date" id="coord-a-to" class="form-control" style="width:140px;font-size:.8125rem">
+                    <button class="btn btn-outline btn-sm" onclick="setCoordPreset(7)">7d</button>
+                    <button class="btn btn-outline btn-sm" onclick="setCoordPreset(30)">30d</button>
+                    <button class="btn btn-primary btn-sm" onclick="loadCoordAnalytics()">Apply</button>
+                    <button class="btn btn-outline btn-sm don-export-btn" onclick="downloadCsv('meeting-report')">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                        Report
+                    </button>
                 </div>
             </div>
-            <div class="coord-analytics-card">
-                <h4>Donations received &mdash; daily</h4>
-                <div class="coord-col-chart" id="coord-chart-daily">
-                    <div class="coord-chart-empty">Select a date range and click Apply</div>
+
+            <!-- KPI Row -->
+            <div class="an-kpi-row" id="coord-kpi-grid">
+                <div class="an-kpi-card" style="border-top:3px solid var(--color-accent)">
+                    <div class="an-kpi-label">Needs Fulfilled</div>
+                    <div class="an-kpi-value" id="coord-kpi-fulfilled" style="color:var(--color-accent)">—</div>
+                    <div class="an-kpi-sub">In period</div>
+                </div>
+                <div class="an-kpi-card" style="border-top:3px solid var(--color-primary)">
+                    <div class="an-kpi-label">Donations Delivered</div>
+                    <div class="an-kpi-value" id="coord-kpi-delivered" style="color:var(--color-primary)">—</div>
+                    <div class="an-kpi-sub">In period</div>
+                </div>
+                <div class="an-kpi-card" style="border-top:3px solid #d97706">
+                    <div class="an-kpi-label">Transfers Completed</div>
+                    <div class="an-kpi-value" id="coord-kpi-transfers" style="color:#d97706">—</div>
+                    <div class="an-kpi-sub">In period</div>
+                </div>
+                <div class="an-kpi-card" style="border-top:3px solid var(--color-critical)">
+                    <div class="an-kpi-label">Pending Donations</div>
+                    <div class="an-kpi-value" id="coord-kpi-pending" style="color:var(--color-critical)">—</div>
+                    <div class="an-kpi-sub">In pipeline now</div>
+                </div>
+                <div class="an-kpi-card" style="border-top:3px solid #7c3aed">
+                    <div class="an-kpi-label">Active Needs</div>
+                    <div class="an-kpi-value" id="coord-kpi-active-needs" style="color:#7c3aed">—</div>
+                    <div class="an-kpi-sub">Across network</div>
+                </div>
+                <div class="an-kpi-card" style="border-top:3px solid #0891b2">
+                    <div class="an-kpi-label">Organizations</div>
+                    <div class="an-kpi-value" id="coord-kpi-orgs" style="color:#0891b2">—</div>
+                    <div class="an-kpi-sub">In network</div>
                 </div>
             </div>
-            <div class="coord-analytics-grid" style="margin-top:.75rem">
-                <div class="coord-analytics-card">
-                    <h4>Donation pipeline breakdown</h4>
-                    <div id="coord-chart-pipeline">
-                        <div class="coord-chart-empty">Loading...</div>
+
+            <!-- Chart row 1: Pipeline donut + Daily bar -->
+            <div class="dashboard-row" style="margin-top:16px">
+                <div class="card">
+                    <div class="card-header"><h3>Donation Pipeline</h3></div>
+                    <div class="an-donut-wrap">
+                        <canvas id="coord-chart-pipeline" width="200" height="200"></canvas>
+                        <div class="an-legend" id="coord-pipeline-legend"></div>
                     </div>
                 </div>
-                <div class="coord-analytics-card">
-                    <h4>Period summary</h4>
-                    <div id="coord-period-summary">
-                        <div class="coord-chart-empty">Loading...</div>
+                <div class="card">
+                    <div class="card-header"><h3>Donations — Daily Trend</h3></div>
+                    <div style="position:relative;height:200px">
+                        <canvas id="coord-chart-daily"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Chart row 2: Needs by urgency + Top categories -->
+            <div class="dashboard-row" style="margin-top:12px">
+                <div class="card">
+                    <div class="card-header"><h3>Needs by Urgency</h3></div>
+                    <div class="an-donut-wrap">
+                        <canvas id="coord-chart-urgency" width="200" height="200"></canvas>
+                        <div class="an-legend" id="coord-urgency-legend"></div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header"><h3>Top Need Categories</h3></div>
+                    <div style="position:relative;height:200px">
+                        <canvas id="coord-chart-categories"></canvas>
                     </div>
                 </div>
             </div>
@@ -670,12 +779,13 @@
     </div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <script src="/socket.io/socket.io.js"></script>
 <script src="/js/api.js"></script>
 <script src="/js/utils.js"></script>
 <script>
     (function hideModals() {
-        const modals = ['org-modal', 'staff-modal', 'transfer-modal'];
+        const modals = ['org-modal', 'staff-modal', 'transfer-modal', 'org-chat-picker-modal'];
         modals.forEach(id => { const el = document.getElementById(id); if (el) el.style.display = 'none'; });
     })();
     const CAT_LABELS = {
@@ -729,7 +839,7 @@
         }
     }
 
-    const ALL_SECTIONS = ['overview', 'organizations', 'staff', 'needs', 'donations', 'inventory', 'surplus-requests', 'transfers', 'chat', 'analytics', 'insights'];
+    const ALL_SECTIONS = ['overview', 'organizations', 'staff', 'needs', 'donations', 'inventory', 'transfers', 'chat', 'analytics', 'insights'];
 
     function showSection(name, linkEl) {
         ALL_SECTIONS.forEach(s => {
@@ -744,7 +854,6 @@
         if (name === 'needs' && !allNeedsData.length) loadAllNeeds();
         if (name === 'donations' && !allDonationsData.length) loadDonations();
         if (name === 'inventory') loadNetworkInventory();
-        if (name === 'surplus-requests') loadSurplusRequests();
         if (name === 'transfers') loadTransfers();
         if (name === 'chat') loadCoordChatThreads();
         if (name === 'analytics') loadCoordAnalytics();
@@ -767,27 +876,27 @@
         const d = data.donations;
         document.getElementById('overview-metrics').innerHTML = `
             <div class="metric-card">
-                <div class="metric-label">Organizations</div>
+                <div class="metric-label"><span class="metric-icon">🏢</span>Organizations</div>
                 <div class="metric-value">${data.total_orgs}</div>
                 <div class="metric-sub">GMHSC Network</div>
             </div>
-            <div class="metric-card">
-                <div class="metric-label">Active Needs</div>
+            <div class="metric-card accent-primary">
+                <div class="metric-label"><span class="metric-icon">📌</span>Active Needs</div>
                 <div class="metric-value">${data.active_needs}</div>
-                <div class="metric-sub">Unfulfilled</div>
+                <div class="metric-sub">Unfulfilled across network</div>
             </div>
-            <div class="metric-card">
-                <div class="metric-label">Critical</div>
+            <div class="metric-card accent-high">
+                <div class="metric-label"><span class="metric-icon">🚨</span>Critical</div>
                 <div class="metric-value">${data.critical_needs}</div>
-                <div class="metric-sub">Require action</div>
+                <div class="metric-sub">Require immediate action</div>
             </div>
-            <div class="metric-card">
-                <div class="metric-label">Pending</div>
+            <div class="metric-card accent-accent">
+                <div class="metric-label"><span class="metric-icon">💝</span>Pending Donations</div>
                 <div class="metric-value">${d.pending}</div>
-                <div class="metric-sub">Donations unmatched</div>
+                <div class="metric-sub">Awaiting matching</div>
             </div>
             <div class="metric-card">
-                <div class="metric-label">Expiring Soon</div>
+                <div class="metric-label"><span class="metric-icon">⏰</span>Expiring Soon</div>
                 <div class="metric-value">${data.expiring_soon || 0}</div>
                 <div class="metric-sub">Within 30 days</div>
             </div>`;
@@ -868,6 +977,72 @@
                 <td class="text-sm text-muted">${o.last_inventory_update ? timeAgo(o.last_inventory_update) : '<span style="color:var(--color-critical)">Never</span>'}</td>
                 <td><button class="btn btn-ghost btn-sm" onclick="openEditOrg('${escHtml(o.id)}')">Edit</button></td>
             </tr>`).join('');
+    }
+
+    function openCreateOrg() {
+        document.getElementById('org-modal-title').textContent = 'Add Organization';
+        document.getElementById('org-edit-id').value = '';
+        document.getElementById('org-name').value = '';
+        document.getElementById('org-category').value = '';
+        document.getElementById('org-address').value = '';
+        document.getElementById('org-email').value = '';
+        document.getElementById('org-phone').value = '';
+        document.getElementById('org-website').value = '';
+        document.getElementById('org-modal').style.display = 'flex';
+    }
+
+    function openEditOrg(id) {
+        const o = allOrgsData.find(x => x.id === id);
+        if (!o) { toast('Organization not found.', 'error'); return; }
+        document.getElementById('org-modal-title').textContent = 'Edit Organization';
+        document.getElementById('org-edit-id').value = o.id;
+        document.getElementById('org-name').value = o.name || '';
+        document.getElementById('org-category').value = o.category || '';
+        document.getElementById('org-address').value = o.address || '';
+        document.getElementById('org-email').value = o.contact_email || '';
+        document.getElementById('org-phone').value = o.phone || '';
+        document.getElementById('org-website').value = o.website || '';
+        document.getElementById('org-modal').style.display = 'flex';
+    }
+
+    function closeOrgModal() {
+        document.getElementById('org-modal').style.display = 'none';
+    }
+
+    async function saveOrg() {
+        const nameEl = document.getElementById('org-name');
+        const catEl  = document.getElementById('org-category');
+        clearFormErrors(document.getElementById('org-modal'));
+        let valid = validateRequired(nameEl, 'Please enter the organization name.');
+        valid = validateRequired(catEl, 'Please select a category.') && valid;
+        if (!valid) return;
+        const btn = document.getElementById('org-save-btn');
+        btn.disabled = true;
+        const editId = document.getElementById('org-edit-id').value;
+        const data = {
+            name: nameEl.value.trim(),
+            category: catEl.value,
+            address: document.getElementById('org-address').value.trim(),
+            contact_email: document.getElementById('org-email').value.trim(),
+            phone: document.getElementById('org-phone').value.trim(),
+            website: document.getElementById('org-website').value.trim()
+        };
+        try {
+            if (editId) {
+                await coordinator.updateOrg(editId, data);
+                toast('Organization updated.', 'success');
+            } else {
+                await coordinator.createOrg(data);
+                toast('Organization created.', 'success');
+            }
+            closeOrgModal();
+            allOrgsData = [];
+            loadOrgs();
+        } catch (err) {
+            toast(err.message || 'Failed to save organization.', 'error');
+        } finally {
+            btn.disabled = false;
+        }
     }
 
     async function loadStaff() {
@@ -996,84 +1171,371 @@
         }
     }
 
-    async function loadAllNeeds() {
-        const params = {
-            urgency: document.getElementById('needs-urgency-filter').value,
-            search:  document.getElementById('needs-search').value
-        };
+    // ── Network Inventory ────────────────────────────────────
+    let _invNetSort = { field: 'org_name', dir: 'asc' };
+
+    async function loadNetworkInventory() {
         try {
-            const res = await coordinator.needs(params);
-            allNeedsData = res.data || [];
-            renderAllNeeds();
+            const res = await coordinator.inventory({});
+            allInventoryData = res.data || [];
+            // Populate org dropdown
+            const orgSel = document.getElementById('inv-org-filter');
+            const prev = orgSel.value;
+            const orgs = [...new Set(allInventoryData.map(i => i.org_name).filter(Boolean))].sort();
+            orgSel.innerHTML = '<option value="">All organizations</option>' + orgs.map(o => `<option value="${escHtml(o)}" ${o === prev ? 'selected' : ''}>${escHtml(o)}</option>`).join('');
+            document.getElementById('inv-search-input').addEventListener('input', debounce(() => renderNetworkInventory(), 300));
+            renderNetworkInventory();
         } catch (err) {
-            document.getElementById('all-needs-tbody').innerHTML = `<tr><td colspan="7"><div class="inline-notice error">${escHtml(err.message)}</div></td></tr>`;
+            document.getElementById('inventory-tbody').innerHTML = `<tr><td colspan="8"><div class="inline-notice error">${escHtml(err.message)}</div></td></tr>`;
         }
     }
 
-    function renderAllNeeds() {
-        const tbody = document.getElementById('all-needs-tbody');
-        if (!allNeedsData.length) {
-            tbody.innerHTML = '<tr><td colspan="7"><div class="empty-state"><p>No needs match your filters.</p></div></td></tr>';
+    function toggleInvNetSort(field) {
+        if (_invNetSort.field === field) { _invNetSort.dir = _invNetSort.dir === 'asc' ? 'desc' : 'asc'; }
+        else { _invNetSort.field = field; _invNetSort.dir = 'asc'; }
+        document.querySelectorAll('[id^="ni-sort-"]').forEach(el => el.textContent = '▾');
+        const icon = document.getElementById('ni-sort-' + field);
+        if (icon) icon.textContent = _invNetSort.dir === 'asc' ? '▴' : '▾';
+        renderNetworkInventory();
+    }
+
+    function renderNetworkInventory() {
+        const search = (document.getElementById('inv-search-input')?.value || '').toLowerCase();
+        const orgF   = document.getElementById('inv-org-filter').value;
+        const statF  = document.getElementById('inv-status-filter').value;
+        const catF   = document.getElementById('inv-category-filter').value;
+
+        let data = allInventoryData.filter(i => {
+            if (orgF  && i.org_name !== orgF) return false;
+            if (statF && i.status   !== statF) return false;
+            if (catF  && i.category !== catF) return false;
+            if (search && !i.item_name?.toLowerCase().includes(search) && !i.org_name?.toLowerCase().includes(search)) return false;
+            return true;
+        });
+
+        data = data.slice().sort((a, b) => {
+            const f = _invNetSort.field;
+            let av = a[f], bv = b[f];
+            if (f === 'quantity') { av = Number(av) || 0; bv = Number(bv) || 0; }
+            else if (f === 'expiry_date' || f === 'updated_at') { av = av ? new Date(av) : new Date(0); bv = bv ? new Date(bv) : new Date(0); }
+            else { av = String(av || '').toLowerCase(); bv = String(bv || '').toLowerCase(); }
+            return _invNetSort.dir === 'asc' ? (av < bv ? -1 : av > bv ? 1 : 0) : (av > bv ? -1 : av < bv ? 1 : 0);
+        });
+
+        document.getElementById('inv-results-count').textContent = `${data.length} result${data.length !== 1 ? 's' : ''}`;
+        const tbody = document.getElementById('inventory-tbody');
+        if (!data.length) {
+            tbody.innerHTML = '<tr><td colspan="8"><div class="empty-state"><p>No items match your filters.</p></div></td></tr>';
             return;
         }
-        tbody.innerHTML = allNeedsData.map(n => `
+        tbody.innerHTML = data.map(i => `
+            <tr>
+                <td><strong>${escHtml(i.org_name)}</strong></td>
+                <td>${escHtml(i.item_name)}</td>
+                <td><span class="badge">${escHtml(i.category || '')}</span></td>
+                <td>${escHtml(String(i.quantity))}</td>
+                <td class="text-muted">${escHtml(i.unit || '')}</td>
+                <td><span class="badge badge-status-${escHtml(i.status || 'available')}">${escHtml(i.status || 'available')}</span></td>
+                <td class="text-xs text-muted">${i.expiry_date ? formatDate(i.expiry_date) : '—'}</td>
+                <td class="text-xs text-muted">${timeAgo(i.updated_at)}</td>
+            </tr>`).join('');
+    }
+
+    // ── Transfers ────────────────────────────────────────────
+    function renderTransfers() {
+        const search = (document.getElementById('transfer-search')?.value || '').toLowerCase();
+        const statF  = document.getElementById('transfer-status-filter').value;
+        let data = transfersData.filter(t => {
+            if (statF && t.status !== statF) return false;
+            if (search && !t.item_name?.toLowerCase().includes(search) &&
+                !t.from_org_name?.toLowerCase().includes(search) &&
+                !t.to_org_name?.toLowerCase().includes(search)) return false;
+            return true;
+        });
+        document.getElementById('transfer-results-count').textContent = `${data.length} result${data.length !== 1 ? 's' : ''}`;
+        const tbody = document.getElementById('transfers-tbody');
+        if (!data.length) {
+            tbody.innerHTML = '<tr><td colspan="9"><div class="empty-state"><p>No transfers match filters.</p></div></td></tr>';
+            return;
+        }
+        tbody.innerHTML = data.map(t => `
+            <tr>
+                <td><strong>${escHtml(t.from_org_name)}</strong></td>
+                <td><strong>${escHtml(t.to_org_name)}</strong></td>
+                <td>${escHtml(t.item_name)}</td>
+                <td><span class="badge">${escHtml(t.category || '—')}</span></td>
+                <td>${escHtml(String(t.quantity))} ${escHtml(t.unit || '')}</td>
+                <td><span class="badge badge-${escHtml(t.status)}">${escHtml(t.status)}</span></td>
+                <td class="text-xs text-muted">${escHtml(t.notes || '—')}</td>
+                <td class="text-xs text-muted">${timeAgo(t.created_at)}</td>
+                <td>${t.status !== 'completed' && t.status !== 'cancelled' ? `
+                    <select class="don-status-select" onchange="updateTransferStatus('${escHtml(t.id)}', this.value)">
+                        <option value="">Change</option>
+                        <option value="in_transit">In Transit</option>
+                        <option value="completed">Completed</option>
+                        <option value="cancelled">Cancelled</option>
+                    </select>` : `<span class="text-muted text-xs">—</span>`}</td>
+            </tr>`).join('');
+    }
+
+    // ── Org Chat Picker ──────────────────────────────────────
+    let _orgChatPickerData = [];
+
+    async function openOrgChatPicker() {
+        try {
+            const res = await coordinator.staff({});
+            // Exclude coordinators — only show staff members
+            _orgChatPickerData = (res.data || []).filter(s => s.role === 'staff');
+            const searchEl = document.getElementById('org-chat-picker-search');
+            searchEl.value = '';
+            filterOrgChatList();
+            document.getElementById('org-chat-picker-modal').style.display = 'flex';
+            // Defeat browser autofill which fires after display
+            setTimeout(() => { searchEl.value = ''; filterOrgChatList(); }, 100);
+        } catch (err) {
+            toast('Failed to load staff members.', 'error');
+        }
+    }
+
+    function closeOrgChatPicker() {
+        document.getElementById('org-chat-picker-modal').style.display = 'none';
+    }
+
+    function filterOrgChatList() {
+        const q = (document.getElementById('org-chat-picker-search').value || '').toLowerCase();
+        const list = document.getElementById('org-chat-picker-list');
+        const filtered = _orgChatPickerData.filter(s =>
+            (`${s.first_name} ${s.last_name}`).toLowerCase().includes(q) ||
+            (s.org_name || '').toLowerCase().includes(q) ||
+            (s.email || '').toLowerCase().includes(q)
+        );
+        list.innerHTML = filtered.map(s => `
+            <div style="padding:10px 16px;cursor:pointer;border-bottom:1px solid var(--color-border-lt)" onclick="startCoordStaffChat('${escHtml(s.id)}')">
+                <div class="text-sm" style="font-weight:600">${escHtml(s.first_name)} ${escHtml(s.last_name)}</div>
+                <div class="text-xs text-muted">${escHtml(s.org_name || '')}${s.role ? ' · ' + escHtml(s.role) : ''}</div>
+            </div>`).join('') || '<div class="text-sm text-muted" style="padding:16px">No staff members found</div>';
+    }
+
+    async function startCoordStaffChat(staffId) {
+        closeOrgChatPicker();
+        try {
+            const res = await coordinator.createDirectThread(staffId);
+            await loadCoordChatThreads();
+            const threadId = res.data?.id;
+            if (threadId) selectCoordThread(threadId);
+        } catch (err) {
+            toast(err.message || 'Failed to start conversation.', 'error');
+        }
+    }
+
+    let _coordAnCharts = {};
+
+    let _needsSort = { field: 'urgency', dir: 'asc' };
+    const URGENCY_ORDER = { critical: 0, high: 1, medium: 2, low: 3 };
+
+    async function loadAllNeeds() {
+        try {
+            const res = await coordinator.needs({});
+            allNeedsData = res.data || [];
+            // Populate org dropdown
+            const orgSel = document.getElementById('needs-org-filter');
+            const prev = orgSel.value;
+            const orgs = [...new Set(allNeedsData.map(n => n.org_name).filter(Boolean))].sort();
+            orgSel.innerHTML = '<option value="">All organizations</option>' + orgs.map(o => `<option value="${escHtml(o)}" ${o === prev ? 'selected' : ''}>${escHtml(o)}</option>`).join('');
+            renderAllNeeds();
+        } catch (err) {
+            document.getElementById('all-needs-tbody').innerHTML = `<tr><td colspan="6"><div class="inline-notice error">${escHtml(err.message)}</div></td></tr>`;
+        }
+    }
+
+    function applyNeedsFilters() { renderAllNeeds(); }
+
+    function toggleNeedsSort(field) {
+        if (_needsSort.field === field) {
+            _needsSort.dir = _needsSort.dir === 'asc' ? 'desc' : 'asc';
+        } else {
+            _needsSort.field = field;
+            _needsSort.dir = 'asc';
+        }
+        document.querySelectorAll('[id^="cn-sort-"]').forEach(el => el.textContent = '▾');
+        const icon = document.getElementById('cn-sort-' + field);
+        if (icon) icon.textContent = _needsSort.dir === 'asc' ? '▴' : '▾';
+        renderAllNeeds();
+    }
+
+    function renderAllNeeds() {
+        const search   = (document.getElementById('needs-search').value || '').toLowerCase();
+        const orgF     = document.getElementById('needs-org-filter').value;
+        const catF     = document.getElementById('needs-category-filter').value;
+        const urgF     = document.getElementById('needs-urgency-filter').value;
+
+        let data = allNeedsData.filter(n => {
+            if (orgF && n.org_name !== orgF) return false;
+            if (catF && n.category !== catF) return false;
+            if (urgF && n.urgency !== urgF) return false;
+            if (search && !n.item_name?.toLowerCase().includes(search) && !n.org_name?.toLowerCase().includes(search)) return false;
+            return true;
+        });
+
+        // Sort
+        data = data.slice().sort((a, b) => {
+            const f = _needsSort.field;
+            let av = a[f], bv = b[f];
+            if (f === 'urgency') { av = URGENCY_ORDER[av] ?? 9; bv = URGENCY_ORDER[bv] ?? 9; }
+            else if (f === 'quantity_needed') { av = Number(av) || 0; bv = Number(bv) || 0; }
+            else if (f === 'created_at') { av = new Date(av); bv = new Date(bv); }
+            else { av = String(av || '').toLowerCase(); bv = String(bv || '').toLowerCase(); }
+            return _needsSort.dir === 'asc' ? (av < bv ? -1 : av > bv ? 1 : 0) : (av > bv ? -1 : av < bv ? 1 : 0);
+        });
+
+        document.getElementById('needs-results-count').textContent = `${data.length} result${data.length !== 1 ? 's' : ''}`;
+        const tbody = document.getElementById('all-needs-tbody');
+        if (!data.length) {
+            tbody.innerHTML = '<tr><td colspan="6"><div class="empty-state"><p>No needs match your filters.</p></div></td></tr>';
+            return;
+        }
+        tbody.innerHTML = data.map(n => `
             <tr>
                 <td><strong>${escHtml(n.org_name)}</strong></td>
                 <td>${escHtml(n.item_name)}</td>
-                <td>${escHtml(n.category)}</td>
-                <td>${escHtml(String(n.quantity_needed))} ${escHtml(n.unit)}</td>
+                <td><span class="badge">${escHtml(n.category)}</span></td>
+                <td>${escHtml(String(n.quantity_needed))} ${escHtml(n.unit || '')}</td>
                 <td><span class="badge badge-${escHtml(n.urgency)}">${escHtml(n.urgency)}</span></td>
-                <td class="text-xs text-muted">${escHtml(n.notes || '—')}</td>
                 <td class="text-xs text-muted">${timeAgo(n.created_at)}</td>
             </tr>`).join('');
     }
 
+    let _coordDonSort = { field: '', dir: 'asc' };
+
     async function loadDonations() {
-        const status = document.getElementById('donation-status-filter').value;
         try {
-            const res = await coordinator.donations(status ? { status } : {});
+            const res = await coordinator.donations({});
             allDonationsData = res.data || [];
+            initCoordDonationFilters();
+            updateCoordDonPillCounts();
             renderDonations();
         } catch (err) {
             document.getElementById('donations-tbody').innerHTML = `<tr><td colspan="7"><div class="inline-notice error">${escHtml(err.message)}</div></td></tr>`;
         }
     }
 
-    function renderDonations() {
-        const tbody = document.getElementById('donations-tbody');
-        if (!allDonationsData.length) {
-            tbody.innerHTML = '<tr><td colspan="7"><div class="empty-state"><p>No donations match the current filter.</p></div></td></tr>';
-            return;
-        }
-        tbody.innerHTML = allDonationsData.map(d => `
-            <tr>
-                <td><strong>${escHtml(d.item_name)}</strong></td>
-                <td>${escHtml(String(d.quantity))} ${escHtml(d.unit)}</td>
-                <td>${escHtml(d.donor_name)}<div class="text-xs text-muted">${escHtml(d.donor_email)}</div></td>
-                <td>${d.matched_org_name ? escHtml(d.matched_org_name) : '<span class="text-muted">Unmatched</span>'}</td>
-                <td><span class="badge badge-${escHtml(d.status)}">${escHtml(d.status)}</span></td>
-                <td class="text-xs text-muted">${formatDate(d.created_at)}</td>
-                <td>
-                    <select class="form-control" style="font-size:.75rem;padding:.25rem .5rem;min-width:120px" onchange="updateDonationStatus('${escHtml(d.id)}', this.value)" ${d.status === 'delivered' ? 'disabled' : ''}>
-                        <option value="">Change status</option>
-                        <option value="pending" ${d.status === 'pending' ? 'selected' : ''}>Pending</option>
-                        <option value="matched" ${d.status === 'matched' ? 'selected' : ''}>Matched</option>
-                        <option value="confirmed" ${d.status === 'confirmed' ? 'selected' : ''}>Confirmed</option>
-                        <option value="delivered" ${d.status === 'delivered' ? 'selected' : ''}>Delivered</option>
-                    </select>
-                </td>
-            </tr>`).join('');
+    function updateCoordDonPillCounts() {
+        const counts = {
+            '': allDonationsData.length,
+            'pending':   allDonationsData.filter(d => d.status === 'pending').length,
+            'matched':   allDonationsData.filter(d => d.status === 'matched').length,
+            'confirmed': allDonationsData.filter(d => d.status === 'confirmed').length,
+            'delivered': allDonationsData.filter(d => d.status === 'delivered').length
+        };
+        const labels = { '': 'All', 'pending': 'Pending', 'matched': 'Matched', 'confirmed': 'Confirmed', 'delivered': 'Delivered' };
+        document.querySelectorAll('#coord-don-status-pills .don-pill').forEach(btn => {
+            const s = btn.getAttribute('data-status');
+            btn.textContent = `${labels[s]} (${counts[s] ?? 0})`;
+        });
     }
 
-    async function updateDonationStatus(id, status) {
+    function getCoordDonStatusFilter() {
+        return document.querySelector('#coord-don-status-pills .don-pill.active')?.getAttribute('data-status') || '';
+    }
+
+    function getCoordFilteredDonations() {
+        const search = (document.getElementById('coord-don-search')?.value || '').toLowerCase().trim();
+        const statusF = getCoordDonStatusFilter();
+        return allDonationsData.filter(d => {
+            if (statusF && d.status !== statusF) return false;
+            if (search) {
+                return (d.item_name || '').toLowerCase().includes(search) ||
+                       (d.donor_name || '').toLowerCase().includes(search) ||
+                       (d.matched_org_name || '').toLowerCase().includes(search);
+            }
+            return true;
+        });
+    }
+
+    function initCoordDonationFilters() {
+        if (window._coordDonFiltersInit) return;
+        window._coordDonFiltersInit = true;
+        document.getElementById('coord-don-search')?.addEventListener('input', () => renderDonations());
+        document.querySelectorAll('#coord-don-status-pills .don-pill').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('#coord-don-status-pills .don-pill').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                renderDonations();
+            });
+        });
+    }
+
+    function sortCoordDonations(field) {
+        if (_coordDonSort.field === field) { _coordDonSort.dir = _coordDonSort.dir === 'asc' ? 'desc' : 'asc'; }
+        else { _coordDonSort.field = field; _coordDonSort.dir = 'asc'; }
+        ['item_name','quantity','status'].forEach(f => {
+            const el = document.getElementById('cd-sort-' + f);
+            if (el) el.textContent = _coordDonSort.field === f ? (_coordDonSort.dir === 'asc' ? '▲' : '▼') : '▾';
+        });
+        renderDonations();
+    }
+
+    function renderDonations() {
+        const tbody = document.getElementById('donations-tbody');
+        let donations = getCoordFilteredDonations();
+        // Sort
+        if (_coordDonSort.field) {
+            donations = [...donations].sort((a, b) => {
+                let va = a[_coordDonSort.field] ?? '', vb = b[_coordDonSort.field] ?? '';
+                if (_coordDonSort.field === 'quantity') { va = Number(va); vb = Number(vb); }
+                else { va = String(va).toLowerCase(); vb = String(vb).toLowerCase(); }
+                return _coordDonSort.dir === 'asc' ? (va < vb ? -1 : va > vb ? 1 : 0) : (va > vb ? -1 : va < vb ? 1 : 0);
+            });
+        }
+        if (!donations.length) {
+            tbody.innerHTML = `<tr><td colspan="7"><div class="empty-state"><p>No donations match the current filter.</p></div></td></tr>`;
+            return;
+        }
+        const STATUS_LABELS = { pending: 'Pending', matched: 'Matched', confirmed: 'Confirmed', delivered: 'Delivered' };
+        tbody.innerHTML = donations.map(d => {
+            const st = d.status || 'pending';
+            return `<tr>
+                <td><strong>${escHtml(d.item_name)}</strong></td>
+                <td>${escHtml(String(d.quantity))} ${escHtml(d.unit || '')}</td>
+                <td><span class="don-donor-name">${escHtml(d.donor_name)}</span></td>
+                <td><a class="don-contact-link" href="mailto:${escHtml(d.donor_email)}">${escHtml(d.donor_email)}</a></td>
+                <td>${d.donor_phone ? `<a class="don-contact-link" href="tel:${escHtml(d.donor_phone)}">${escHtml(d.donor_phone)}</a>` : '<span class="text-muted">—</span>'}</td>
+                <td>${d.matched_org_name ? `<strong>${escHtml(d.matched_org_name)}</strong>` : '<span class="text-muted">Unmatched</span>'}</td>
+                <td>
+                    <select class="don-status-select don-status-${escHtml(st)}" onchange="updateCoordDonationStatus('${escHtml(d.id)}', this.value)" ${st === 'delivered' ? 'disabled' : ''}>
+                        <option value="pending"   ${st === 'pending'   ? 'selected' : ''}>Pending</option>
+                        <option value="matched"   ${st === 'matched'   ? 'selected' : ''}>Matched</option>
+                        <option value="confirmed" ${st === 'confirmed' ? 'selected' : ''}>Confirmed</option>
+                        <option value="delivered" ${st === 'delivered' ? 'selected' : ''}>Delivered</option>
+                    </select>
+                </td>
+            </tr>`;
+        }).join('');
+    }
+
+    async function updateCoordDonationStatus(id, status) {
         if (!status) return;
         try {
             await coordinator.updateDonationStatus(id, status);
             toast('Donation status updated.', 'success');
+            allDonationsData = [];
             await loadDonations();
         } catch (err) {
             toast(err.message || 'Failed to update status.', 'error');
+            await loadDonations();
         }
+    }
+
+    function exportCoordDonationsExcel() {
+        const rows = [['Item', 'Quantity', 'Unit', 'Donor', 'Email', 'Phone', 'Matched To', 'Status']];
+        allDonationsData.forEach(d => {
+            rows.push([d.item_name, d.quantity, d.unit || '', d.donor_name, d.donor_email, d.donor_phone || '', d.matched_org_name || 'Unmatched', d.status]);
+        });
+        const csv = rows.map(r => r.map(v => `"${String(v || '').replace(/"/g, '""')}"`).join(',')).join('\n');
+        const blob = new Blob([csv], { type: 'text/csv' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a'); a.href = url; a.download = 'donations.csv'; a.click();
+        URL.revokeObjectURL(url);
     }
 
     let surplusRequestsData = [];
@@ -1127,34 +1589,12 @@
 
     let transfersData = [];
     async function loadTransfers() {
-        const status = document.getElementById('transfer-status-filter').value;
         try {
-            const res = await coordinator.transfers(status ? { status } : {});
+            const res = await coordinator.transfers({});
             transfersData = res.data || [];
-            const tbody = document.getElementById('transfers-tbody');
-            if (!transfersData.length) {
-                tbody.innerHTML = '<tr><td colspan="7"><div class="empty-state"><p>No surplus transfers.</p></div></td></tr>';
-                return;
-            }
-            tbody.innerHTML = transfersData.map(t => `
-                <tr>
-                    <td>${escHtml(t.from_org_name)}</td>
-                    <td>${escHtml(t.to_org_name)}</td>
-                    <td>${escHtml(t.item_name)}</td>
-                    <td>${escHtml(String(t.quantity))} ${escHtml(t.unit)}</td>
-                    <td><span class="badge badge-${escHtml(t.status)}">${escHtml(t.status)}</span></td>
-                    <td class="text-xs text-muted">${timeAgo(t.created_at)}</td>
-                    <td>${t.status !== 'completed' && t.status !== 'cancelled' ? `
-                        <select class="form-control" style="font-size:.75rem;padding:.25rem .5rem;min-width:120px" onchange="updateTransferStatus('${escHtml(t.id)}', this.value)">
-                            <option value="">Change status</option>
-                            <option value="in_transit" ${t.status === 'in_transit' ? 'selected' : ''}>In Transit</option>
-                            <option value="completed" ${t.status === 'completed' ? 'selected' : ''}>Completed</option>
-                            <option value="cancelled">Cancelled</option>
-                        </select>
-                    ` : '—'}</td>
-                </tr>`).join('');
+            renderTransfers();
         } catch (err) {
-            document.getElementById('transfers-tbody').innerHTML = `<tr><td colspan="7"><div class="inline-notice error">${escHtml(err.message)}</div></td></tr>`;
+            document.getElementById('transfers-tbody').innerHTML = `<tr><td colspan="9"><div class="inline-notice error">${escHtml(err.message)}</div></td></tr>`;
         }
     }
 
@@ -1315,9 +1755,7 @@
     }
 
     // Filter event listeners
-    document.getElementById('needs-urgency-filter').addEventListener('change', () => { allNeedsData = []; loadAllNeeds(); });
-    document.getElementById('needs-search').addEventListener('input', debounce(() => { allNeedsData = []; loadAllNeeds(); }, 400));
-    document.getElementById('donation-status-filter').addEventListener('change', () => { allDonationsData = []; loadDonations(); });
+    document.getElementById('needs-search').addEventListener('input', debounce(() => renderAllNeeds(), 300));
 
     function debounce(fn, delay) {
         let t;
@@ -1341,54 +1779,120 @@
         loadCoordAnalytics();
     }
 
+    function _destroyCoordChart(id) {
+        if (_coordAnCharts[id]) { _coordAnCharts[id].destroy(); delete _coordAnCharts[id]; }
+    }
+
+    function _makeDonut(canvasId, legendId, labels, data, colors) {
+        _destroyCoordChart(canvasId);
+        const canvas = document.getElementById(canvasId);
+        if (!canvas) return;
+        const total = data.reduce((a, b) => a + b, 0);
+        if (!total) { canvas.parentElement.innerHTML = '<div class="text-center text-muted" style="padding:2rem;font-size:.875rem">No data</div>'; return; }
+        _coordAnCharts[canvasId] = new Chart(canvas, {
+            type: 'doughnut',
+            data: { labels, datasets: [{ data, backgroundColor: colors, borderWidth: 2, borderColor: '#fff' }] },
+            options: { responsive: false, cutout: '70%', plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => ` ${ctx.label}: ${ctx.parsed} (${Math.round(ctx.parsed/total*100)}%)` } } } }
+        });
+        if (legendId) {
+            document.getElementById(legendId).innerHTML = labels.map((l, i) =>
+                `<div class="an-legend-item"><span style="background:${colors[i]};width:10px;height:10px;border-radius:50%;display:inline-block;margin-right:5px"></span><span>${escHtml(l)}</span><span style="margin-left:auto;font-weight:600">${data[i]}</span></div>`
+            ).join('');
+        }
+    }
+
     async function loadCoordAnalytics() {
         const from = document.getElementById('coord-a-from').value;
-        const to = document.getElementById('coord-a-to').value;
+        const to   = document.getElementById('coord-a-to').value;
         if (!from || !to) return;
+
+        // Populate org filter if needed
+        if (allOrgsData.length) {
+            const sel = document.getElementById('coord-an-org-filter');
+            if (sel.options.length <= 1) {
+                sel.innerHTML = '<option value="">All Organizations</option>' + allOrgsData.map(o => `<option value="${escHtml(o.id)}">${escHtml(o.name)}</option>`).join('');
+            }
+        } else if (!allOrgsData.length) {
+            try { const r = await coordinator.orgs(); allOrgsData = r.data || []; } catch {}
+        }
+
         try {
-            const [analyticsRes, overviewRes] = await Promise.all([coordinator.analytics({ from, to }), coordinator.overview()]);
+            const orgId = document.getElementById('coord-an-org-filter')?.value || '';
+            const params = { from, to };
+            if (orgId) params.org_id = orgId;
+            const [analyticsRes, overviewRes] = await Promise.all([
+                coordinator.analytics(params),
+                coordinator.overview()
+            ]);
             const d = analyticsRes.data || {};
             const ov = overviewRes.data || {};
-            document.getElementById('coord-kpi-fulfilled').textContent = d.needs_fulfilled ?? '-';
-            document.getElementById('coord-kpi-delivered').textContent = d.donations_delivered ?? '-';
-            document.getElementById('coord-kpi-transfers').textContent = d.transfers_completed ?? '-';
-            document.getElementById('coord-kpi-pending').textContent = (ov.donations && ov.donations.pending) ?? '-';
-            const dailyEl = document.getElementById('coord-chart-daily');
-            const byDay = d.donations_by_day || [];
-            if (byDay.length) {
-                const maxVal = Math.max(...byDay.map(x => x.count || 0), 1);
-                dailyEl.innerHTML = byDay.map(day => `
-                    <div class="coord-col-bar">
-                        <div class="coord-col-bar-fill" style="height:${((day.count || 0) / maxVal) * 100}%"></div>
-                        <span class="coord-col-bar-val">${day.count || 0}</span>
-                        <span class="coord-col-bar-label">${(day.day || '').slice(5)}</span>
-                    </div>`).join('');
-            } else {
-                dailyEl.innerHTML = '<div class="coord-chart-empty">No data for this period</div>';
+            const don = ov.donations || {};
+
+            // KPIs
+            document.getElementById('coord-kpi-fulfilled').textContent = d.needs_fulfilled ?? '0';
+            document.getElementById('coord-kpi-delivered').textContent = d.donations_delivered ?? '0';
+            document.getElementById('coord-kpi-transfers').textContent = d.transfers_completed ?? '0';
+            document.getElementById('coord-kpi-pending').textContent   = don.pending ?? '0';
+            document.getElementById('coord-kpi-active-needs').textContent = ov.active_needs ?? '0';
+            document.getElementById('coord-kpi-orgs').textContent     = ov.total_orgs ?? '0';
+
+            // Pipeline donut
+            const p = d.donations_pipeline || don;
+            _makeDonut('coord-chart-pipeline', 'coord-pipeline-legend',
+                ['Pending', 'Matched', 'Confirmed', 'Delivered'],
+                [p.pending||0, p.matched||0, p.confirmed||0, p.delivered||0],
+                ['#f59e0b', '#6366f1', '#10b981', '#3b82f6']
+            );
+
+            // Daily bar chart
+            _destroyCoordChart('coord-chart-daily');
+            const dailyCanvas = document.getElementById('coord-chart-daily');
+            if (dailyCanvas && (d.donations_by_day || []).length) {
+                const byDay = d.donations_by_day;
+                _coordAnCharts['coord-chart-daily'] = new Chart(dailyCanvas, {
+                    type: 'bar',
+                    data: {
+                        labels: byDay.map(x => (x.day||'').slice(5)),
+                        datasets: [{ label: 'Donations', data: byDay.map(x => x.count||0), backgroundColor: '#3b82f6', borderRadius: 4 }]
+                    },
+                    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } } }
+                });
+            } else if (dailyCanvas) {
+                dailyCanvas.parentElement.innerHTML = '<div class="text-center text-muted" style="padding:2rem;font-size:.875rem">No data for this period</div>';
             }
-            const pipelineEl = document.getElementById('coord-chart-pipeline');
-            const p = d.donations_pipeline || {};
-            if (p.pending !== undefined || p.matched !== undefined || p.confirmed !== undefined || p.delivered !== undefined) {
-                const total = (p.pending || 0) + (p.matched || 0) + (p.confirmed || 0) + (p.delivered || 0) || 1;
-                pipelineEl.innerHTML = `
-                    <div class="coord-funnel">
-                        <div class="coord-funnel-step"><div class="coord-funnel-step-bg" style="background:var(--color-primary);opacity:.8"></div><span class="coord-funnel-label">Pending</span><span class="coord-funnel-count">${p.pending || 0}</span></div>
-                        <div class="coord-funnel-step"><div class="coord-funnel-step-bg" style="background:#059669;opacity:.8"></div><span class="coord-funnel-label">Matched</span><span class="coord-funnel-count">${p.matched || 0}</span></div>
-                        <div class="coord-funnel-step"><div class="coord-funnel-step-bg" style="background:#D97706;opacity:.8"></div><span class="coord-funnel-label">Confirmed</span><span class="coord-funnel-count">${p.confirmed || 0}</span></div>
-                        <div class="coord-funnel-step"><div class="coord-funnel-step-bg" style="background:#DC2626;opacity:.8"></div><span class="coord-funnel-label">Delivered</span><span class="coord-funnel-count">${p.delivered || 0}</span></div>
-                    </div>`;
-            } else {
-                pipelineEl.innerHTML = '<div class="coord-chart-empty">No pipeline data</div>';
+
+            // Needs by urgency donut
+            const urgency = d.needs_by_urgency || {};
+            _makeDonut('coord-chart-urgency', 'coord-urgency-legend',
+                ['Critical', 'High', 'Medium', 'Low'],
+                [urgency.critical||0, urgency.high||0, urgency.medium||0, urgency.low||0],
+                ['#dc2626', '#f97316', '#f59e0b', '#6b7280']
+            );
+
+            // Top categories bar
+            _destroyCoordChart('coord-chart-categories');
+            const catCanvas = document.getElementById('coord-chart-categories');
+            if (catCanvas) {
+                const cats = d.needs_by_category || {};
+                const catEntries = Object.entries(cats).sort((a,b) => b[1]-a[1]).slice(0, 7);
+                if (catEntries.length) {
+                    _coordAnCharts['coord-chart-categories'] = new Chart(catCanvas, {
+                        type: 'bar',
+                        data: {
+                            labels: catEntries.map(([k]) => k),
+                            datasets: [{ label: 'Needs', data: catEntries.map(([,v]) => v), backgroundColor: '#059669', borderRadius: 4 }]
+                        },
+                        options: { indexAxis: 'y', responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { beginAtZero: true, ticks: { stepSize: 1 } } } }
+                    });
+                } else {
+                    catCanvas.parentElement.innerHTML = '<div class="text-center text-muted" style="padding:2rem;font-size:.875rem">No category data</div>';
+                }
             }
-            const summaryEl = document.getElementById('coord-period-summary');
-            const period = d.period || {};
-            summaryEl.innerHTML = `<p class="text-sm">Period: ${period.from || from} to ${period.to || to}. Delivered: ${d.donations_delivered ?? 0}, Fulfilled: ${d.needs_fulfilled ?? 0}, Transfers: ${d.transfers_completed ?? 0}.</p>`;
         } catch (err) {
-            document.getElementById('coord-kpi-fulfilled').textContent = '-';
-            document.getElementById('coord-kpi-delivered').textContent = '-';
-            document.getElementById('coord-kpi-transfers').textContent = '-';
-            document.getElementById('coord-kpi-pending').textContent = '-';
-            document.getElementById('coord-chart-daily').innerHTML = '<div class="coord-chart-empty">Failed to load</div>';
+            ['coord-kpi-fulfilled','coord-kpi-delivered','coord-kpi-transfers','coord-kpi-pending','coord-kpi-active-needs','coord-kpi-orgs'].forEach(id => {
+                const el = document.getElementById(id); if (el) el.textContent = '—';
+            });
+            toast('Failed to load analytics.', 'error');
         }
     }
 
@@ -1416,7 +1920,8 @@
         selectedCoordThread = threadId;
         document.querySelectorAll('.coord-thread-item').forEach(el => { el.classList.remove('active'); if (el.dataset.threadId === threadId) el.classList.add('active'); });
         const thread = coordChatThreads.find(t => t.id === threadId);
-        document.getElementById('coord-chat-title').textContent = thread ? (thread.other_name || 'Chat') : 'Select a conversation';
+        const otherNameFn = t => (t.staff_first_name && t.staff_last_name) ? `${t.staff_first_name} ${t.staff_last_name}` : (t.org_name || t.peer_org_name || 'Chat');
+        document.getElementById('coord-chat-title').textContent = thread ? otherNameFn(thread) : 'Select a conversation';
         document.getElementById('coord-chat-input-wrap').style.display = 'flex';
         loadCoordMessages(threadId);
     }
