@@ -41,7 +41,6 @@ CommonGround connects three groups in one web application:
 - **Boilerplate and scaffolding** — Express routes, MySQL models, API structure
 - **Chat functionality** — In-app messaging (org channels, direct to coordinator, cross-org threads), Socket.IO integration, thread and message models
 - **Analytics page** — Chart.js dashboards, date-range filters, donation and needs charts for staff and coordinator views
-- **Donation matching logic** — Rule-based scoring algorithm (category, item name, urgency, quantity fit)
 - **Security middleware** — Input sanitization, SQL injection blocking, rate limiting
 - **Debugging and documentation** — Error handling, inline comments, README content
 
