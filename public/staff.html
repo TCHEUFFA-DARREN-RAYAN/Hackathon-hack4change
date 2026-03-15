@@ -20,6 +20,10 @@
     </div>
     <div class="topbar-actions">
         <span class="text-muted" id="nav-org-name"></span>
+        <button class="topbar-bell" title="Notifications" aria-label="Notifications">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+            <span class="topbar-bell-badge">3</span>
+        </button>
         <button class="topbar-toggle-btn" onclick="toggleLocale()" id="locale-toggle-btn" title="Switch language">EN</button>
         <div class="theme-toggle" onclick="toggleDarkMode()" role="button" tabindex="0" id="dark-mode-btn" title="Toggle dark mode">
             <div class="theme-toggle-thumb"></div>
@@ -90,24 +94,24 @@
         <div id="section-dashboard">
             <div class="metrics-row" id="dashboard-metrics">
                 <div class="metric-card">
-                    <div class="metric-label"><span class="metric-icon">👥</span><span data-i18n="dash.total_users">Total users</span></div>
+                    <div class="metric-label">Total donors</div>
                     <div class="metric-value skeleton" style="height:2rem;width:50px;display:inline-block"></div>
-                    <div class="metric-sub" data-i18n="dash.staff_volunteers">Staff & volunteers</div>
+                    <div class="metric-sub">Unique contributors</div>
                 </div>
-                <div class="metric-card accent-primary">
-                    <div class="metric-label"><span class="metric-icon">📌</span><span data-i18n="dash.open_needs">Open needs</span></div>
+                <div class="metric-card">
+                    <div class="metric-label">Open needs</div>
                     <div class="metric-value skeleton" style="height:2rem;width:50px;display:inline-block"></div>
-                    <div class="metric-sub" data-i18n="dash.needs_to_fulfill">Needs to fulfill</div>
+                    <div class="metric-sub">Needs to fulfill</div>
                 </div>
-                <div class="metric-card accent-accent">
-                    <div class="metric-label"><span class="metric-icon">📦</span><span data-i18n="dash.available_resources">Available resources</span></div>
+                <div class="metric-card">
+                    <div class="metric-label">Available stock</div>
                     <div class="metric-value skeleton" style="height:2rem;width:50px;display:inline-block"></div>
-                    <div class="metric-sub" data-i18n="dash.items_in_stock">Items in stock</div>
+                    <div class="metric-sub">Items in inventory</div>
                 </div>
-                <div class="metric-card accent-high">
-                    <div class="metric-label"><span class="metric-icon">💝</span><span data-i18n="dash.pending_donations">Pending donations</span></div>
+                <div class="metric-card">
+                    <div class="metric-label">Pending donations</div>
                     <div class="metric-value skeleton" style="height:2rem;width:50px;display:inline-block"></div>
-                    <div class="metric-sub" data-i18n="dash.awaiting_confirmation">Awaiting confirmation</div>
+                    <div class="metric-sub">Awaiting receipt</div>
                 </div>
             </div>
             <div class="dashboard-row">
@@ -130,12 +134,6 @@
                         <button class="btn btn-primary btn-sm" onclick="navigateAndOpenNeed()" data-i18n="dash.post_a_need">+ Post a need</button>
                     </div>
                     <div id="dashboard-needs-list"></div>
-                    <div class="dash-view-more-wrap">
-                        <button class="dash-view-more-btn" onclick="showSection('needs', document.querySelector('[data-section=needs]'))">
-                            <span data-i18n="dash.view_all_needs">View all needs</span>
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
-                        </button>
-                    </div>
                 </div>
             </div>
         </div>
@@ -424,39 +422,39 @@
                 </div>
 
                 <div class="an-kpi-row" id="an-kpi-row">
-                    <div class="an-kpi-card" style="border-top:3px solid var(--color-primary)">
+                    <div class="an-kpi-card">
                         <div class="an-kpi-label">Total Inventory</div>
-                        <div class="an-kpi-value" id="an-kpi-total" style="color:var(--color-primary)">—</div>
+                        <div class="an-kpi-value" id="an-kpi-total">—</div>
                         <div class="an-kpi-sub">Unique items tracked</div>
                     </div>
-                    <div class="an-kpi-card" style="border-top:3px solid var(--color-accent)">
+                    <div class="an-kpi-card">
                         <div class="an-kpi-label">Total Stock Units</div>
-                        <div class="an-kpi-value" id="an-kpi-stock-units" style="color:var(--color-accent)">—</div>
+                        <div class="an-kpi-value" id="an-kpi-stock-units">—</div>
                         <div class="an-kpi-sub">Across all items</div>
                     </div>
-                    <div class="an-kpi-card" style="border-top:3px solid #ef4444">
+                    <div class="an-kpi-card">
                         <div class="an-kpi-label">Critical / Low</div>
-                        <div class="an-kpi-value" id="an-kpi-critical" style="color:#ef4444">—</div>
+                        <div class="an-kpi-value" id="an-kpi-critical">—</div>
                         <div class="an-kpi-sub">Items need restocking</div>
                     </div>
-                    <div class="an-kpi-card" style="border-top:3px solid #f59e0b">
+                    <div class="an-kpi-card">
                         <div class="an-kpi-label">Open Needs</div>
-                        <div class="an-kpi-value" id="an-kpi-needs" style="color:#f59e0b">—</div>
+                        <div class="an-kpi-value" id="an-kpi-needs">—</div>
                         <div class="an-kpi-sub">Unfulfilled requests</div>
                     </div>
-                    <div class="an-kpi-card" style="border-top:3px solid #10b981">
+                    <div class="an-kpi-card">
                         <div class="an-kpi-label">Fulfillment Rate</div>
-                        <div class="an-kpi-value" id="an-kpi-fulfilled" style="color:#10b981">—</div>
+                        <div class="an-kpi-value" id="an-kpi-fulfilled">—</div>
                         <div class="an-kpi-sub">Needs fully received</div>
                     </div>
-                    <div class="an-kpi-card" style="border-top:3px solid #8b5cf6">
+                    <div class="an-kpi-card">
                         <div class="an-kpi-label">Total Donations</div>
-                        <div class="an-kpi-value" id="an-kpi-donations-total" style="color:#8b5cf6">—</div>
+                        <div class="an-kpi-value" id="an-kpi-donations-total">—</div>
                         <div class="an-kpi-sub">All time received</div>
                     </div>
-                    <div class="an-kpi-card" style="border-top:3px solid #0891b2">
+                    <div class="an-kpi-card">
                         <div class="an-kpi-label">Donation Rate</div>
-                        <div class="an-kpi-value" id="an-kpi-donation-rate" style="color:#0891b2">—</div>
+                        <div class="an-kpi-value" id="an-kpi-donation-rate">—</div>
                         <div class="an-kpi-sub">Confirmed vs pending</div>
                     </div>
                 </div>
@@ -919,25 +917,25 @@
         const pendingDonations = donationsData.filter(d => d.status === 'matched' || d.status === 'pending').length;
 
         document.getElementById('dashboard-metrics').innerHTML = `
-            <div class="metric-card" style="border-top:3px solid #6366f1">
-                <div class="metric-label"><span class="metric-icon">👥</span>Total donors</div>
+            <div class="metric-card">
+                <div class="metric-label">Total donors</div>
                 <div class="metric-value">${totalDonors}</div>
-                <div class="metric-sub">unique contributors</div>
+                <div class="metric-sub">Unique contributors</div>
             </div>
-            <div class="metric-card" style="border-top:3px solid #f59e0b">
-                <div class="metric-label"><span class="metric-icon">📌</span>Open needs</div>
+            <div class="metric-card">
+                <div class="metric-label">Open needs</div>
                 <div class="metric-value">${openNeeds}</div>
-                <div class="metric-sub">needs to fulfill</div>
+                <div class="metric-sub">Needs to fulfill</div>
             </div>
-            <div class="metric-card" style="border-top:3px solid #2563eb">
-                <div class="metric-label"><span class="metric-icon">📦</span>Available stock</div>
+            <div class="metric-card">
+                <div class="metric-label">Available stock</div>
                 <div class="metric-value">${itemsInStock}</div>
-                <div class="metric-sub">items in inventory</div>
+                <div class="metric-sub">Items in inventory</div>
             </div>
-            <div class="metric-card" style="border-top:3px solid #10b981">
-                <div class="metric-label"><span class="metric-icon">💝</span>Pending donations</div>
+            <div class="metric-card">
+                <div class="metric-label">Pending donations</div>
                 <div class="metric-value">${pendingDonations}</div>
-                <div class="metric-sub">awaiting receipt</div>
+                <div class="metric-sub">Awaiting receipt</div>
             </div>`;
 
         renderDashboardInventory();
@@ -988,7 +986,9 @@
         const urgencyOrder = { critical: 0, high: 1, medium: 2, low: 3 };
         const sorted = [...needs].sort((a, b) => (urgencyOrder[a.urgency] || 4) - (urgencyOrder[b.urgency] || 4));
 
-        const items = sorted.slice(0, 5).map(n => {
+        const PREVIEW = 6;
+
+        function buildNeedCard(n) {
             const received = Number(n.quantity_received) || 0;
             const needed = Number(n.quantity_needed) || 0;
             const total = received + needed;
@@ -1012,9 +1012,27 @@
                         <button class="btn-receive-supply btn-sm" onclick="openFulfillAmountModal('${escHtml(n.id)}', ${escHtml(String(n.quantity_needed))}, '${escHtml(n.item_name).replace(/'/g, "\\'")}')">Update</button>
                     </div>
                 </div>`;
-        });
+        }
 
-        container.innerHTML = items.join('');
+        const preview = sorted.slice(0, PREVIEW).map(buildNeedCard).join('');
+        const rest    = sorted.slice(PREVIEW).map(buildNeedCard).join('');
+        const remaining = sorted.length - PREVIEW;
+
+        let html = preview;
+        if (remaining > 0) {
+            html += `<div id="dash-needs-extra" style="display:none">${rest}</div>`;
+            html += `<button id="dash-needs-toggle" class="dash-view-more-btn" style="margin-top:.25rem" onclick="
+                var extra = document.getElementById('dash-needs-extra');
+                var btn   = document.getElementById('dash-needs-toggle');
+                var open  = extra.style.display === 'none';
+                extra.style.display = open ? '' : 'none';
+                btn.innerHTML = open
+                    ? 'Show less <svg width=\\'14\\' height=\\'14\\' viewBox=\\'0 0 24 24\\' fill=\\'none\\' stroke=\\'currentColor\\' stroke-width=\\'2\\'><polyline points=\\'18 15 12 9 6 15\\'/></svg>'
+                    : 'View all ${remaining} more <svg width=\\'14\\' height=\\'14\\' viewBox=\\'0 0 24 24\\' fill=\\'none\\' stroke=\\'currentColor\\' stroke-width=\\'2\\'><polyline points=\\'9 18 15 12 9 6\\'/></svg>';
+            ">View all ${remaining} more <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></button>`;
+        }
+
+        container.innerHTML = html;
     }
 
 
