@@ -57,8 +57,14 @@ class InventoryModel {
     }
 
     static async create(data) {
-        const id = randomUUID();
         const { org_id, item_name, category, quantity, target_quantity, unit, expiry_date, notes } = data;
+        const existing = await this.findByOrgAndItem(org_id, item_name, category);
+        if (existing) {
+            const err = new Error(`An inventory item "${item_name}" in category "${category}" already exists. Use a different category or unit to add a separate entry.`);
+            err.code = 'DUPLICATE_INVENTORY';
+            throw err;
+        }
+        const id = randomUUID();
         const q = quantity || 0;
         const t = target_quantity != null ? target_quantity : 0;
         const status = computeStatus(q, t);
