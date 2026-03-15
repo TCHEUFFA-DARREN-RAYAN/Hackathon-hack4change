@@ -485,7 +485,6 @@
                 <div class="coord-chat-threads">
                     <div class="coord-chat-threads-header">
                         <span>Conversations</span>
-                        <button class="btn btn-primary btn-sm" style="padding:4px 10px;font-size:.75rem" onclick="openStaffPicker()">+ Message Staff</button>
                     </div>
                     <div id="coord-threads-list" style="overflow-y:auto;flex:1"></div>
                 </div>
@@ -630,21 +629,6 @@
 </div>
 
 <!-- Staff Picker Modal (for Chat) -->
-<div id="staff-picker-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:1100;align-items:flex-start;justify-content:center;padding-top:80px">
-    <div class="card" style="width:100%;max-width:400px;max-height:520px;display:flex;flex-direction:column">
-        <div class="card-header">
-            <div>
-                <h3 style="margin:0;font-size:.9375rem;font-weight:600">Message a Staff Member</h3>
-                <p style="margin:2px 0 0;font-size:.8125rem;color:var(--color-text-muted)">Select a staff member to start a direct conversation</p>
-            </div>
-            <button class="btn btn-ghost btn-sm" onclick="closeStaffPicker()">Close</button>
-        </div>
-        <div style="padding:10px 16px;border-bottom:1px solid var(--color-border-lt)">
-            <input id="staff-picker-search" class="form-control" placeholder="Search staff..." oninput="filterStaffPickerList()" autocomplete="off">
-        </div>
-        <div id="staff-picker-list" style="overflow-y:auto;flex:1;padding:6px 0"></div>
-    </div>
-</div>
 
 <!-- Create Transfer Modal -->
 <div id="transfer-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:1000;align-items:center;justify-content:center;padding:1rem">
@@ -691,7 +675,7 @@
 <script src="/js/utils.js"></script>
 <script>
     (function hideModals() {
-        const modals = ['staff-picker-modal', 'org-modal', 'staff-modal', 'transfer-modal'];
+        const modals = ['org-modal', 'staff-modal', 'transfer-modal'];
         modals.forEach(id => { const el = document.getElementById(id); if (el) el.style.display = 'none'; });
     })();
     const CAT_LABELS = {
@@ -711,7 +695,6 @@
     let allInventoryData = [];
     let coordChatThreads = [];
     let selectedCoordThread = null;
-    let staffPickerData = [];
 
     async function init() {
         const user = await requireAuth('coordinator');
@@ -1409,46 +1392,6 @@
         }
     }
 
-    async function openStaffPicker() {
-        try {
-            const res = await coordinator.staff({});
-            staffPickerData = res.data || [];
-            document.getElementById('staff-picker-search').value = '';
-            filterStaffPickerList();
-            document.getElementById('staff-picker-modal').style.display = 'flex';
-        } catch (err) {
-            toast(err.message || 'Failed to load staff.', 'error');
-        }
-    }
-
-    function closeStaffPicker() {
-        document.getElementById('staff-picker-modal').style.display = 'none';
-    }
-
-    function filterStaffPickerList() {
-        const q = (document.getElementById('staff-picker-search').value || '').toLowerCase();
-        const list = document.getElementById('staff-picker-list');
-        const filtered = staffPickerData.filter(s => {
-            const name = `${(s.first_name || '')} ${(s.last_name || '')}`.toLowerCase();
-            const email = (s.email || '').toLowerCase();
-            return name.includes(q) || email.includes(q) || (s.org_name || '').toLowerCase().includes(q);
-        });
-        list.innerHTML = filtered.map(s => `
-            <div class="coord-staff-picker-item" onclick="selectStaffForChat('${escHtml(s.id)}')" style="padding:10px 16px;cursor:pointer;border-bottom:1px solid var(--color-border-lt)">
-                <div class="text-sm" style="font-weight:600">${escHtml(s.first_name || '')} ${escHtml(s.last_name || '')}</div>
-                <div class="text-xs text-muted">${escHtml(s.email || '')} &middot; ${escHtml(s.org_name || '')}</div>
-            </div>`).join('') || '<div class="text-sm text-muted" style="padding:16px">No staff found</div>';
-    }
-
-    async function selectStaffForChat(staffId) {
-        closeStaffPicker();
-        try {
-            await coordinator.createDirectThread(staffId);
-            loadCoordChatThreads();
-        } catch (err) {
-            toast(err.message || 'Failed to start conversation.', 'error');
-        }
-    }
 
     async function loadCoordChatThreads() {
         try {
@@ -1463,7 +1406,7 @@
                         <div class="coord-thread-name">${escHtml(otherName(t))}</div>
                         <div class="coord-thread-preview">${escHtml(t.last_preview || t.org_name || '')}</div>
                     </div>
-                </div>`).join('') || '<div class="text-sm text-muted" style="padding:12px">No conversations yet. Click + Message Staff to start.</div>';
+                </div>`).join('') || '<div class="text-sm text-muted" style="padding:12px">No conversations yet.</div>';
         } catch (err) {
             document.getElementById('coord-threads-list').innerHTML = '<div class="text-sm text-muted" style="padding:12px">Failed to load</div>';
         }
