@@ -869,7 +869,7 @@
         currentUser = await requireAuth('staff');
         if (!currentUser) return;
 
-        document.getElementById('nav-org-name').textContent = currentUser.orgName || '';
+        document.getElementById('nav-org-name').textContent = currentUser.name || '';
         document.getElementById('sidebar-org-name').textContent = currentUser.orgName || '';
         document.getElementById('org-subtitle').textContent = currentUser.orgName || '';
         const invSearch = document.getElementById('inv-search');
