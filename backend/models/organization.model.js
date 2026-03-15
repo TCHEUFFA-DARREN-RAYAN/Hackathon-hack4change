@@ -32,7 +32,7 @@ class OrganizationModel {
         const needsByOrg = {};
         for (const n of needs) {
             if (!needsByOrg[n.org_id]) needsByOrg[n.org_id] = [];
-            if (needsByOrg[n.org_id].length < 3) needsByOrg[n.org_id].push(n);
+            needsByOrg[n.org_id].push(n);
         }
 
         return orgs.map(org => ({
