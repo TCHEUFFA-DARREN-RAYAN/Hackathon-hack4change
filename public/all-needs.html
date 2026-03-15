@@ -199,7 +199,7 @@
                     <div class="needs-list">${needsHtml}</div>
                     <div class="org-card-footer">
                         <span class="updated">${i18n.t('updated')} ${timeAgo(org.updated_at)}</span>
-                        <a href="/donate?org=${encodeURIComponent(org.id)}" class="btn btn-primary btn-sm">${i18n.t('donate')}</a>
+                        <a href="/give?org=${encodeURIComponent(org.id)}" class="btn btn-primary btn-sm">${i18n.t('donate')}</a>
                     </div>
                 </div>`;
         }).join('');
