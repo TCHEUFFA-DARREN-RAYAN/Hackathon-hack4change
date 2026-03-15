@@ -37,38 +37,38 @@
         <ul class="nav-links">
             <li><a href="#" data-section="dashboard" class="active" onclick="showSection('dashboard', this)">
                 <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
-                Dashboard
+                <span data-i18n="nav.dashboard">Dashboard</span>
             </a></li>
             <li><a href="#" data-section="inventory" onclick="showSection('inventory', this)">
                 <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 7V4a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v3"/><rect x="2" y="9" width="20" height="12" rx="2"/><path d="M12 14v4"/></svg>
-                Inventory
+                <span data-i18n="nav.inventory">Inventory</span>
             </a></li>
             <li><a href="#" data-section="needs" onclick="showSection('needs', this)">
                 <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4"/><path d="M12 18v4"/><path d="M4.93 4.93l2.83 2.83"/><path d="M16.24 16.24l2.83 2.83"/><path d="M2 12h4"/><path d="M18 12h4"/><path d="M4.93 19.07l2.83-2.83"/><path d="M16.24 7.76l2.83-2.83"/></svg>
-                Your Needs
+                <span data-i18n="nav.your_needs">Your Needs</span>
             </a></li>
             <li><a href="#" data-section="other-needs" onclick="showSection('other-needs', this)">
                 <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-                Other Needs
+                <span data-i18n="nav.other_needs">Other Needs</span>
             </a></li>
             <li><a href="#" data-section="donations" onclick="showSection('donations', this)">
                 <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 12v10H4V12"/><rect x="2" y="9" width="20" height="12" rx="2"/><path d="M12 9V2"/><path d="M8 5l4-4 4 4"/></svg>
-                Donations
+                <span data-i18n="nav.donations">Donations</span>
             </a></li>
             <li><a href="#" data-section="analytics" onclick="showSection('analytics', this)">
                 <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg>
-                Analytics
+                <span data-i18n="nav.analytics">Analytics</span>
             </a></li>
             <li><a href="#" data-section="chats" onclick="showSection('chats', this)" id="nav-chats-link">
                 <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-                Chats
+                <span data-i18n="nav.chats">Chats</span>
                 <span class="nav-unread-dot" id="chat-unread-dot" style="display:none"></span>
             </a></li>
         </ul>
         <div class="sidebar-footer">
             <button class="sidebar-signout-btn" onclick="handleLogout()">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
-                Sign out
+                <span data-i18n="nav.sign_out">Sign out</span>
             </button>
         </div>
     </aside>
@@ -87,49 +87,49 @@
         <div id="section-dashboard">
             <div class="metrics-row" id="dashboard-metrics">
                 <div class="metric-card">
-                    <div class="metric-label"><span class="metric-icon">👥</span>Total users</div>
+                    <div class="metric-label"><span class="metric-icon">👥</span><span data-i18n="dash.total_users">Total users</span></div>
                     <div class="metric-value skeleton" style="height:2rem;width:50px;display:inline-block"></div>
-                    <div class="metric-sub">Staff & volunteers</div>
+                    <div class="metric-sub" data-i18n="dash.staff_volunteers">Staff & volunteers</div>
                 </div>
                 <div class="metric-card accent-primary">
-                    <div class="metric-label"><span class="metric-icon">📌</span>Open needs</div>
+                    <div class="metric-label"><span class="metric-icon">📌</span><span data-i18n="dash.open_needs">Open needs</span></div>
                     <div class="metric-value skeleton" style="height:2rem;width:50px;display:inline-block"></div>
-                    <div class="metric-sub">Needs to fulfill</div>
+                    <div class="metric-sub" data-i18n="dash.needs_to_fulfill">Needs to fulfill</div>
                 </div>
                 <div class="metric-card accent-accent">
-                    <div class="metric-label"><span class="metric-icon">📦</span>Available resources</div>
+                    <div class="metric-label"><span class="metric-icon">📦</span><span data-i18n="dash.available_resources">Available resources</span></div>
                     <div class="metric-value skeleton" style="height:2rem;width:50px;display:inline-block"></div>
-                    <div class="metric-sub">Items in stock</div>
+                    <div class="metric-sub" data-i18n="dash.items_in_stock">Items in stock</div>
                 </div>
                 <div class="metric-card accent-high">
-                    <div class="metric-label"><span class="metric-icon">💝</span>Pending donations</div>
+                    <div class="metric-label"><span class="metric-icon">💝</span><span data-i18n="dash.pending_donations">Pending donations</span></div>
                     <div class="metric-value skeleton" style="height:2rem;width:50px;display:inline-block"></div>
-                    <div class="metric-sub">Awaiting confirmation</div>
+                    <div class="metric-sub" data-i18n="dash.awaiting_confirmation">Awaiting confirmation</div>
                 </div>
             </div>
             <div class="dashboard-row">
                 <div class="card" id="dashboard-inventory-card">
                     <div class="card-header" style="gap:10px">
-                        <h3>Inventory</h3>
-                        <button class="btn btn-primary btn-sm" onclick="navigateAndOpenInventory()">+ Add inventory</button>
+                        <h3 data-i18n="nav.inventory">Inventory</h3>
+                        <button class="btn btn-primary btn-sm" onclick="navigateAndOpenInventory()" data-i18n="dash.add_inventory">+ Add inventory</button>
                     </div>
                     <div id="dashboard-inventory-list"></div>
                     <div class="dash-view-more-wrap">
                         <button class="dash-view-more-btn" onclick="showSection('inventory', document.querySelector('[data-section=inventory]'))">
-                            View all inventory
+                            <span data-i18n="dash.view_all_inventory">View all inventory</span>
                             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
                         </button>
                     </div>
                 </div>
                 <div class="card" id="dashboard-needs-card">
                     <div class="card-header" style="gap:10px">
-                        <h3>Your needs</h3>
-                        <button class="btn btn-primary btn-sm" onclick="navigateAndOpenNeed()">+ Post a need</button>
+                        <h3 data-i18n="nav.your_needs">Your needs</h3>
+                        <button class="btn btn-primary btn-sm" onclick="navigateAndOpenNeed()" data-i18n="dash.post_a_need">+ Post a need</button>
                     </div>
                     <div id="dashboard-needs-list"></div>
                     <div class="dash-view-more-wrap">
                         <button class="dash-view-more-btn" onclick="showSection('needs', document.querySelector('[data-section=needs]'))">
-                            View all needs
+                            <span data-i18n="dash.view_all_needs">View all needs</span>
                             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
                         </button>
                     </div>
@@ -154,7 +154,7 @@
                 <div class="inv-filters-row">
                     <div class="inv-search">
                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-                        <input type="search" id="inv-search" placeholder="Search items..." autocomplete="off" aria-label="Search inventory">
+                        <input type="search" id="inv-search" placeholder="Search items..." autocomplete="off" aria-label="Search inventory" data-i18n-placeholder="placeholder.search_items">
                     </div>
                     <div class="inv-dropdown-wrap">
                         <label class="inv-dropdown-label">Category</label>
@@ -176,7 +176,7 @@
                         </select>
                     </div>
                     <span class="inv-results" id="inv-results-count">0 results</span>
-                    <button class="btn-action-primary" onclick="openAddInventory()" style="margin-left:auto">+ Add item</button>
+                    <button class="btn-action-primary" onclick="openAddInventory()" style="margin-left:auto" data-i18n="inv.add_item">+ Add item</button>
                 </div>
                 <div class="table-wrap">
                     <table class="data-table inv-table">
@@ -203,9 +203,9 @@
                     <div class="inv-toolbar-right" style="flex:1">
                         <button class="btn btn-fb-post" onclick="showFacebookPostPreview()">
                             <svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
-                            Post to Facebook
+                            <span data-i18n="needs.post_facebook">Post to Facebook</span>
                         </button>
-                        <button class="btn-action-primary" onclick="openAddNeed()">Post a need</button>
+                        <button class="btn-action-primary" onclick="openAddNeed()" data-i18n="dash.post_a_need">Post a need</button>
                     </div>
                 </div>
                 <div class="inv-filters-row">
@@ -213,7 +213,7 @@
                         <label class="inv-dropdown-label">Search</label>
                         <div class="inv-search">
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-                            <input type="search" id="needs-search" placeholder="Search items..." autocomplete="off" aria-label="Search needs">
+                            <input type="search" id="needs-search" placeholder="Search items..." autocomplete="off" aria-label="Search needs" data-i18n-placeholder="placeholder.search_items">
                         </div>
                     </div>
                     <div class="inv-dropdown-wrap">
@@ -313,16 +313,16 @@
                 <div class="don-toolbar">
                     <div class="don-search-wrap">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-                        <input type="search" id="don-search" class="don-search-input" placeholder="Search by item or donor name..." autocomplete="off">
+                        <input type="search" id="don-search" class="don-search-input" placeholder="Search by item or donor name..." autocomplete="off" data-i18n-placeholder="placeholder.search_donor">
                     </div>
                     <div class="don-pills" id="don-status-pills">
-                        <button class="don-pill" data-status="">All</button>
-                        <button class="don-pill active" data-status="pending">Pending</button>
-                        <button class="don-pill" data-status="received">Received</button>
+                        <button class="don-pill" data-status="" data-i18n="don.all">All</button>
+                        <button class="don-pill active" data-status="pending" data-i18n="don.pending">Pending</button>
+                        <button class="don-pill" data-status="received" data-i18n="don.received">Received</button>
                     </div>
                     <button class="don-export-btn" onclick="exportDonationsExcel()">
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                        Export
+                        <span data-i18n="don.export">Export</span>
                     </button>
                 </div>
                 <div class="table-wrap">
@@ -411,12 +411,12 @@
             <div class="section">
                 <div class="an-section-header">
                     <div>
-                        <h2 class="an-section-title">Analytics Overview</h2>
-                        <p class="an-section-sub">Your organization's data at a glance</p>
+                        <h2 class="an-section-title" data-i18n="analytics.overview">Analytics Overview</h2>
+                        <p class="an-section-sub" data-i18n="analytics.at_a_glance">Your organization's data at a glance</p>
                     </div>
                     <button class="don-export-btn" onclick="exportAnalyticsExcel()">
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                        Export All Data
+                        <span data-i18n="analytics.export_all">Export All Data</span>
                     </button>
                 </div>
 
@@ -547,21 +547,21 @@
             <div class="section">
                 <div class="section-header">
                     <div>
-                        <p class="text-sm text-muted" style="margin:0">Team chat, direct messages, and cross-organization coordination.</p>
+                        <p class="text-sm text-muted" style="margin:0" data-i18n="chat.description">Team chat, direct messages, and cross-organization coordination.</p>
                     </div>
-                    <button class="btn btn-primary btn-sm" onclick="openCrossOrgModal()">Contact organisation</button>
+                    <button class="btn btn-primary btn-sm" onclick="openCrossOrgModal()" data-i18n="chat.contact_org">Contact organisation</button>
                 </div>
                 <div class="chat-layout">
                     <div class="chat-threads">
-                        <div class="chat-threads-header">Conversations</div>
+                        <div class="chat-threads-header" data-i18n="chat.conversations">Conversations</div>
                         <div id="chat-threads-list"></div>
                     </div>
                     <div class="chat-panel">
-                        <div class="chat-panel-header" id="chat-panel-title">Select a conversation</div>
-                        <div class="chat-messages" id="chat-messages"><div class="chat-empty" id="chat-empty-placeholder">Select a conversation to view messages</div></div>
+                        <div class="chat-panel-header" id="chat-panel-title" data-i18n="chat.select_conversation">Select a conversation</div>
+                        <div class="chat-messages" id="chat-messages"><div class="chat-empty" id="chat-empty-placeholder" data-i18n="chat.select_to_view">Select a conversation to view messages</div></div>
                         <div class="chat-input-wrap" id="chat-input-wrap" style="display:none">
-                            <input type="text" id="chat-input" placeholder="Type a message..." onkeydown="if(event.key==='Enter')sendChatMessage()">
-                            <button class="btn btn-primary btn-sm" onclick="sendChatMessage()">Send</button>
+                            <input type="text" id="chat-input" placeholder="Type a message..." onkeydown="if(event.key==='Enter')sendChatMessage()" data-i18n-placeholder="placeholder.type_message">
+                            <button class="btn btn-primary btn-sm" onclick="sendChatMessage()" data-i18n="chat.send">Send</button>
                         </div>
                     </div>
                 </div>
@@ -882,6 +882,7 @@
         await Promise.all([loadInventory(), loadNeeds(), loadDonations(), loadExpiring()]);
         renderDashboard();
         initSocket();
+        applyLocale();
     }
 
     function showSection(name, linkEl) {
@@ -892,16 +893,9 @@
         document.querySelectorAll('#sidebar a[data-section]').forEach(a => a.classList.remove('active'));
         if (linkEl) linkEl.classList.add('active');
 
-        const titles = {
-            dashboard: 'Dashboard',
-            inventory: 'Inventory',
-            needs: 'Your Needs',
-            'other-needs': 'Other Needs',
-            donations: 'Donations',
-            analytics: 'Analytics',
-            chats: 'Chats'
-        };
-        document.getElementById('page-title').textContent = titles[name] || name;
+        const pageTitle = document.getElementById('page-title');
+        pageTitle._sectionKey = name;
+        pageTitle.textContent = t('title.' + name) || name;
 
         if (name === 'donations') {
             const pendingPill = document.querySelector('#don-status-pills .don-pill[data-status="pending"]');
@@ -2620,11 +2614,86 @@
         document.getElementById('dm-icon-sun').style.display = isDark ? 'block' : 'none';
     }
 
+    const _translations = {
+        en: {
+            'nav.dashboard': 'Dashboard', 'nav.inventory': 'Inventory', 'nav.your_needs': 'Your Needs',
+            'nav.other_needs': 'Other Needs', 'nav.donations': 'Donations', 'nav.analytics': 'Analytics',
+            'nav.chats': 'Chats', 'nav.sign_out': 'Sign out',
+            'dash.total_users': 'Total users', 'dash.staff_volunteers': 'Staff & volunteers',
+            'dash.open_needs': 'Open needs', 'dash.needs_to_fulfill': 'Needs to fulfill',
+            'dash.available_resources': 'Available resources', 'dash.items_in_stock': 'Items in stock',
+            'dash.pending_donations': 'Pending donations', 'dash.awaiting_confirmation': 'Awaiting confirmation',
+            'dash.add_inventory': '+ Add inventory', 'dash.view_all_inventory': 'View all inventory',
+            'dash.post_a_need': '+ Post a need', 'dash.view_all_needs': 'View all needs',
+            'inv.add_item': '+ Add item',
+            'needs.post_facebook': 'Post to Facebook',
+            'don.all': 'All', 'don.pending': 'Pending', 'don.received': 'Received', 'don.export': 'Export',
+            'analytics.overview': 'Analytics Overview', 'analytics.at_a_glance': "Your organization's data at a glance",
+            'analytics.export_all': 'Export All Data',
+            'chat.description': 'Team chat, direct messages, and cross-organization coordination.',
+            'chat.contact_org': 'Contact organisation', 'chat.conversations': 'Conversations',
+            'chat.select_conversation': 'Select a conversation', 'chat.select_to_view': 'Select a conversation to view messages',
+            'chat.send': 'Send',
+            'title.dashboard': 'Dashboard', 'title.inventory': 'Inventory', 'title.needs': 'Your Needs',
+            'title.other-needs': 'Other Needs', 'title.donations': 'Donations', 'title.analytics': 'Analytics',
+            'title.chats': 'Chats',
+            'placeholder.search_items': 'Search items...', 'placeholder.search_donor': 'Search by item or donor name...',
+            'placeholder.type_message': 'Type a message...'
+        },
+        fr: {
+            'nav.dashboard': 'Tableau de bord', 'nav.inventory': 'Inventaire', 'nav.your_needs': 'Vos besoins',
+            'nav.other_needs': 'Autres besoins', 'nav.donations': 'Dons', 'nav.analytics': 'Analytique',
+            'nav.chats': 'Discussions', 'nav.sign_out': 'Déconnexion',
+            'dash.total_users': 'Total utilisateurs', 'dash.staff_volunteers': 'Personnel et bénévoles',
+            'dash.open_needs': 'Besoins ouverts', 'dash.needs_to_fulfill': 'Besoins à combler',
+            'dash.available_resources': 'Ressources disponibles', 'dash.items_in_stock': 'Articles en stock',
+            'dash.pending_donations': 'Dons en attente', 'dash.awaiting_confirmation': 'En attente de confirmation',
+            'dash.add_inventory': '+ Ajouter inventaire', 'dash.view_all_inventory': 'Voir tout l\'inventaire',
+            'dash.post_a_need': '+ Publier un besoin', 'dash.view_all_needs': 'Voir tous les besoins',
+            'inv.add_item': '+ Ajouter un article',
+            'needs.post_facebook': 'Publier sur Facebook',
+            'don.all': 'Tous', 'don.pending': 'En attente', 'don.received': 'Reçus', 'don.export': 'Exporter',
+            'analytics.overview': 'Aperçu analytique', 'analytics.at_a_glance': 'Les données de votre organisme en un coup d\'œil',
+            'analytics.export_all': 'Exporter toutes les données',
+            'chat.description': 'Discussion d\'équipe, messages directs et coordination inter-organismes.',
+            'chat.contact_org': 'Contacter un organisme', 'chat.conversations': 'Conversations',
+            'chat.select_conversation': 'Sélectionner une conversation', 'chat.select_to_view': 'Sélectionnez une conversation pour voir les messages',
+            'chat.send': 'Envoyer',
+            'title.dashboard': 'Tableau de bord', 'title.inventory': 'Inventaire', 'title.needs': 'Vos besoins',
+            'title.other-needs': 'Autres besoins', 'title.donations': 'Dons', 'title.analytics': 'Analytique',
+            'title.chats': 'Discussions',
+            'placeholder.search_items': 'Rechercher des articles...', 'placeholder.search_donor': 'Rechercher par article ou nom du donateur...',
+            'placeholder.type_message': 'Écrire un message...'
+        }
+    };
+
+    let _currentLocale = 'en';
+
+    function t(key) {
+        return (_translations[_currentLocale] && _translations[_currentLocale][key]) || (_translations.en[key]) || key;
+    }
+
+    function applyLocale() {
+        document.querySelectorAll('[data-i18n]').forEach(el => {
+            const key = el.getAttribute('data-i18n');
+            const val = t(key);
+            if (val) el.textContent = val;
+        });
+        document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+            el.placeholder = t(el.getAttribute('data-i18n-placeholder'));
+        });
+        const pageTitle = document.getElementById('page-title');
+        if (pageTitle && pageTitle._sectionKey) {
+            pageTitle.textContent = t('title.' + pageTitle._sectionKey);
+        }
+    }
+
     function toggleLocale() {
+        _currentLocale = _currentLocale === 'en' ? 'fr' : 'en';
         const btn = document.getElementById('locale-toggle-btn');
-        const current = btn.textContent.trim();
-        btn.textContent = current === 'EN' ? 'FR' : 'EN';
-        localStorage.setItem('cg-locale', current === 'EN' ? 'fr' : 'en');
+        btn.textContent = _currentLocale === 'en' ? 'EN' : 'FR';
+        localStorage.setItem('cg-locale', _currentLocale);
+        applyLocale();
     }
 
     (function initTheme() {
@@ -2635,6 +2704,7 @@
         updateDarkModeIcon();
         const locale = localStorage.getItem('cg-locale');
         if (locale === 'fr') {
+            _currentLocale = 'fr';
             const btn = document.getElementById('locale-toggle-btn');
             if (btn) btn.textContent = 'FR';
         }

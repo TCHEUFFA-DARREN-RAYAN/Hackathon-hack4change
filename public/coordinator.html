@@ -24,7 +24,7 @@
             <svg id="dm-icon-sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
             <svg id="dm-icon-moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
         </button>
-        <button class="btn btn-ghost btn-sm" onclick="handleLogout()">Sign out</button>
+        <button class="btn btn-ghost btn-sm" onclick="handleLogout()" data-i18n="nav.sign_out">Sign out</button>
     </div>
 </div>
 
@@ -37,35 +37,35 @@
         <ul class="nav-links">
             <li><a href="#" data-section="overview" class="active" onclick="showSection('overview', this)">
                 <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
-                Dashboard
+                <span data-i18n="nav.dashboard">Dashboard</span>
             </a></li>
             <li><a href="#" data-section="organizations" onclick="showSection('organizations', this)">
                 <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-                Organizations
+                <span data-i18n="coord.organizations">Organizations</span>
             </a></li>
             <li><a href="#" data-section="staff" onclick="showSection('staff', this)">
                 <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-                Staff
+                <span data-i18n="coord.staff">Staff</span>
             </a></li>
             <li><a href="#" data-section="needs" onclick="showSection('needs', this)">
                 <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4"/><path d="M12 18v4"/><path d="M4.93 4.93l2.83 2.83"/><path d="M16.24 16.24l2.83 2.83"/><path d="M2 12h4"/><path d="M18 12h4"/><path d="M4.93 19.07l2.83-2.83"/><path d="M16.24 7.76l2.83-2.83"/></svg>
-                All Needs
+                <span data-i18n="coord.all_needs">All Needs</span>
             </a></li>
             <li><a href="#" data-section="donations" onclick="showSection('donations', this)">
                 <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 12v10H4V12"/><rect x="2" y="9" width="20" height="12" rx="2"/><path d="M12 9V2"/><path d="M8 5l4-4 4 4"/></svg>
-                Donations
+                <span data-i18n="nav.donations">Donations</span>
             </a></li>
             <li><a href="#" data-section="inventory" onclick="showSection('inventory', this)">
                 <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 7V4a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v3"/><rect x="2" y="9" width="20" height="12" rx="2"/><path d="M12 14v4"/></svg>
-                Inventory
+                <span data-i18n="nav.inventory">Inventory</span>
             </a></li>
             <li><a href="#" data-section="transfers" onclick="showSection('transfers', this)">
                 <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17V7m0 10l-4-4m4 4l4-4"/><path d="M17 7v10m0-10l4 4m-4-4l-4 4"/></svg>
-                Transfers
+                <span data-i18n="coord.transfers">Transfers</span>
             </a></li>
             <li><a href="#" data-section="chat" onclick="showSection('chat', this)" style="position:relative">
                 <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-                Chat
+                <span data-i18n="nav.chats">Chat</span>
                 <span id="chat-unread-badge" style="display:none;position:absolute;top:6px;right:10px;min-width:18px;height:18px;padding:0 5px;background:#ef4444;color:#fff;border-radius:9px;font-size:.65rem;font-weight:700;line-height:18px;text-align:center"></span>
             </a></li>
             <li><a href="#" data-section="analytics" onclick="showSection('analytics', this)">
@@ -80,7 +80,7 @@
         <div class="sidebar-footer">
             <button class="sidebar-signout-btn" onclick="handleLogout()">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
-                Sign out
+                <span data-i18n="nav.sign_out">Sign out</span>
             </button>
         </div>
     </aside>
@@ -2131,11 +2131,52 @@
         if (sun) sun.style.display = isDark ? 'block' : 'none';
     }
 
+    const _translations = {
+        en: {
+            'nav.dashboard': 'Dashboard', 'coord.organizations': 'Organizations', 'coord.staff': 'Staff',
+            'coord.all_needs': 'All Needs', 'nav.donations': 'Donations', 'nav.inventory': 'Inventory',
+            'coord.transfers': 'Transfers', 'nav.chats': 'Chat', 'nav.sign_out': 'Sign out',
+            'title.overview': 'Dashboard', 'title.organizations': 'Organizations', 'title.staff': 'Staff',
+            'title.needs': 'All Needs', 'title.donations': 'Donations', 'title.inventory': 'Inventory',
+            'title.transfers': 'Transfers', 'title.chat': 'Chat'
+        },
+        fr: {
+            'nav.dashboard': 'Tableau de bord', 'coord.organizations': 'Organismes', 'coord.staff': 'Personnel',
+            'coord.all_needs': 'Tous les besoins', 'nav.donations': 'Dons', 'nav.inventory': 'Inventaire',
+            'coord.transfers': 'Transferts', 'nav.chats': 'Discussions', 'nav.sign_out': 'Déconnexion',
+            'title.overview': 'Tableau de bord', 'title.organizations': 'Organismes', 'title.staff': 'Personnel',
+            'title.needs': 'Tous les besoins', 'title.donations': 'Dons', 'title.inventory': 'Inventaire',
+            'title.transfers': 'Transferts', 'title.chat': 'Discussions'
+        }
+    };
+
+    let _currentLocale = 'en';
+
+    function t(key) {
+        return (_translations[_currentLocale] && _translations[_currentLocale][key]) || (_translations.en[key]) || key;
+    }
+
+    function applyLocale() {
+        document.querySelectorAll('[data-i18n]').forEach(el => {
+            const key = el.getAttribute('data-i18n');
+            const val = t(key);
+            if (val) el.textContent = val;
+        });
+        document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+            el.placeholder = t(el.getAttribute('data-i18n-placeholder'));
+        });
+        const pageTitle = document.getElementById('page-title');
+        if (pageTitle && pageTitle._sectionKey) {
+            pageTitle.textContent = t('title.' + pageTitle._sectionKey);
+        }
+    }
+
     function toggleLocale() {
+        _currentLocale = _currentLocale === 'en' ? 'fr' : 'en';
         const btn = document.getElementById('locale-toggle-btn');
-        const current = btn.textContent.trim();
-        btn.textContent = current === 'EN' ? 'FR' : 'EN';
-        localStorage.setItem('cg-locale', current === 'EN' ? 'fr' : 'en');
+        btn.textContent = _currentLocale === 'en' ? 'EN' : 'FR';
+        localStorage.setItem('cg-locale', _currentLocale);
+        applyLocale();
     }
 
     (function initTheme() {
@@ -2146,8 +2187,10 @@
         updateDarkModeIcon();
         const locale = localStorage.getItem('cg-locale');
         if (locale === 'fr') {
+            _currentLocale = 'fr';
             const btn = document.getElementById('locale-toggle-btn');
             if (btn) btn.textContent = 'FR';
+            applyLocale();
         }
     })();
 </script>
