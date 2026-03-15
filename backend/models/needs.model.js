@@ -47,8 +47,18 @@ class NeedsModel {
     }
 
     static async create(data) {
-        const id = randomUUID();
         const { org_id, item_name, category, quantity_needed, unit, urgency, notes } = data;
+        // Block duplicates: same item name + category for the same org (case-insensitive, unfulfilled)
+        const [existing] = await promisePool.query(
+            `SELECT id FROM needs WHERE org_id = ? AND LOWER(item_name) = LOWER(?) AND category = ? AND fulfilled = 0 LIMIT 1`,
+            [org_id, item_name, category]
+        );
+        if (existing.length) {
+            const err = new Error(`A need for "${item_name}" in category "${category}" already exists.`);
+            err.code = 'DUPLICATE_NEED';
+            throw err;
+        }
+        const id = randomUUID();
         await promisePool.query(
             `INSERT INTO needs (id, org_id, item_name, category, quantity_needed, unit, urgency, notes)
              VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,

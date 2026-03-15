@@ -58,9 +58,10 @@
                 <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17V7m0 10l-4-4m4 4l4-4"/><path d="M17 7v10m0-10l4 4m-4-4l-4 4"/></svg>
                 Transfers
             </a></li>
-            <li><a href="#" data-section="chat" onclick="showSection('chat', this)">
+            <li><a href="#" data-section="chat" onclick="showSection('chat', this)" style="position:relative">
                 <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
                 Chat
+                <span id="chat-unread-badge" style="display:none;position:absolute;top:6px;right:10px;min-width:18px;height:18px;padding:0 5px;background:#ef4444;color:#fff;border-radius:9px;font-size:.65rem;font-weight:700;line-height:18px;text-align:center"></span>
             </a></li>
             <li><a href="#" data-section="analytics" onclick="showSection('analytics', this)">
                 <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg>
@@ -1375,16 +1376,23 @@
     }
 
     function renderAllNeeds() {
-        const search   = (document.getElementById('needs-search').value || '').toLowerCase();
+        const search   = (document.getElementById('needs-search').value || '').toLowerCase().trim();
         const orgF     = document.getElementById('needs-org-filter').value;
         const catF     = document.getElementById('needs-category-filter').value;
         const urgF     = document.getElementById('needs-urgency-filter').value;
 
         let data = allNeedsData.filter(n => {
+            // When a search term is active, search across ALL orgs/categories/urgencies
+            if (search) {
+                return n.item_name?.toLowerCase().includes(search) ||
+                       n.org_name?.toLowerCase().includes(search) ||
+                       n.category?.toLowerCase().includes(search) ||
+                       n.notes?.toLowerCase().includes(search);
+            }
+            // Dropdown filters only apply when no search term
             if (orgF && n.org_name !== orgF) return false;
             if (catF && n.category !== catF) return false;
             if (urgF && n.urgency !== urgF) return false;
-            if (search && !n.item_name?.toLowerCase().includes(search) && !n.org_name?.toLowerCase().includes(search)) return false;
             return true;
         });
 
@@ -1399,10 +1407,11 @@
             return _needsSort.dir === 'asc' ? (av < bv ? -1 : av > bv ? 1 : 0) : (av > bv ? -1 : av < bv ? 1 : 0);
         });
 
-        document.getElementById('needs-results-count').textContent = `${data.length} result${data.length !== 1 ? 's' : ''}`;
+        const countEl = document.getElementById('needs-results-count');
+        countEl.textContent = `${data.length} result${data.length !== 1 ? 's' : ''}${search ? ' (all orgs)' : ''}`;
         const tbody = document.getElementById('all-needs-tbody');
         if (!data.length) {
-            tbody.innerHTML = '<tr><td colspan="6"><div class="empty-state"><p>No needs match your filters.</p></div></td></tr>';
+            tbody.innerHTML = `<tr><td colspan="6"><div class="empty-state"><p>${search ? `No needs found matching "${escHtml(search)}" across the network.` : 'No needs match your filters.'}</p></div></td></tr>`;
             return;
         }
         tbody.innerHTML = data.map(n => `
@@ -1914,14 +1923,20 @@
             coordChatThreads = res.data || [];
             const list = document.getElementById('coord-threads-list');
             const otherName = t => (t.staff_first_name && t.staff_last_name) ? `${t.staff_first_name} ${t.staff_last_name}` : (t.org_name || t.peer_org_name || 'Unknown');
-            list.innerHTML = coordChatThreads.map(t => `
+            list.innerHTML = coordChatThreads.map(t => {
+                const isUnread = _unreadThreadIds.has(t.id);
+                return `
                 <div class="coord-thread-item ${selectedCoordThread === t.id ? 'active' : ''}" data-thread-id="${escHtml(t.id)}" onclick="selectCoordThread('${escHtml(t.id)}')">
-                    <div class="coord-thread-avatar">${otherName(t).charAt(0).toUpperCase()}</div>
+                    <div class="coord-thread-avatar" style="position:relative">
+                        ${otherName(t).charAt(0).toUpperCase()}
+                        ${isUnread ? '<span style="position:absolute;top:-3px;right:-3px;width:10px;height:10px;background:#ef4444;border-radius:50%;border:2px solid #fff"></span>' : ''}
+                    </div>
                     <div class="coord-thread-info">
-                        <div class="coord-thread-name">${escHtml(otherName(t))}</div>
+                        <div class="coord-thread-name" style="${isUnread ? 'font-weight:700' : ''}">${escHtml(otherName(t))}</div>
                         <div class="coord-thread-preview">${escHtml(t.last_preview || t.org_name || '')}</div>
                     </div>
-                </div>`).join('') || '<div class="text-sm text-muted" style="padding:12px">No conversations yet.</div>';
+                </div>`;
+            }).join('') || '<div class="text-sm text-muted" style="padding:12px">No conversations yet.</div>';
         } catch (err) {
             document.getElementById('coord-threads-list').innerHTML = '<div class="text-sm text-muted" style="padding:12px">Failed to load</div>';
         }
@@ -1929,7 +1944,16 @@
 
     function selectCoordThread(threadId) {
         selectedCoordThread = threadId;
+        _markThreadRead(threadId);
         document.querySelectorAll('.coord-thread-item').forEach(el => { el.classList.remove('active'); if (el.dataset.threadId === threadId) el.classList.add('active'); });
+        // Remove unread dot from this thread item
+        const threadEl = document.querySelector(`.coord-thread-item[data-thread-id="${threadId}"]`);
+        if (threadEl) {
+            const dot = threadEl.querySelector('.coord-thread-avatar span');
+            if (dot) dot.remove();
+            const nameEl = threadEl.querySelector('.coord-thread-name');
+            if (nameEl) nameEl.style.fontWeight = '';
+        }
         const thread = coordChatThreads.find(t => t.id === threadId);
         const otherNameFn = t => (t.staff_first_name && t.staff_last_name) ? `${t.staff_first_name} ${t.staff_last_name}` : (t.org_name || t.peer_org_name || 'Chat');
         document.getElementById('coord-chat-title').textContent = thread ? otherNameFn(thread) : 'Select a conversation';
@@ -2015,6 +2039,25 @@
 
     init();
 
+    // ── Unread chat tracking ──────────────────────────────────
+    let _unreadThreadIds = new Set();
+
+    function _updateChatBadge() {
+        const badge = document.getElementById('chat-unread-badge');
+        if (!badge) return;
+        const count = _unreadThreadIds.size;
+        if (count > 0) {
+            badge.textContent = count > 99 ? '99+' : count;
+            badge.style.display = 'inline-block';
+        } else {
+            badge.style.display = 'none';
+        }
+    }
+
+    function _markThreadRead(threadId) {
+        if (_unreadThreadIds.delete(threadId)) _updateChatBadge();
+    }
+
     if (typeof io !== 'undefined') {
         try {
             const socket = io({ reconnection: false, timeout: 3000 });
@@ -2028,6 +2071,18 @@
             });
             socket.on('need:fulfilled', function () {
                 if (typeof loadOverview === 'function') loadOverview();
+            });
+            socket.on('chat:newMessage', function (data) {
+                const threadId = data.threadId;
+                // Only mark unread if this thread isn't currently open
+                if (!threadId || threadId === selectedCoordThread) return;
+                _unreadThreadIds.add(threadId);
+                _updateChatBadge();
+                // Refresh thread list if chat section is visible
+                const chatSection = document.getElementById('section-chat');
+                if (chatSection && chatSection.style.display !== 'none') {
+                    loadCoordChatThreads();
+                }
             });
         } catch (e) { /* Socket.IO optional - app works without real-time updates */ }
     }

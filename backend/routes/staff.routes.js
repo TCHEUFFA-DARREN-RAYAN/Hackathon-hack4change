@@ -125,6 +125,9 @@ router.post('/needs', async (req, res) => {
         if (io) io.emit('need:new', { item_name, urgency, org_name: req.user.orgName });
         res.status(201).json({ success: true, data: need });
     } catch (err) {
+        if (err.code === 'DUPLICATE_NEED') {
+            return res.status(409).json({ success: false, message: err.message });
+        }
         console.error(err);
         res.status(500).json({ success: false, message: 'Failed to create need' });
     }
