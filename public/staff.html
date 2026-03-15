@@ -409,7 +409,6 @@
         <!-- Analytics -->
         <div id="section-analytics" style="display:none">
             <div class="section">
-                <!-- Section header with export button -->
                 <div class="an-section-header">
                     <div>
                         <h2 class="an-section-title">Analytics Overview</h2>
@@ -421,105 +420,123 @@
                     </button>
                 </div>
 
-                <!-- KPI stat row -->
                 <div class="an-kpi-row" id="an-kpi-row">
-                    <div class="an-kpi-card">
-                        <div class="an-kpi-label">Total inventory</div>
-                        <div class="an-kpi-value" id="an-kpi-total">—</div>
-                        <div class="an-kpi-sub">Across all categories</div>
+                    <div class="an-kpi-card" style="border-top:3px solid var(--color-primary)">
+                        <div class="an-kpi-label">Total Inventory</div>
+                        <div class="an-kpi-value" id="an-kpi-total" style="color:var(--color-primary)">—</div>
+                        <div class="an-kpi-sub">Unique items tracked</div>
                     </div>
-                    <div class="an-kpi-card">
-                        <div class="an-kpi-label">Critical / Low stock</div>
-                        <div class="an-kpi-value an-kpi-danger" id="an-kpi-critical">—</div>
-                        <div class="an-kpi-sub">Needs restocking</div>
+                    <div class="an-kpi-card" style="border-top:3px solid var(--color-accent)">
+                        <div class="an-kpi-label">Total Stock Units</div>
+                        <div class="an-kpi-value" id="an-kpi-stock-units" style="color:var(--color-accent)">—</div>
+                        <div class="an-kpi-sub">Across all items</div>
                     </div>
-                    <div class="an-kpi-card">
-                        <div class="an-kpi-label">Open needs</div>
-                        <div class="an-kpi-value an-kpi-warn" id="an-kpi-needs">—</div>
-                        <div class="an-kpi-sub">Posted by your org</div>
+                    <div class="an-kpi-card" style="border-top:3px solid #ef4444">
+                        <div class="an-kpi-label">Critical / Low</div>
+                        <div class="an-kpi-value" id="an-kpi-critical" style="color:#ef4444">—</div>
+                        <div class="an-kpi-sub">Items need restocking</div>
                     </div>
-                    <div class="an-kpi-card">
-                        <div class="an-kpi-label">Needs fulfilled</div>
-                        <div class="an-kpi-value an-kpi-success" id="an-kpi-fulfilled">—</div>
-                        <div class="an-kpi-sub">% fully received</div>
+                    <div class="an-kpi-card" style="border-top:3px solid #f59e0b">
+                        <div class="an-kpi-label">Open Needs</div>
+                        <div class="an-kpi-value" id="an-kpi-needs" style="color:#f59e0b">—</div>
+                        <div class="an-kpi-sub">Unfulfilled requests</div>
                     </div>
-                    <div class="an-kpi-card">
-                        <div class="an-kpi-label">Total donations</div>
-                        <div class="an-kpi-value" id="an-kpi-donations-total">—</div>
-                        <div class="an-kpi-sub">All time</div>
+                    <div class="an-kpi-card" style="border-top:3px solid #10b981">
+                        <div class="an-kpi-label">Fulfillment Rate</div>
+                        <div class="an-kpi-value" id="an-kpi-fulfilled" style="color:#10b981">—</div>
+                        <div class="an-kpi-sub">Needs fully received</div>
                     </div>
-                    <div class="an-kpi-card">
-                        <div class="an-kpi-label">Pending donations</div>
-                        <div class="an-kpi-value an-kpi-warn" id="an-kpi-donations">—</div>
-                        <div class="an-kpi-sub">Awaiting receipt</div>
+                    <div class="an-kpi-card" style="border-top:3px solid #8b5cf6">
+                        <div class="an-kpi-label">Total Donations</div>
+                        <div class="an-kpi-value" id="an-kpi-donations-total" style="color:#8b5cf6">—</div>
+                        <div class="an-kpi-sub">All time received</div>
                     </div>
-                    <div class="an-kpi-card">
-                        <div class="an-kpi-label">Donations received</div>
-                        <div class="an-kpi-value an-kpi-success" id="an-kpi-donations-received">—</div>
-                        <div class="an-kpi-sub">Confirmed</div>
+                    <div class="an-kpi-card" style="border-top:3px solid #0891b2">
+                        <div class="an-kpi-label">Donation Rate</div>
+                        <div class="an-kpi-value" id="an-kpi-donation-rate" style="color:#0891b2">—</div>
+                        <div class="an-kpi-sub">Confirmed vs pending</div>
                     </div>
                 </div>
 
-                <!-- Row 1: inventory status donut + category bar -->
                 <div class="an-row-2">
                     <div class="analytics-card">
-                        <h4>
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:-2px;margin-right:5px"><path d="M21.21 15.89A10 10 0 1 1 8 2.83"/><path d="M22 12A10 10 0 0 0 12 2v10z"/></svg>
-                            Inventory by status
-                        </h4>
+                        <h4>Inventory by Status</h4>
                         <div class="an-donut-wrap">
-                            <canvas id="chart-donut-status" width="200" height="200"></canvas>
+                            <canvas id="chart-donut-status" width="180" height="180"></canvas>
                             <div class="an-donut-legend" id="an-legend-status"></div>
                         </div>
                     </div>
                     <div class="analytics-card">
-                        <h4>
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:-2px;margin-right:5px"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg>
-                            Inventory by category
-                        </h4>
-                        <canvas id="chart-bar-category" height="200"></canvas>
+                        <h4>Inventory by Category</h4>
+                        <div style="position:relative;height:220px">
+                            <canvas id="chart-bar-category"></canvas>
+                        </div>
                     </div>
                 </div>
 
-                <!-- Row 2: needs urgency donut + fulfillment bars -->
                 <div class="an-row-2" style="margin-top:16px">
                     <div class="analytics-card">
-                        <h4>
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:-2px;margin-right:5px"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-                            Needs by urgency
-                        </h4>
+                        <h4>Needs by Urgency</h4>
                         <div class="an-donut-wrap">
-                            <canvas id="chart-donut-urgency" width="200" height="200"></canvas>
+                            <canvas id="chart-donut-urgency" width="180" height="180"></canvas>
                             <div class="an-donut-legend" id="an-legend-urgency"></div>
                         </div>
                     </div>
                     <div class="analytics-card">
-                        <h4>
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:-2px;margin-right:5px"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-                            Need fulfillment progress
-                        </h4>
+                        <h4>Need Fulfillment Progress</h4>
                         <div id="chart-fulfillment-bars"></div>
                     </div>
                 </div>
 
-                <!-- Row 3: donations donut + donations by item bar -->
                 <div class="an-row-2" style="margin-top:16px">
                     <div class="analytics-card">
-                        <h4>
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:-2px;margin-right:5px"><path d="M20 12v10H4V12"/><rect x="2" y="7" width="20" height="5"/><path d="M12 22V7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/></svg>
-                            Donations by status
-                        </h4>
+                        <h4>Donations Pipeline</h4>
                         <div class="an-donut-wrap">
-                            <canvas id="chart-donut-donations" width="200" height="200"></canvas>
+                            <canvas id="chart-donut-donations" width="180" height="180"></canvas>
                             <div class="an-donut-legend" id="an-legend-donations"></div>
                         </div>
                     </div>
                     <div class="analytics-card">
-                        <h4>
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:-2px;margin-right:5px"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg>
-                            Top donated items
-                        </h4>
+                        <h4>Top Donated Items</h4>
                         <div id="chart-donation-items"></div>
+                    </div>
+                </div>
+
+                <div class="analytics-card" style="margin-top:16px">
+                    <h4>Inventory Detail</h4>
+                    <div class="table-wrap">
+                        <table class="data-table" id="analytics-inv-table">
+                            <thead>
+                                <tr>
+                                    <th>Item</th>
+                                    <th>Category</th>
+                                    <th>Qty</th>
+                                    <th>Threshold</th>
+                                    <th>Unit</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="analytics-inv-tbody"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="analytics-card" style="margin-top:16px">
+                    <h4>Needs Tracking</h4>
+                    <div class="table-wrap">
+                        <table class="data-table" id="analytics-needs-table">
+                            <thead>
+                                <tr>
+                                    <th>Item</th>
+                                    <th>Category</th>
+                                    <th>Urgency</th>
+                                    <th>Needed</th>
+                                    <th>Received</th>
+                                    <th>Progress</th>
+                                </tr>
+                            </thead>
+                            <tbody id="analytics-needs-tbody"></tbody>
+                        </table>
                     </div>
                 </div>
             </div>
