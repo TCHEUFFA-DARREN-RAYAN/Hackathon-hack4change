@@ -6,45 +6,74 @@
     <title>Sign In — CommonGround</title>
     <link rel="stylesheet" href="/css/style.css">
 </head>
-<body>
+<body style="background:var(--color-surface);">
 
-<div class="login-page">
-    <div class="login-box">
-        <div class="login-logo">
-            <img src="/assets/images/logo.png" alt="Common Ground" class="login-logo-img">
-            <p class="login-subtitle">CommonGround Donation Coordination Network</p>
-        </div>
+<div class="login-split">
 
-        <form id="login-form" onsubmit="handleLogin(event)" novalidate>
-            <div class="form-group">
-                <label class="form-label" for="email">Email address</label>
-                <input type="email" id="email" class="form-control" autocomplete="email" placeholder="your@email.com" required>
-                <div class="form-error" id="err-email">Please enter your email address.</div>
+    <!-- Left panel: form -->
+    <div class="login-panel">
+        <div class="login-inner">
+
+            <!-- Brand -->
+            <div class="login-brand">
+                <img src="/assets/images/logo.png" alt="CommonGround logo" class="login-brand-logo">
+                <span class="login-brand-name">Common Ground</span>
             </div>
-            <div class="form-group">
-                <label class="form-label" for="password">Password</label>
-                <input type="password" id="password" class="form-control" autocomplete="current-password" placeholder="Your password" required>
-                <div class="form-error" id="err-password">Please enter your password.</div>
+
+            <!-- Heading -->
+            <div class="login-heading">
+                <h1>Welcome!</h1>
+                <p>Sign in by entering the information below</p>
             </div>
-            <div id="login-error" class="inline-notice error" style="display:none;margin-bottom:1rem"></div>
-            <button type="submit" class="btn btn-primary btn-block btn-lg" id="login-btn">Sign in</button>
-        </form>
 
-        <div style="margin-top:1.5rem;text-align:center">
-            <a href="/" class="text-sm text-muted">Back to Needs Board</a>
-        </div>
+            <!-- Error notice -->
+            <div id="login-error" class="login-error-notice"></div>
 
-        <div class="divider"></div>
-        <div style="font-size:.75rem;color:var(--color-text-light);text-align:center;line-height:1.6">
-            For access, contact your organization's administrator<br>or the CommonGround Coordinator.
+            <!-- Form -->
+            <form id="login-form" class="login-form" onsubmit="handleLogin(event)" novalidate>
+
+                <div class="form-group">
+                    <label class="form-label" for="email">Email Address</label>
+                    <input type="email" id="email" class="form-control"
+                           autocomplete="email" placeholder="email@example.com" required>
+                    <span class="form-error" id="err-email">Please enter a valid email address.</span>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="password">Password</label>
+                    <input type="password" id="password" class="form-control"
+                           autocomplete="current-password" placeholder="••••••••••••" required>
+                    <span class="form-error" id="err-password">Please enter your password.</span>
+                </div>
+
+                <label class="login-remember">
+                    <input type="checkbox" id="remember-me">
+                    Remember Me
+                </label>
+
+                <button type="submit" class="login-btn" id="login-btn">
+                    <span class="spinner"></span>
+                    <span class="btn-text">Continue</span>
+                </button>
+
+            </form>
+
         </div>
     </div>
+
+    <!-- Right panel: purple gradient + logo -->
+    <div class="login-right">
+        <div class="login-right-dots"></div>
+        <img src="/assets/images/logo.png" alt="CommonGround" class="login-right-logo">
+        <p class="login-right-tagline">CommonGround</p>
+        <p class="login-right-sub">Donation Coordination Network</p>
+    </div>
+
 </div>
 
 <script src="/js/api.js"></script>
 <script src="/js/utils.js"></script>
 <script>
-    // Check if already logged in
     (async function () {
         try {
             const res = await auth.me();
@@ -66,13 +95,15 @@
     async function handleLogin(e) {
         e.preventDefault();
 
-        const emailEl = document.getElementById('email');
-        const passEl  = document.getElementById('password');
-        const errEl   = document.getElementById('login-error');
-        const btn     = document.getElementById('login-btn');
+        const emailEl  = document.getElementById('email');
+        const passEl   = document.getElementById('password');
+        const errEl    = document.getElementById('login-error');
+        const btn      = document.getElementById('login-btn');
 
         let valid = true;
-        if (!emailEl.value.trim()) {
+
+        const emailOk = emailEl.value.trim() && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailEl.value.trim());
+        if (!emailOk) {
             emailEl.classList.add('error');
             document.getElementById('err-email').classList.add('visible');
             valid = false;
@@ -80,6 +111,7 @@
             emailEl.classList.remove('error');
             document.getElementById('err-email').classList.remove('visible');
         }
+
         if (!passEl.value) {
             passEl.classList.add('error');
             document.getElementById('err-password').classList.add('visible');
@@ -88,22 +120,23 @@
             passEl.classList.remove('error');
             document.getElementById('err-password').classList.remove('visible');
         }
+
         if (!valid) return;
 
         btn.disabled = true;
-        btn.textContent = 'Signing in...';
-        errEl.style.display = 'none';
+        btn.classList.add('loading');
+        errEl.classList.remove('visible');
 
         try {
             const res = await auth.login(emailEl.value.trim(), passEl.value);
             redirectAfterLogin(res.data);
         } catch (err) {
-            errEl.textContent = err.message || 'Sign in failed. Check your email and password.';
-            errEl.style.display = 'block';
+            errEl.textContent = err.message || 'Sign in failed. Please check your email and password.';
+            errEl.classList.add('visible');
             passEl.value = '';
         } finally {
             btn.disabled = false;
-            btn.textContent = 'Sign in';
+            btn.classList.remove('loading');
         }
     }
 </script>

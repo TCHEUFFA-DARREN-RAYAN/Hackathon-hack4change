@@ -8,374 +8,402 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
-    :root {
-      --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-      --primary: #2563eb;
-      --primary-dark: #1d4ed8;
-      --bg: #f8fafc;
-      --surface: #ffffff;
-      --border: #e2e8f0;
-      --text: #1e293b;
-      --text-muted: #64748b;
-      --radius: 12px;
-      --radius-sm: 8px;
-      --shadow: 0 1px 3px rgba(0,0,0,.06), 0 4px 16px rgba(0,0,0,.06);
-      --shadow-lg: 0 8px 32px rgba(0,0,0,.1);
-      --critical-bg: #fef2f2;
-      --critical: #dc2626;
-    }
-    [data-theme="dark"] {
-      --bg: #000000;
-      --surface: #0f172a;
-      --border: #1e293b;
-      --text: #f1f5f9;
-      --text-muted: #94a3b8;
-      --shadow: 0 1px 3px rgba(0,0,0,.3), 0 4px 16px rgba(0,0,0,.2);
-      --shadow-lg: 0 8px 32px rgba(0,0,0,.4);
-      --critical-bg: #450a0a;
-    }
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: var(--font-sans); background: var(--bg); color: var(--text); min-height: 100vh; }
 
-    .login-layout {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      min-height: 100vh;
-    }
-    @media (max-width: 768px) {
-      .login-layout { grid-template-columns: 1fr; }
-      .login-brand { display: none; }
-    }
-
-    .login-brand {
-      background: linear-gradient(135deg, #1e40af 0%, #2563eb 40%, #3b82f6 100%);
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      padding: 3rem;
-      position: relative;
-      overflow: hidden;
-    }
-    .login-brand::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
-    }
-    .brand-content { position: relative; z-index: 1; text-align: center; max-width: 400px; }
-    .brand-content img { height: 72px; width: auto; margin-bottom: 1.5rem; filter: brightness(0) invert(1); }
-    .brand-content h1 { font-size: 2.25rem; font-weight: 700; color: #fff; margin-bottom: .75rem; letter-spacing: -.02em; }
-    .brand-content p { font-size: 1.05rem; color: rgba(255,255,255,.8); line-height: 1.6; }
-    .brand-features { margin-top: 2.5rem; display: flex; flex-direction: column; gap: 1rem; }
-    .brand-feature { display: flex; align-items: center; gap: .75rem; color: rgba(255,255,255,.9); font-size: .95rem; }
-    .brand-feature-icon {
-      width: 36px; height: 36px; border-radius: 8px; background: rgba(255,255,255,.15);
-      display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 1.1rem;
+    :root {
+      --font: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      --purple:      #7c3aed;
+      --purple-dark: #6d28d9;
+      --purple-deep: #4c1d95;
+      --text:        #1e293b;
+      --text-muted:  #64748b;
+      --border:      #e2e8f0;
+      --surface:     #ffffff;
+      --critical:    #dc2626;
+      --critical-bg: #fef2f2;
+      --radius:      8px;
     }
 
-    .login-main {
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      padding: 2rem;
-      position: relative;
-    }
-
-    .login-topbar {
-      position: absolute;
-      top: 1.25rem;
-      right: 1.5rem;
-      display: flex;
-      gap: .5rem;
-      align-items: center;
-    }
-    .toggle-btn {
-      width: 36px; height: 36px; border-radius: 8px; border: 1px solid var(--border);
-      background: var(--surface); color: var(--text-muted); cursor: pointer;
-      display: flex; align-items: center; justify-content: center;
-      font-size: .8rem; font-weight: 600; font-family: var(--font-sans);
-      transition: all .2s;
-    }
-    .toggle-btn:hover { color: var(--primary); border-color: var(--primary); }
-
-    .theme-toggle {
-      position: relative;
-      display: inline-flex;
-      align-items: center;
-      width: 64px; height: 32px;
-      padding: 4px;
-      border-radius: 9999px;
-      cursor: pointer;
-      transition: background .3s ease, border-color .3s ease;
-      background: #ffffff;
-      border: 1px solid #e4e4e7;
-      box-sizing: border-box;
-      flex-shrink: 0;
-      vertical-align: middle;
-    }
-    [data-theme="dark"] .theme-toggle {
-      background: #09090b;
-      border-color: #27272a;
-    }
-    .theme-toggle:hover { border-color: var(--primary); }
-    .theme-toggle-thumb {
-      position: absolute;
-      left: 4px;
-      width: 24px; height: 24px;
-      border-radius: 50%;
-      transition: transform .3s ease, background .3s ease;
-      background: #e5e7eb;
-      transform: translateX(30px);
-      z-index: 0;
-    }
-    [data-theme="dark"] .theme-toggle-thumb {
-      background: #27272a;
-      transform: translateX(0);
-    }
-    .theme-toggle-icons {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      width: 100%;
-      position: relative;
-      z-index: 1;
-      pointer-events: none;
-    }
-    .theme-toggle-icon {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      width: 24px; height: 24px;
-    }
-    .theme-toggle-icon-moon svg { stroke: #000; }
-    [data-theme="dark"] .theme-toggle-icon-moon svg { stroke: #fff; }
-    .theme-toggle-icon-sun svg { stroke: #374151; }
-    [data-theme="dark"] .theme-toggle-icon-sun svg { stroke: #6b7280; }
-
-    .login-card {
-      width: 100%;
-      max-width: 400px;
-    }
-    .login-card-logo {
-      display: none;
-      text-align: center;
-      margin-bottom: 1.5rem;
-    }
-    @media (max-width: 768px) {
-      .login-card-logo { display: block; }
-      .login-card-logo img { height: 48px; width: auto; margin-bottom: .5rem; }
-      .login-card-logo h2 { font-size: 1.25rem; color: var(--primary); }
-    }
-
-    .login-heading { margin-bottom: 2rem; }
-    .login-heading h2 { font-size: 1.6rem; font-weight: 700; color: var(--text); margin-bottom: .35rem; }
-    .login-heading p { font-size: .95rem; color: var(--text-muted); }
-
-    .form-group { margin-bottom: 1.25rem; }
-    .form-label { display: block; font-size: .85rem; font-weight: 600; color: var(--text); margin-bottom: .4rem; }
-    .form-control {
-      width: 100%;
-      padding: .75rem 1rem;
-      font-size: .95rem;
-      font-family: var(--font-sans);
-      border: 1.5px solid var(--border);
-      border-radius: var(--radius-sm);
+    html, body { height: 100%; }
+    body {
+      font-family: var(--font);
       background: var(--surface);
       color: var(--text);
-      outline: none;
-      transition: border-color .2s, box-shadow .2s;
+      -webkit-font-smoothing: antialiased;
     }
-    .form-control::placeholder { color: var(--text-muted); }
-    .form-control:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(37,99,235,.12); }
-    .form-error { display: none; font-size: .8rem; color: var(--critical); margin-top: .3rem; }
-    .form-error.visible { display: block; }
-    .form-control.is-invalid { border-color: var(--critical); }
 
-    .btn-login {
+    /* ── Layout ─────────────────────────────────────── */
+    .auth-split {
+      display: flex;
+      min-height: 100vh;
       width: 100%;
-      padding: .8rem 1rem;
-      font-size: 1rem;
-      font-weight: 600;
-      font-family: var(--font-sans);
-      color: #fff;
-      background: var(--primary);
-      border: none;
-      border-radius: var(--radius-sm);
-      cursor: pointer;
-      transition: background .2s, transform .1s;
-      margin-top: .5rem;
     }
-    .btn-login:hover { background: var(--primary-dark); }
-    .btn-login:active { transform: scale(.99); }
-    .btn-login:disabled { opacity: .65; cursor: not-allowed; }
 
-    #login-error {
+    /* ── Left — Form panel ───────────────────────────── */
+    .auth-form-panel {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      padding: 3rem 2rem;
+      background: var(--surface);
+    }
+    @media (min-width: 768px) {
+      .auth-form-panel { width: 50%; }
+      .auth-brand-panel { display: flex !important; }
+    }
+
+    .auth-inner {
+      width: 100%;
+      max-width: 400px;
+      display: flex;
+      flex-direction: column;
+      gap: 1.75rem;
+    }
+
+    /* Brand row */
+    .auth-logo-row {
+      display: flex;
+      align-items: center;
+      gap: .75rem;
+    }
+    .auth-logo-img {
+      width: 38px;
+      height: 38px;
+      object-fit: contain;
+    }
+    .auth-logo-name {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--text);
+      letter-spacing: -.02em;
+    }
+
+    /* Heading */
+    .auth-heading h1 {
+      font-size: 1.65rem;
+      font-weight: 700;
+      letter-spacing: -.025em;
+      color: var(--text);
+    }
+    .auth-heading p {
+      font-size: .9rem;
+      color: var(--text-muted);
+      margin-top: .3rem;
+    }
+
+    /* Form fields */
+    .auth-form {
+      display: flex;
+      flex-direction: column;
+      gap: 1.1rem;
+    }
+    .field-group {
+      display: flex;
+      flex-direction: column;
+      gap: .35rem;
+    }
+    .field-label {
+      font-size: .85rem;
+      font-weight: 600;
+      color: var(--text);
+    }
+    .field-input {
+      height: 44px;
+      padding: 0 .875rem;
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius);
+      font-size: .9rem;
+      font-family: var(--font);
+      color: var(--text);
+      background: var(--surface);
+      outline: none;
+      width: 100%;
+      transition: border-color .18s, box-shadow .18s;
+    }
+    .field-input::placeholder { color: #94a3b8; }
+    .field-input:focus {
+      border-color: var(--purple);
+      box-shadow: 0 0 0 3px rgba(124,58,237,.14);
+    }
+    .field-input.is-invalid { border-color: var(--critical); }
+    .field-error {
+      font-size: .78rem;
+      color: var(--critical);
       display: none;
-      padding: .7rem 1rem;
-      border-radius: var(--radius-sm);
+    }
+    .field-error.visible { display: block; }
+
+    /* Remember me */
+    .auth-remember {
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+      font-size: .875rem;
+      color: var(--text);
+      cursor: pointer;
+      user-select: none;
+    }
+    .auth-remember input[type="checkbox"] {
+      width: 16px;
+      height: 16px;
+      accent-color: var(--purple);
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    /* Error banner */
+    .auth-error {
+      display: none;
+      padding: .65rem .875rem;
+      border-radius: var(--radius);
       font-size: .85rem;
       background: var(--critical-bg);
       color: var(--critical);
       border: 1px solid rgba(220,38,38,.2);
-      margin-bottom: 1.25rem;
     }
-    #login-error.visible { display: block; }
+    .auth-error.visible { display: block; }
 
-    .login-footer {
-      text-align: center;
-      margin-top: 2rem;
+    /* Submit button */
+    .auth-btn {
+      height: 46px;
+      width: 100%;
+      background: var(--purple);
+      color: #fff;
+      border: none;
+      border-radius: var(--radius);
+      font-size: .95rem;
+      font-weight: 600;
+      font-family: var(--font);
+      cursor: pointer;
+      transition: background .18s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: .5rem;
+      margin-top: .25rem;
     }
-    .login-footer a { font-size: .85rem; color: var(--text-muted); text-decoration: none; }
-    .login-footer a:hover { color: var(--primary); }
+    .auth-btn:hover:not(:disabled) { background: var(--purple-dark); }
+    .auth-btn:disabled { opacity: .6; cursor: not-allowed; }
+
+    .auth-btn .spinner {
+      width: 16px;
+      height: 16px;
+      border: 2px solid rgba(255,255,255,.35);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin .65s linear infinite;
+      display: none;
+      flex-shrink: 0;
+    }
+    .auth-btn.loading .spinner  { display: block; }
+    .auth-btn.loading .btn-text { display: none; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── Right — Brand panel ─────────────────────────── */
+    .auth-brand-panel {
+      display: none;
+      width: 50%;
+      position: relative;
+      background: linear-gradient(160deg, #92a5f1 0%, #EEF2FF 40%, #92a5f1 100%);
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 3rem;
+      overflow: hidden;
+    }
+
+    /* Decorative circles */
+    .auth-brand-panel::before,
+    .auth-brand-panel::after {
+      content: '';
+      position: absolute;
+      border-radius: 50%;
+      background: rgba(146,165,241,.18);
+      pointer-events: none;
+    }
+    .auth-brand-panel::before {
+      width: 480px;
+      height: 480px;
+      top: -140px;
+      right: -140px;
+    }
+    .auth-brand-panel::after {
+      width: 340px;
+      height: 340px;
+      bottom: -100px;
+      left: -80px;
+    }
+
+    .auth-brand-content {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+    .auth-brand-logo {
+      width: 160px;
+      height: auto;
+      object-fit: contain;
+      margin-bottom: 1.5rem;
+      border-radius: 16px;
+    }
+    .auth-brand-name {
+      color: #3730a3;
+      font-size: 1.5rem;
+      font-weight: 700;
+      letter-spacing: -.02em;
+    }
+    .auth-brand-tagline {
+      color: #6366f1;
+      font-size: .9rem;
+      margin-top: .4rem;
+      max-width: 240px;
+      line-height: 1.55;
+    }
   </style>
 </head>
 <body>
-  <div class="login-layout">
-    <div class="login-brand">
-      <div class="brand-content">
-        <img src="/assets/images/logo.png" alt="CommonGround">
-        <h1>CommonGround</h1>
-        <p>Connecting nonprofits, coordinating resources, and strengthening communities together.</p>
-        <div class="brand-features">
-          <div class="brand-feature"><div class="brand-feature-icon">📦</div> Real-time inventory tracking across organizations</div>
-          <div class="brand-feature"><div class="brand-feature-icon">🤝</div> Coordinate donations and fulfill community needs</div>
-          <div class="brand-feature"><div class="brand-feature-icon">📊</div> Analytics dashboard for data-driven decisions</div>
-          <div class="brand-feature"><div class="brand-feature-icon">💬</div> Cross-organization messaging and collaboration</div>
-        </div>
-      </div>
-    </div>
 
-    <div class="login-main">
-      <div class="login-topbar">
-        <button class="toggle-btn" onclick="toggleLocale()" id="locale-toggle-btn" title="Switch language">EN</button>
-        <div class="theme-toggle" onclick="toggleDarkMode()" role="button" tabindex="0" id="dark-mode-btn" title="Toggle dark mode">
-          <div class="theme-toggle-thumb"></div>
-          <div class="theme-toggle-icons">
-            <div class="theme-toggle-icon theme-toggle-icon-moon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg></div>
-            <div class="theme-toggle-icon theme-toggle-icon-sun"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></div>
-          </div>
-        </div>
+<div class="auth-split">
+
+  <!-- Left: Form -->
+  <div class="auth-form-panel">
+    <div class="auth-inner">
+
+      <div class="auth-logo-row">
+        <img src="/assets/images/logo.png" alt="CommonGround logo" class="auth-logo-img">
+        <span class="auth-logo-name">Common Ground</span>
       </div>
 
-      <div class="login-card">
-        <div class="login-card-logo">
-          <img src="/assets/images/logo.png" alt="CommonGround">
-          <h2>CommonGround</h2>
-        </div>
-
-        <div class="login-heading">
-          <h2>Welcome back</h2>
-          <p>Sign in to your account to continue</p>
-        </div>
-
-        <div id="login-error"></div>
-
-        <form id="login-form" onsubmit="handleLogin(event)">
-          <div class="form-group">
-            <label class="form-label" for="email">Email address</label>
-            <input type="email" id="email" class="form-control" placeholder="you@organization.ca" required autocomplete="email" autofocus>
-            <div class="form-error">Please enter your email address.</div>
-          </div>
-          <div class="form-group">
-            <label class="form-label" for="password">Password</label>
-            <input type="password" id="password" class="form-control" placeholder="Enter your password" required autocomplete="current-password">
-            <div class="form-error">Please enter your password.</div>
-          </div>
-          <button type="submit" class="btn-login" id="btn-login">Sign in</button>
-        </form>
-
-        <div class="login-footer">
-          <a href="/">&larr; Back to Community Board</a>
-        </div>
+      <div class="auth-heading">
+        <h1>Welcome!</h1>
+        <p>Sign in by entering the information below</p>
       </div>
+
+      <div id="auth-error" class="auth-error"></div>
+
+      <form id="login-form" class="auth-form" onsubmit="handleLogin(event)" novalidate>
+
+        <div class="field-group">
+          <label class="field-label" for="email">Email Address</label>
+          <input type="email" id="email" class="field-input"
+                 autocomplete="email" placeholder="email@example.com" autofocus>
+          <span class="field-error" id="err-email">Please enter a valid email address.</span>
+        </div>
+
+        <div class="field-group">
+          <label class="field-label" for="password">Password</label>
+          <input type="password" id="password" class="field-input"
+                 autocomplete="current-password" placeholder="••••••••••••">
+          <span class="field-error" id="err-password">Please enter your password.</span>
+        </div>
+
+        <label class="auth-remember">
+          <input type="checkbox" id="remember-me">
+          Remember Me
+        </label>
+
+        <button type="submit" class="auth-btn" id="btn-login">
+          <span class="spinner"></span>
+          <span class="btn-text">Continue</span>
+        </button>
+
+      </form>
+
     </div>
   </div>
 
-  <script src="/js/api.js"></script>
-  <script src="/js/utils.js"></script>
-  <script>
-    function showError(msg) {
-      const el = document.getElementById('login-error');
-      el.textContent = msg;
-      el.classList.add('visible');
+  <!-- Right: Purple gradient + logo -->
+  <div class="auth-brand-panel">
+    <div class="auth-brand-content">
+      <img src="/assets/images/logo.png" alt="CommonGround" class="auth-brand-logo">
+      <span class="auth-brand-name">CommonGround</span>
+      <p class="auth-brand-tagline">Donation Coordination Network</p>
+    </div>
+  </div>
+
+</div>
+
+<script src="/js/api.js"></script>
+<script src="/js/utils.js"></script>
+<script>
+  function showError(msg) {
+    const el = document.getElementById('auth-error');
+    el.textContent = msg;
+    el.classList.add('visible');
+  }
+  function hideError() {
+    document.getElementById('auth-error').classList.remove('visible');
+  }
+
+  async function handleLogin(e) {
+    e.preventDefault();
+    const emailEl = document.getElementById('email');
+    const passEl  = document.getElementById('password');
+    const errEmail = document.getElementById('err-email');
+    const errPass  = document.getElementById('err-password');
+
+    let valid = true;
+    const emailOk = emailEl.value.trim() && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailEl.value.trim());
+    if (!emailOk) {
+      emailEl.classList.add('is-invalid');
+      errEmail.classList.add('visible');
+      valid = false;
+    } else {
+      emailEl.classList.remove('is-invalid');
+      errEmail.classList.remove('visible');
     }
-    function hideError() {
-      document.getElementById('login-error').classList.remove('visible');
+    if (!passEl.value) {
+      passEl.classList.add('is-invalid');
+      errPass.classList.add('visible');
+      valid = false;
+    } else {
+      passEl.classList.remove('is-invalid');
+      errPass.classList.remove('visible');
     }
+    if (!valid) return;
 
-    async function handleLogin(e) {
-      e.preventDefault();
-      const emailEl = document.getElementById('email');
-      const passEl = document.getElementById('password');
-      clearFormErrors(document.getElementById('login-form'));
-      let valid = validateRequired(emailEl, 'Please enter your email address.');
-      valid = validateRequired(passEl, 'Please enter your password.') && valid;
-      if (!valid) return;
+    const btn = document.getElementById('btn-login');
+    btn.disabled = true;
+    btn.classList.add('loading');
+    hideError();
 
-      const btn = document.getElementById('btn-login');
-      btn.disabled = true;
-      btn.textContent = 'Signing in...';
-      hideError();
+    try {
+      const res = await auth.login(emailEl.value.trim(), passEl.value);
+      const next = new URLSearchParams(window.location.search).get('next');
+      if (next && next.startsWith('/')) {
+        window.location.href = next;
+      } else {
+        window.location.href = (res.data && res.data.isAdmin) ? '/coordinator' : '/staff';
+      }
+    } catch (err) {
+      showError(err.message || 'Invalid email or password. Please try again.');
+      passEl.value = '';
+      btn.disabled = false;
+      btn.classList.remove('loading');
+    }
+  }
 
-      try {
-        const res = await auth.login(emailEl.value.trim(), passEl.value);
-        const params = new URLSearchParams(window.location.search);
-        const next = params.get('next');
+  (async function checkSession() {
+    try {
+      const res = await auth.me();
+      if (res.data) {
+        const next = new URLSearchParams(window.location.search).get('next');
         if (next && next.startsWith('/')) {
           window.location.href = next;
+        } else if (res.data.isAdmin) {
+          window.location.href = '/coordinator';
         } else {
-          window.location.href = (res.data && res.data.isAdmin) ? '/coordinator' : '/staff';
+          window.location.href = '/staff';
         }
-      } catch (err) {
-        showError(err.message || 'Invalid email or password. Please try again.');
-        btn.disabled = false;
-        btn.textContent = 'Sign in';
       }
-    }
+    } catch {}
+  })();
+</script>
 
-    function toggleDarkMode() {
-      const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
-      document.documentElement.setAttribute('data-theme', isDark ? 'light' : 'dark');
-      localStorage.setItem('cg-theme', isDark ? 'light' : 'dark');
-      updateDarkModeIcon();
-    }
-    function updateDarkModeIcon() {
-      // CSS handles icon state via [data-theme] selectors
-    }
-    function toggleLocale() {
-      const btn = document.getElementById('locale-toggle-btn');
-      const cur = btn.textContent.trim();
-      btn.textContent = cur === 'EN' ? 'FR' : 'EN';
-      localStorage.setItem('cg-locale', cur === 'EN' ? 'fr' : 'en');
-    }
-
-    (function initTheme() {
-      if (localStorage.getItem('cg-theme') === 'dark') document.documentElement.setAttribute('data-theme', 'dark');
-      updateDarkModeIcon();
-      if (localStorage.getItem('cg-locale') === 'fr') {
-        const btn = document.getElementById('locale-toggle-btn');
-        if (btn) btn.textContent = 'FR';
-      }
-    })();
-
-    (async function checkIfAlreadyLoggedIn() {
-      try {
-        const res = await auth.me();
-        if (res.data) {
-          const params = new URLSearchParams(window.location.search);
-          const next = params.get('next');
-          if (next && next.startsWith('/')) {
-            window.location.href = next;
-          } else if (res.data.isAdmin) {
-            window.location.href = '/coordinator';
-          } else {
-            window.location.href = '/staff';
-          }
-        }
-      } catch {}
-    })();
-  </script>
 </body>
 </html>

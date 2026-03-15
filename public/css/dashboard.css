@@ -57,7 +57,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 20px 0 calc(var(--sidebar-w) + 20px);
+  padding: 0 20px;
   gap: 16px;
 }
 
@@ -982,7 +982,7 @@ select.form-control {
   #sidebar .sidebar-footer { display: none; }
   #sidebar .nav-links li a { justify-content: center; padding: 10px; }
   #sidebar .nav-links li a span:not(.nav-icon) { display: none; }
-  #topbar { padding: 0 16px 0 calc(var(--sidebar-w) + 16px); }
+  #topbar { padding: 0 16px; }
 }
 
 .mobile-menu-btn {
