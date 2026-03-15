@@ -9,6 +9,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 </head>
 <body>
 
@@ -104,68 +105,20 @@
                     <div class="metric-sub">Awaiting confirmation</div>
                 </div>
             </div>
-            <div class="section">
-                <div class="section-header">
-                    <h2>Quick actions</h2>
-                </div>
-                <p class="text-sm text-muted" style="margin:0">Use the tabs below to quickly view inventory and your needs; the action buttons above each tab let you add new items.</p>
-            </div>
-            <div class="section">
-                <div class="section-header">
-                    <h2>Donations overview</h2>
-                    <select id="dashboard-timeframe" class="form-control" style="max-width:160px" onchange="renderDashboard()">
-                        <option value="7">Last 7 days</option>
-                        <option value="30">Last 30 days</option>
-                    </select>
-                </div>
-                <div class="card" id="dashboard-trends-card">
-                    <div id="dashboard-trends-chart" class="trends-chart">
-                        <div class="chart-empty">No donation activity yet.</div>
-                    </div>
-                </div>
-            </div>
             <div class="dashboard-row">
-                <div class="card" id="dashboard-quick-view-card">
-                    <div class="card-header">
-                        <h3>Urgent requests</h3>
-                        <button class="btn btn-ghost btn-sm" onclick="showSection('other-needs', document.querySelector('[data-section=other-needs]'))">View all</button>
+                <div class="card" id="dashboard-inventory-card">
+                    <div class="card-header" style="gap:10px">
+                        <h3>Inventory</h3>
+                        <button class="btn btn-primary btn-sm" onclick="openAddInventory()">+ Add inventory</button>
                     </div>
-                    <div id="dashboard-quick-actions" style="display:flex;gap:.5rem;margin-bottom:12px;flex-wrap:wrap">
-                        <button id="dashboard-inventory-action" class="btn-action-primary btn-sm" onclick="openAddInventory()">+ Add inventory</button>
-                        <button id="dashboard-needs-action" class="btn-action-primary btn-sm" onclick="openAddNeed()" style="display:none">Post a need</button>
-                    </div>
-                    <div class="analytics-tabs-bar" id="dashboard-tabs-bar">
-                        <button class="analytics-tab-btn active" data-tab="inventory" onclick="switchDashboardTab('inventory')">Inventory</button>
-                        <button class="analytics-tab-btn" data-tab="needs" onclick="switchDashboardTab('needs')">Your needs</button>
-                    </div>
-                    <div class="analytics-tab-panel active" id="dashboard-tab-inventory">
-                        <div id="dashboard-inventory-list"></div>
-                    </div>
-                    <div class="analytics-tab-panel" id="dashboard-tab-needs">
-                        <div id="dashboard-needs-list"></div>
-                    </div>
+                    <div id="dashboard-inventory-list"></div>
                 </div>
-
-                <div class="card" id="dashboard-activity">
-                    <div class="card-header">
-                        <h3>Recent activity</h3>
-                        <button class="btn btn-ghost btn-sm" onclick="loadRecentActivity()">Refresh</button>
+                <div class="card" id="dashboard-needs-card">
+                    <div class="card-header" style="gap:10px">
+                        <h3>Your needs</h3>
+                        <button class="btn btn-primary btn-sm" onclick="openAddNeed()">+ Post a need</button>
                     </div>
-                    <div class="card-body activity-list" id="activity-container">
-                        <div class="skeleton skeleton-block" style="height:50px;margin-bottom:.3rem"></div>
-                        <div class="skeleton skeleton-block" style="height:50px;margin-bottom:.3rem"></div>
-                        <div class="skeleton skeleton-block" style="height:50px"></div>
-                    </div>
-                </div>
-                <div class="card" id="dashboard-actions">
-                    <div class="card-header">
-                        <h3>Action items</h3>
-                        <button class="btn btn-ghost btn-sm" onclick="loadActionItems()">Refresh</button>
-                    </div>
-                    <div class="card-body" id="action-items-container" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px">
-                        <div class="skeleton skeleton-block" style="height:80px"></div>
-                        <div class="skeleton skeleton-block" style="height:80px"></div>
-                    </div>
+                    <div id="dashboard-needs-list"></div>
                 </div>
             </div>
         </div>
@@ -294,28 +247,44 @@
         <!-- Other Needs -->
         <div id="section-other-needs" style="display:none">
             <div class="section">
-                <div class="section-header" style="margin-bottom:16px">
+                <div class="on-page-header">
                     <div>
-                        <p class="text-sm text-muted" style="margin:0">See what other organizations in the network need. Reach out via Chats if you can help supply.</p>
+                        <h2 class="on-page-title">Network Needs</h2>
+                        <p class="on-page-sub">Approved and open for community fulfillment — connect via Chats to help.</p>
                     </div>
-                    <button class="btn-action-secondary" onclick="loadOtherNeeds()">Refresh</button>
+                    <button class="btn-action-secondary" onclick="loadOtherNeeds()">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:-2px;margin-right:4px"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+                        Refresh
+                    </button>
                 </div>
+
                 <div class="on-toolbar">
                     <div class="on-search-wrap">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
                         <input type="search" id="other-needs-search" class="on-search-input" placeholder="Search by item, org, or description..." autocomplete="off" aria-label="Search other needs">
                     </div>
                     <div class="on-cat-pills" id="other-needs-cat-pills">
                         <button type="button" class="on-cat-pill active" data-cat="">All</button>
+                        <button type="button" class="on-cat-pill" data-cat="housing">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+                            Housing
+                        </button>
+                        <button type="button" class="on-cat-pill" data-cat="food">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>
+                            Food
+                        </button>
+                        <button type="button" class="on-cat-pill" data-cat="hygiene">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                            Hygiene
+                        </button>
                         <button type="button" class="on-cat-pill" data-cat="clothing">Clothing</button>
                         <button type="button" class="on-cat-pill" data-cat="bedding">Bedding</button>
-                        <button type="button" class="on-cat-pill" data-cat="food">Food</button>
-                        <button type="button" class="on-cat-pill" data-cat="hygiene">Hygiene</button>
-                        <button type="button" class="on-cat-pill" data-cat="baby_supplies">Baby Supplies</button>
-                        <button type="button" class="on-cat-pill" data-cat="goods">Household Goods</button>
+                        <button type="button" class="on-cat-pill" data-cat="baby_supplies">Baby</button>
+                        <button type="button" class="on-cat-pill" data-cat="goods">Goods</button>
                         <button type="button" class="on-cat-pill" data-cat="other">Other</button>
                     </div>
                 </div>
+
                 <div class="on-priority-bar">
                     <div class="on-pri-pills" id="other-needs-pri-pills">
                         <button type="button" class="on-pri-pill active" data-urg="">All</button>
@@ -326,6 +295,7 @@
                     </div>
                     <span class="on-results-count" id="other-needs-results-count">0 results</span>
                 </div>
+
                 <div class="table-wrap">
                     <table class="data-table on-table">
                         <thead>
@@ -334,11 +304,12 @@
                                 <th>Request</th>
                                 <th class="on-th-category">Category</th>
                                 <th class="on-th-progress">Progress</th>
+                                <th class="on-th-action">Action</th>
                             </tr>
                         </thead>
                         <tbody id="other-needs-tbody">
-                            <tr><td colspan="4"><div class="skeleton skeleton-block" style="height:60px"></div></td></tr>
-                            <tr><td colspan="4"><div class="skeleton skeleton-block" style="height:60px"></div></td></tr>
+                            <tr><td colspan="5"><div class="skeleton skeleton-block" style="height:60px;margin-bottom:6px"></div></td></tr>
+                            <tr><td colspan="5"><div class="skeleton skeleton-block" style="height:60px"></div></td></tr>
                         </tbody>
                     </table>
                 </div>
@@ -438,19 +409,74 @@
         <!-- Analytics -->
         <div id="section-analytics" style="display:none">
             <div class="section">
-                <div class="section-header">
-                    <div>
-                        <p class="text-sm text-muted" style="margin:0">Quick stats about your inventory distribution.</p>
+                <!-- KPI stat row -->
+                <div class="an-kpi-row" id="an-kpi-row">
+                    <div class="an-kpi-card">
+                        <div class="an-kpi-label">Total inventory items</div>
+                        <div class="an-kpi-value" id="an-kpi-total">—</div>
+                        <div class="an-kpi-sub">Across all categories</div>
+                    </div>
+                    <div class="an-kpi-card">
+                        <div class="an-kpi-label">Critical / Low stock</div>
+                        <div class="an-kpi-value an-kpi-danger" id="an-kpi-critical">—</div>
+                        <div class="an-kpi-sub">Needs restocking</div>
+                    </div>
+                    <div class="an-kpi-card">
+                        <div class="an-kpi-label">Open needs</div>
+                        <div class="an-kpi-value an-kpi-warn" id="an-kpi-needs">—</div>
+                        <div class="an-kpi-sub">Posted by your org</div>
+                    </div>
+                    <div class="an-kpi-card">
+                        <div class="an-kpi-label">Needs fulfilled</div>
+                        <div class="an-kpi-value an-kpi-success" id="an-kpi-fulfilled">—</div>
+                        <div class="an-kpi-sub">% fully received</div>
+                    </div>
+                    <div class="an-kpi-card">
+                        <div class="an-kpi-label">Pending donations</div>
+                        <div class="an-kpi-value" id="an-kpi-donations">—</div>
+                        <div class="an-kpi-sub">Awaiting confirmation</div>
                     </div>
                 </div>
-                <div class="analytics-grid" id="analytics-grid">
+
+                <!-- Row 1: donut + bar charts -->
+                <div class="an-row-2">
                     <div class="analytics-card">
-                        <h4>Status distribution</h4>
-                        <div id="chart-status"></div>
+                        <h4>
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:-2px;margin-right:5px"><path d="M21.21 15.89A10 10 0 1 1 8 2.83"/><path d="M22 12A10 10 0 0 0 12 2v10z"/></svg>
+                            Inventory by status
+                        </h4>
+                        <div class="an-donut-wrap">
+                            <canvas id="chart-donut-status" width="200" height="200"></canvas>
+                            <div class="an-donut-legend" id="an-legend-status"></div>
+                        </div>
                     </div>
                     <div class="analytics-card">
-                        <h4>Category breakdown</h4>
-                        <div id="chart-category"></div>
+                        <h4>
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:-2px;margin-right:5px"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg>
+                            Category breakdown
+                        </h4>
+                        <canvas id="chart-bar-category" height="200"></canvas>
+                    </div>
+                </div>
+
+                <!-- Row 2: needs urgency donut + fulfillment bar -->
+                <div class="an-row-2" style="margin-top:16px">
+                    <div class="analytics-card">
+                        <h4>
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:-2px;margin-right:5px"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                            Needs by urgency
+                        </h4>
+                        <div class="an-donut-wrap">
+                            <canvas id="chart-donut-urgency" width="200" height="200"></canvas>
+                            <div class="an-donut-legend" id="an-legend-urgency"></div>
+                        </div>
+                    </div>
+                    <div class="analytics-card">
+                        <h4>
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:-2px;margin-right:5px"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+                            Need fulfillment progress
+                        </h4>
+                        <div id="chart-fulfillment-bars"></div>
                     </div>
                 </div>
             </div>
@@ -820,8 +846,6 @@
         if (name === 'chats') { loadChatThreads(); startChatPolling(); } else { stopChatPolling(); }
     }
 
-    let dashboardActiveTab = 'inventory';
-
     function renderDashboard() {
         const totalDonors = new Set(donationsData.map(d => (d.donor_email || d.donor_name || '').toString().trim().toLowerCase()).filter(Boolean)).size;
         const openNeeds = needsData.filter(n => !n.fulfilled).length;
@@ -850,34 +874,8 @@
                 <div class="metric-sub">awaiting receipt</div>
             </div>`;
 
-        renderTrendChart();
-        renderDashboardTabs();
-        loadActionItems();
-        loadRecentActivity();
-    }
-
-    function switchDashboardTab(tab) {
-        dashboardActiveTab = tab;
-        document.querySelectorAll('#dashboard-tabs-bar .analytics-tab-btn').forEach(btn => {
-            const isActive = btn.dataset.tab === tab;
-            btn.classList.toggle('active', isActive);
-        });
-        document.getElementById('dashboard-tab-inventory').classList.toggle('active', tab === 'inventory');
-        document.getElementById('dashboard-tab-needs').classList.toggle('active', tab === 'needs');
-
-        document.getElementById('dashboard-inventory-action').style.display = tab === 'inventory' ? 'inline-flex' : 'none';
-        document.getElementById('dashboard-needs-action').style.display = tab === 'needs' ? 'inline-flex' : 'none';
-
-        if (tab === 'inventory') {
-            renderDashboardInventory();
-        } else {
-            renderDashboardNeeds();
-        }
-    }
-
-    function renderDashboardTabs() {
-        // Ensure the right tab is shown when the dashboard renders
-        switchDashboardTab(dashboardActiveTab);
+        renderDashboardInventory();
+        renderDashboardNeeds();
     }
 
     function renderDashboardInventory() {
@@ -951,71 +949,6 @@
         container.innerHTML = items.join('');
     }
 
-    function renderTrendChart() {
-        const chartEl = document.getElementById('dashboard-trends-chart');
-        const timeframeEl = document.getElementById('dashboard-timeframe');
-        if (!chartEl) return;
-
-        const days = parseInt(timeframeEl?.value || '7', 10) || 7;
-        const now = new Date();
-        const buckets = [];
-        for (let i = days - 1; i >= 0; i--) {
-            const d = new Date(now);
-            d.setHours(0, 0, 0, 0);
-            d.setDate(now.getDate() - i);
-            buckets.push({
-                key: d.toISOString().slice(0, 10),
-                label: d.toLocaleDateString(undefined, { month: 'short', day: 'numeric' }),
-                count: 0,
-                date: d
-            });
-        }
-        const counts = donationsData.reduce((acc, d) => {
-            const dt = new Date(d.created_at);
-            if (Number.isNaN(dt.getTime())) return acc;
-            const dateKey = dt.toISOString().slice(0, 10);
-            acc[dateKey] = (acc[dateKey] || 0) + 1;
-            return acc;
-        }, {});
-        buckets.forEach(b => b.count = counts[b.key] || 0);
-        const max = Math.max(...buckets.map(b => b.count), 1);
-
-        if (!donationsData.length) {
-            chartEl.innerHTML = '<div class="chart-empty">No donation activity yet.</div>';
-            return;
-        }
-
-        chartEl.innerHTML = buckets.map(b => `
-            <div class="trend-bar" title="${b.label}: ${b.count}">
-                <div class="trend-bar-fill" style="height:${(b.count / max) * 100}%"></div>
-                <span class="trend-bar-label">${b.label}</span>
-            </div>
-        `).join('');
-    }
-
-    function renderRecentBookings() {
-        const container = document.getElementById('recent-bookings');
-        if (!container) return;
-
-        if (!donationsData.length) {
-            container.innerHTML = '<div class="empty-state"><p>No recent bookings.</p></div>';
-            return;
-        }
-
-        const items = donationsData.slice(0, 5).map(d => `
-            <div class="booking-item">
-                <div class="booking-item-main">
-                    <div class="booking-item-title">${escHtml(d.item_name)} (${escHtml(String(d.quantity))} ${escHtml(d.unit)})</div>
-                    <div class="booking-item-meta">${escHtml(d.donor_name || d.donor_email || 'Unknown donor')}</div>
-                </div>
-                <div class="booking-item-right">
-                    <span class="badge badge-${escHtml(d.status)}">${escHtml(d.status)}</span>
-                    <div class="text-xs text-muted">${timeAgo(d.created_at)}</div>
-                </div>
-            </div>
-        `);
-        container.innerHTML = items.join('');
-    }
 
     async function loadExpiring() {
         try {
@@ -1652,39 +1585,50 @@
 
         if (!filtered.length) {
             const totalCards = allFlat.length;
-            tbody.innerHTML = '<tr><td colspan="4"><div class="empty-state"><p>' + (totalCards ? 'No needs match your filters.' : 'No needs from other organizations at the moment.') + '</p></div></td></tr>';
+            tbody.innerHTML = '<tr><td colspan="5"><div class="empty-state"><p>' + (totalCards ? 'No needs match your filters.' : 'No needs from other organizations at the moment.') + '</p></div></td></tr>';
             return;
         }
+        const catIcons = { food: '🍲', hygiene: '🧴', housing: '🏠', clothing: '👕', bedding: '🛏', baby_supplies: '👶', goods: '📦', other: '📋' };
         tbody.innerHTML = filtered.map(({ org, need: n }) => {
             const urg = n.urgency || 'medium';
             const received = Number(n.quantity_received) || 0;
             const needed = Number(n.quantity_needed) || 1;
-            const total = received + needed;
-            const pct = total > 0 ? Math.round((received / total) * 100) : 0;
-            const catLabel = (n.category || 'other').replace(/_/g, ' ');
+            const pct = Math.min(100, Math.round((received / needed) * 100));
+            const catKey = (n.category || 'other').toLowerCase();
+            const catLabel = catKey.replace(/_/g, ' ');
             const catDisplay = catLabel.charAt(0).toUpperCase() + catLabel.slice(1);
+            const catIcon = catIcons[catKey] || '📋';
+            const urgLabel = urg.charAt(0).toUpperCase() + urg.slice(1);
+            const progressColor = pct >= 75 ? '#10b981' : pct >= 40 ? '#f59e0b' : '#ef4444';
+            const title = `${escHtml(n.item_name)} — ${escHtml(org.name)}`;
             return `<tr class="on-row">
-                <td><span class="on-badge-pri badge-${urg}">${escHtml(urg)}</span></td>
+                <td><span class="on-badge-pri badge-${urg}">${urgLabel}</span></td>
                 <td>
-                    <div class="on-req-title">${escHtml(n.item_name)}</div>
+                    <div class="on-req-title">${escHtml(n.item_name)} <span class="on-req-dash">—</span> <span class="on-req-org">${escHtml(org.name)}</span></div>
                     <div class="on-req-meta">
-                        <span class="on-req-orgname">${escHtml(org.name)}</span>
-                        <span class="on-bullet">·</span>
-                        <span>${escHtml(String(n.quantity_needed))} ${escHtml(n.unit)} needed</span>
-                        ${n.notes ? `<span class="on-note">${escHtml(n.notes)}</span>` : ''}
-                        <span>${timeAgo(n.created_at)}</span>
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:-1px;opacity:.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/></svg>
+                        <span>${escHtml(org.name)}</span>
+                        <span class="on-req-dot"></span>
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:-1px;opacity:.5"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+                        <span>${escHtml(n.unit ? String(n.quantity_needed) + ' ' + n.unit : String(n.quantity_needed))} needed</span>
+                        ${n.notes ? `<span class="on-req-dot"></span><span class="on-note">${escHtml(n.notes)}</span>` : ''}
                     </div>
                 </td>
-                <td><span class="on-cat-badge">${escHtml(catDisplay)}</span></td>
+                <td><span class="on-cat-badge on-cat-${catKey}">${catIcon} ${escHtml(catDisplay)}</span></td>
                 <td>
                     <div class="on-progress-wrap">
                         <div class="on-progress-text">
-                            <span>${received}/${total}</span>
+                            <span>${received} / ${needed}</span>
                             <span class="on-pct">${pct}%</span>
                         </div>
-                        <div class="on-progress-track"><div class="on-progress-fill" style="width:${pct}%;background:var(--color-primary)"></div></div>
-                        <button class="btn-action-primary btn-sm" style="margin-top:6px" onclick="startCrossOrgChatWith('${escHtml(org.id)}')">Offer to help</button>
+                        <div class="on-progress-track"><div class="on-progress-fill" style="width:${pct}%;background:${progressColor}"></div></div>
                     </div>
+                </td>
+                <td>
+                    <button class="on-fulfill-btn" onclick="startCrossOrgChatWith('${escHtml(org.id)}')">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                        Fulfill
+                    </button>
                 </td>
             </tr>`;
         }).join('');
@@ -1769,31 +1713,122 @@
     }
 
     // --- Analytics ---
+    let _anCharts = {};
+
+    function destroyChart(key) {
+        if (_anCharts[key]) { _anCharts[key].destroy(); delete _anCharts[key]; }
+    }
+
     function renderAnalytics() {
+        // --- KPI cards ---
+        const total = inventoryData.length;
+        const criticalLow = inventoryData.filter(i => i.status === 'critical' || i.status === 'low').length;
+        const openNeeds = needsData.filter(n => !n.fulfilled).length;
+        const fulfilledPct = needsData.length
+            ? Math.round((needsData.filter(n => {
+                const recv = Number(n.quantity_received) || 0;
+                const needed = Number(n.quantity_needed) || 1;
+                return recv >= needed;
+              }).length / needsData.length) * 100)
+            : 0;
+        const pendingDonations = donationsData.filter(d => d.status === 'matched' || d.status === 'pending').length;
+
+        document.getElementById('an-kpi-total').textContent = total;
+        document.getElementById('an-kpi-critical').textContent = criticalLow;
+        document.getElementById('an-kpi-needs').textContent = openNeeds;
+        document.getElementById('an-kpi-fulfilled').textContent = fulfilledPct + '%';
+        document.getElementById('an-kpi-donations').textContent = pendingDonations;
+
+        // --- Status donut ---
+        const statusColors = { available: '#10b981', low: '#f59e0b', critical: '#ef4444', surplus: '#0ea5e9', other: '#8b5cf6' };
         const statusCounts = {};
+        inventoryData.forEach(i => { statusCounts[i.status] = (statusCounts[i.status] || 0) + 1; });
+        const statusLabels = Object.keys(statusCounts);
+        const statusVals = statusLabels.map(k => statusCounts[k]);
+        const statusBg = statusLabels.map(k => statusColors[k] || '#94a3b8');
+
+        destroyChart('donutStatus');
+        const ctxDs = document.getElementById('chart-donut-status');
+        if (ctxDs) {
+            _anCharts.donutStatus = new Chart(ctxDs, {
+                type: 'doughnut',
+                data: { labels: statusLabels.map(l => l.charAt(0).toUpperCase() + l.slice(1)), datasets: [{ data: statusVals, backgroundColor: statusBg, borderWidth: 2, borderColor: '#fff', hoverOffset: 6 }] },
+                options: { cutout: '62%', plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => ` ${ctx.label}: ${ctx.parsed}` } } }, animation: { animateRotate: true } }
+            });
+            // Custom legend
+            document.getElementById('an-legend-status').innerHTML = statusLabels.map((l, i) =>
+                `<div class="an-legend-item"><span class="an-legend-dot" style="background:${statusBg[i]}"></span><span>${escHtml(l.charAt(0).toUpperCase() + l.slice(1))}</span><span class="an-legend-val">${statusVals[i]}</span></div>`
+            ).join('');
+        }
+
+        // --- Category bar chart ---
+        const catColors = ['#10b981', '#0ea5e9', '#f59e0b', '#8b5cf6', '#ef4444', '#0f766e', '#64748b'];
         const categoryCounts = {};
-        inventoryData.forEach(i => {
-            statusCounts[i.status] = (statusCounts[i.status] || 0) + 1;
-            categoryCounts[i.category] = (categoryCounts[i.category] || 0) + 1;
-        });
-        const maxStatus = Math.max(...Object.values(statusCounts), 1);
-        const maxCat = Math.max(...Object.values(categoryCounts), 1);
-        const colors = { critical: '#dc2626', low: '#64748b', available: '#059669', surplus: '#0891b2', high: '#d97706' };
-        const catColors = ['#0f766e', '#0891b2', '#059669', '#d97706', '#7c3aed', '#dc2626', '#64748b'];
+        inventoryData.forEach(i => { categoryCounts[i.category] = (categoryCounts[i.category] || 0) + 1; });
+        const catLabels = Object.keys(categoryCounts).map(l => l.charAt(0).toUpperCase() + l.slice(1));
+        const catVals = Object.values(categoryCounts);
+        const catBg = catLabels.map((_, i) => catColors[i % catColors.length]);
 
-        document.getElementById('chart-status').innerHTML = Object.entries(statusCounts).map(([k, v], i) => `
-            <div class="chart-bar">
-                <span class="chart-bar-label">${escHtml(k)}</span>
-                <div class="chart-bar-track"><div class="chart-bar-fill" style="width:${(v/maxStatus)*100}%;background:${colors[k] || catColors[i % catColors.length]}"></div></div>
-                <span class="chart-bar-value">${v}</span>
-            </div>`).join('') || '<p class="text-muted text-sm">No inventory data yet.</p>';
+        destroyChart('barCategory');
+        const ctxBc = document.getElementById('chart-bar-category');
+        if (ctxBc) {
+            _anCharts.barCategory = new Chart(ctxBc, {
+                type: 'bar',
+                data: { labels: catLabels, datasets: [{ data: catVals, backgroundColor: catBg, borderRadius: 5, borderSkipped: false }] },
+                options: {
+                    indexAxis: 'y',
+                    plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => ` ${ctx.parsed.x} items` } } },
+                    scales: { x: { grid: { color: '#f1f5f9' }, ticks: { font: { size: 12 }, color: '#64748b', stepSize: 1 } }, y: { grid: { display: false }, ticks: { font: { size: 12 }, color: '#374151' } } }
+                }
+            });
+        }
 
-        document.getElementById('chart-category').innerHTML = Object.entries(categoryCounts).map(([k, v], i) => `
-            <div class="chart-bar">
-                <span class="chart-bar-label">${escHtml(k)}</span>
-                <div class="chart-bar-track"><div class="chart-bar-fill" style="width:${(v/maxCat)*100}%;background:${catColors[i % catColors.length]}"></div></div>
-                <span class="chart-bar-value">${v}</span>
-            </div>`).join('') || '<p class="text-muted text-sm">No inventory data yet.</p>';
+        // --- Urgency donut ---
+        const urgColors = { critical: '#ef4444', high: '#f97316', medium: '#f59e0b', low: '#10b981' };
+        const urgCounts = {};
+        needsData.forEach(n => { const u = n.urgency || 'medium'; urgCounts[u] = (urgCounts[u] || 0) + 1; });
+        const urgLabels = Object.keys(urgCounts);
+        const urgVals = urgLabels.map(k => urgCounts[k]);
+        const urgBg = urgLabels.map(k => urgColors[k] || '#94a3b8');
+
+        destroyChart('donutUrgency');
+        const ctxDu = document.getElementById('chart-donut-urgency');
+        if (ctxDu) {
+            if (urgVals.length) {
+                _anCharts.donutUrgency = new Chart(ctxDu, {
+                    type: 'doughnut',
+                    data: { labels: urgLabels.map(l => l.charAt(0).toUpperCase() + l.slice(1)), datasets: [{ data: urgVals, backgroundColor: urgBg, borderWidth: 2, borderColor: '#fff', hoverOffset: 6 }] },
+                    options: { cutout: '62%', plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => ` ${ctx.label}: ${ctx.parsed}` } } }, animation: { animateRotate: true } }
+                });
+                document.getElementById('an-legend-urgency').innerHTML = urgLabels.map((l, i) =>
+                    `<div class="an-legend-item"><span class="an-legend-dot" style="background:${urgBg[i]}"></span><span>${escHtml(l.charAt(0).toUpperCase() + l.slice(1))}</span><span class="an-legend-val">${urgVals[i]}</span></div>`
+                ).join('');
+            } else {
+                ctxDu.parentElement.innerHTML = '<p class="analytics-empty">No needs posted yet.</p>';
+            }
+        }
+
+        // --- Fulfillment progress bars ---
+        const fbEl = document.getElementById('chart-fulfillment-bars');
+        if (fbEl) {
+            if (!needsData.length) {
+                fbEl.innerHTML = '<p class="analytics-empty">No needs data yet.</p>';
+            } else {
+                const sorted = [...needsData].sort((a, b) => (Number(b.quantity_needed) || 0) - (Number(a.quantity_needed) || 0)).slice(0, 8);
+                fbEl.innerHTML = sorted.map(n => {
+                    const recv = Number(n.quantity_received) || 0;
+                    const needed = Number(n.quantity_needed) || 1;
+                    const pct = Math.min(100, Math.round((recv / needed) * 100));
+                    const urg = n.urgency || 'medium';
+                    const barColor = urgColors[urg] || '#94a3b8';
+                    return `<div class="chart-bar" style="margin-bottom:10px">
+                        <span class="chart-bar-label" style="flex:0 0 130px;font-size:.8rem" title="${escHtml(n.item_name)}">${escHtml(n.item_name.length > 18 ? n.item_name.slice(0,17)+'…' : n.item_name)}</span>
+                        <div class="chart-bar-track" style="flex:1"><div class="chart-bar-fill" style="width:${pct}%;background:${barColor}"></div></div>
+                        <span class="chart-bar-pct" style="flex:0 0 44px;font-size:.8rem;color:#64748b;text-align:right">${pct}%</span>
+                    </div>`;
+                }).join('');
+            }
+        }
     }
 
     // --- Chats ---

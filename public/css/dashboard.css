@@ -195,7 +195,7 @@ body {
 .chart-empty { color: var(--color-text-muted); font-size: .8125rem; text-align: center; width: 100%; }
 
 /* Dashboard grid layout */
-.dashboard-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 16px; }
+.dashboard-row { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-top: 16px; }
 .card-body { padding: 0 0 12px; }
 
 /* ── Cards ────────────────────────────────────────────────── */
@@ -1252,3 +1252,104 @@ select.form-control {
   padding: 5px 12px; border-radius: 6px;
   background: color-mix(in srgb, var(--color-success, #16a34a) 12%, transparent);
 }
+
+/* ── Analytics v2 — KPI cards + Chart.js ─────────────────── */
+.an-kpi-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 12px;
+  margin-bottom: 20px;
+}
+.an-kpi-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border-lt);
+  border-radius: var(--dash-radius);
+  padding: 16px 18px;
+  display: flex; flex-direction: column; gap: 4px;
+}
+.an-kpi-label {
+  font-size: .6875rem; font-weight: 700; text-transform: uppercase;
+  letter-spacing: .05em; color: var(--color-text-muted);
+}
+.an-kpi-value {
+  font-size: 2rem; font-weight: 700; color: var(--color-text);
+  line-height: 1; letter-spacing: -.02em;
+}
+.an-kpi-value.an-kpi-danger { color: #ef4444; }
+.an-kpi-value.an-kpi-warn   { color: #f59e0b; }
+.an-kpi-value.an-kpi-success { color: #10b981; }
+.an-kpi-sub {
+  font-size: .75rem; color: var(--color-text-light);
+}
+
+/* Two-column analytics rows */
+.an-row-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+@media (max-width: 780px) { .an-row-2 { grid-template-columns: 1fr; } }
+
+/* Donut + legend side by side */
+.an-donut-wrap {
+  display: flex; align-items: center; gap: 20px; flex-wrap: wrap;
+}
+.an-donut-wrap canvas { flex-shrink: 0; max-width: 160px; max-height: 160px; }
+.an-donut-legend { display: flex; flex-direction: column; gap: 8px; flex: 1; min-width: 100px; }
+.an-legend-item {
+  display: flex; align-items: center; gap: 8px;
+  font-size: .8125rem; color: var(--color-text);
+}
+.an-legend-dot {
+  flex-shrink: 0; width: 10px; height: 10px; border-radius: 50%;
+}
+.an-legend-val {
+  margin-left: auto; font-weight: 600; color: var(--color-text-muted);
+}
+
+/* ── Other Needs v2 — Urgent Requests style ───────────────── */
+.on-page-header {
+  display: flex; align-items: flex-start; justify-content: space-between;
+  gap: 16px; margin-bottom: 20px; flex-wrap: wrap;
+}
+.on-page-title {
+  font-size: 1.25rem; font-weight: 700; color: var(--color-text); margin: 0 0 4px;
+}
+.on-page-sub {
+  font-size: .875rem; color: var(--color-text-muted); margin: 0;
+}
+
+/* Fulfill button — prominent green */
+.on-fulfill-btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 7px 16px; border-radius: 8px;
+  background: #059669; color: #fff;
+  font-size: .8125rem; font-weight: 600; font-family: var(--font-sans);
+  border: none; cursor: pointer; white-space: nowrap;
+  transition: background .13s, transform .1s, box-shadow .13s;
+  box-shadow: 0 1px 3px rgba(5,150,105,.3);
+}
+.on-fulfill-btn:hover  { background: #047857; transform: translateY(-1px); box-shadow: 0 4px 10px rgba(5,150,105,.35); }
+.on-fulfill-btn:active { background: #065f46; transform: translateY(0); box-shadow: none; }
+
+/* Request title + org name in the same line */
+.on-req-dash { color: var(--color-text-muted); margin: 0 3px; }
+.on-req-org  { color: var(--color-text-muted); font-weight: 500; }
+.on-req-dot  {
+  display: inline-block; width: 3px; height: 3px; border-radius: 50%;
+  background: var(--color-text-light); margin: 0 5px; vertical-align: middle;
+}
+
+/* Category badges with colour tints */
+.on-cat-badge.on-cat-food      { background: #ecfdf5; color: #065f46; border-color: #a7f3d0; }
+.on-cat-badge.on-cat-hygiene   { background: #fdf4ff; color: #6b21a8; border-color: #e9d5ff; }
+.on-cat-badge.on-cat-housing   { background: #eff6ff; color: #1d4ed8; border-color: #bfdbfe; }
+.on-cat-badge.on-cat-clothing  { background: #fff7ed; color: #9a3412; border-color: #fed7aa; }
+.on-cat-badge.on-cat-bedding   { background: #f0fdf4; color: #166534; border-color: #bbf7d0; }
+.on-cat-badge.on-cat-baby_supplies { background: #fef9c3; color: #854d0e; border-color: #fde68a; }
+.on-cat-badge.on-cat-goods     { background: #f8fafc; color: #475569; border-color: #cbd5e1; }
+.on-cat-badge.on-cat-other     { background: #f8fafc; color: #64748b; border-color: #e2e8f0; }
+
+/* Action column */
+.on-th-action { width: 110px; text-align: center; }
+.on-table .on-th-action + td { text-align: center; }
